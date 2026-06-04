@@ -135,13 +135,14 @@ THEMES = {
 # INSTELLINGEN & CONFIGURATIE
 # ============================================================
 
-HUIDIGE_VERSIE = "1.0.4"
+HUIDIGE_VERSIE = "1.0.5"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
-GITHUB_PAGE = "https://github.com/thijmenlangwerden1-hub/GC-OS/blob/GC-OS/Huiswerk.py"
+GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/changelog.txt"
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BESTAND = os.path.join(SCRIPT_DIR, "gc_os_data.json")
+LOG_BESTAND = os.path.join(SCRIPT_DIR, "recent_changelog.txt")
 
 def opslaan(data):
     try:
@@ -281,8 +282,7 @@ class SchoolOS(ctk.CTk):
 
         self.theme_combo = None
         self.vrijedagen_listbox = None
-        
-        self.clock_label = None  # Variabele voor de live klok
+        self.clock_label = None
 
         self._build_layout()
         self.apply_theme()
@@ -290,6 +290,76 @@ class SchoolOS(ctk.CTk):
 
         self.after(100, self.show_intro_screen)
         self.after(2500, lambda: self.toon_update_laadbalk(silent=True))
+        
+        # Controleer direct na opstarten of er een verse changelog klaarstaat
+        self.after(3000, self.check_na_update_log)
+
+    # --------------------------------------------------------
+    # UPDATE LOG DETECTIE & POP-UP (ALLEEN NIEUWE VERSIE)
+    # --------------------------------------------------------
+
+    def check_na_update_log(self):
+        # Als het bestand met de tijdelijke log bestaat, openen we de pop-up
+        if os.path.exists(LOG_BESTAND):
+            try:
+                with open(LOG_BESTAND, "r", encoding="utf-8") as f:
+                    log_tekst = f.read()
+                
+                if log_tekst.strip():
+                    self.toon_changelog_venster(log_tekst)
+                
+                # Verwijder het bestand DIRECT zodat hij de volgende keer niet weer opent
+                os.remove(LOG_BESTAND)
+            except Exception:
+                pass
+
+    def toon_changelog_venster(self, log_tekst):
+        t = THEMES[self.theme_name]
+        log_win = ctk.CTkToplevel(self)
+        log_win.title(f"✨ Update Succesvol!")
+        log_win.geometry("500x400")
+        log_win.resizable(False, False)
+        log_win.configure(fg_color=t["bg_card"])
+        log_win.grab_set()
+
+        log_win.update_idletasks()
+        x = (log_win.winfo_screenwidth() // 2) - (500 // 2)
+        y = (log_win.winfo_screenheight() // 2) - (400 // 2)
+        log_win.geometry(f"+{x}+{y}")
+
+        ctk.CTkLabel(
+            log_win, 
+            text="🎉 Update succesvol geïnstalleerd!", 
+            font=("Segoe UI", 18, "bold"), 
+            text_color=t["accent"]
+        ).pack(pady=(20, 5))
+
+        ctk.CTkLabel(
+            log_win, 
+            text="Dit is er nieuw in deze versie:", 
+            font=("Segoe UI", 13), 
+            text_color=t["text"]
+        ).pack(pady=(0, 15))
+
+        txt_frame = ctk.CTkScrollableFrame(log_win, width=440, height=220, fg_color=t["bg_root"])
+        txt_frame.pack(padx=20, pady=5, fill="both", expand=True)
+
+        ctk.CTkLabel(
+            txt_frame, 
+            text=log_tekst.strip(), 
+            font=("Segoe UI", 12), 
+            justify="left", 
+            text_color=t["text"],
+            anchor="w"
+        ).pack(anchor="w", padx=10, pady=10)
+
+        ctk.CTkButton(
+            log_win, 
+            text="Sluiten & Ontdekken", 
+            fg_color=t["accent"], 
+            text_color="white", 
+            command=log_win.destroy
+        ).pack(pady=20)
 
     # --------------------------------------------------------
     # INTRO-SCREEN
@@ -351,7 +421,7 @@ class SchoolOS(ctk.CTk):
         animate()
 
     # --------------------------------------------------------
-    # INTERACTIEF EN LEUK LAADBALKJE VOOR UPDATES
+    # LAADBALKJE VOOR UPDATES
     # --------------------------------------------------------
 
     def toon_update_laadbalk(self, silent=False):
@@ -439,7 +509,7 @@ class SchoolOS(ctk.CTk):
         laad_stap()
 
     # --------------------------------------------------------
-    # DOWNLOAD, REWRITE EN AUTOMATISCHE HERSTART LOGICA
+    # DOWNLOAD SCRIPT & DOWNLOAD SPECIFIEKE CHANGELOG
     # --------------------------------------------------------
 
     def voer_update_uit(self, up_win, status_lbl):
@@ -447,12 +517,27 @@ class SchoolOS(ctk.CTk):
         up_win.update()
         
         try:
+            # 1. DOWNLOAD DE UNIEKE CHANGELOG DIE JIJ HEBT KLAARGEZET
+            try:
+                req_log = urllib.request.Request(GITHUB_CHANGELOG_URL, headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req_log) as response_log:
+                    nieuwe_log_data = response_log.read().decode("utf-8")
+                
+                # Sla deze log direct lokaal op
+                with open(LOG_BESTAND, "w", encoding="utf-8") as f_log:
+                    f_log.write(nieuwe_log_data)
+            except Exception:
+                # Als er geen changelog.txt is, maken we een standaardberichtje aan
+                with open(LOG_BESTAND, "w", encoding="utf-8") as f_log:
+                    f_log.write("Kleine prestatieverbeteringen en bugfixes.")
+
+            # 2. DOWNLOAD HET NIEUWE SCRIPT
             temp_file = os.path.join(SCRIPT_DIR, "update_tmp.py")
             req = urllib.request.Request(GITHUB_SCRIPT_URL, headers={'User-Agent': 'Mozilla/5.0'})
             with urllib.request.urlopen(req) as response:
-                nieuw_script_data = response.read()
+                nieuw_script_data = response.read().decode("utf-8")
                 
-            with open(temp_file, "wb") as f:
+            with open(temp_file, "w", encoding="utf-8") as f:
                 f.write(nieuw_script_data)
                 
             status_lbl.configure(text="🔄 Installeren en herstarten...")
@@ -504,9 +589,6 @@ class SchoolOS(ctk.CTk):
                     highlightthickness=0, borderwidth=0,
                 )
 
-        if self.hw_list is not None:
-            self._update_hw_list_colors()
-
         if self.theme_combo is not None:
             try:
                 self.theme_combo.configure(
@@ -556,7 +638,7 @@ class SchoolOS(ctk.CTk):
         self.cijfer_list = None
         self.vrijedagen_listbox = None
         self.theme_combo = None
-        self.clock_label = None  # Reset de klok variabele bij schermwissel
+        self.clock_label = None
 
     def _get_upcoming_vrijedagen(self):
         vandaag = dt.date.today()
@@ -575,23 +657,21 @@ class SchoolOS(ctk.CTk):
         return upcoming
 
     # --------------------------------------------------------
-    # VIEWS: DASHBOARD (AANGEPAST MET LIVE KLOK & VERSIE NUMMER)
+    # VIEWS: DASHBOARD
     # --------------------------------------------------------
 
     def show_dashboard(self):
         self.clear_main()
         t = THEMES[self.theme_name]
 
-        # Bovenste balk frame om titel links en klok rechts uit te lijnen
         top_bar = ctk.CTkFrame(self.main, fg_color="transparent")
         top_bar.pack(fill="x", padx=20, pady=20)
 
         ctk.CTkLabel(top_bar, text="Dashboard", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(side="left")
 
-        # Live Datum & Tijd Rechtsboven
         self.clock_label = ctk.CTkLabel(top_bar, text="", font=("Segoe UI", 14, "bold"), text_color=t["accent"])
         self.clock_label.pack(side="right", padx=10)
-        self.update_clock()  # Start de live klok loop
+        self.update_clock()
 
         card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
         card.pack(fill="x", padx=20, pady=10)
@@ -600,7 +680,6 @@ class SchoolOS(ctk.CTk):
         hw_total = len(self.data["huiswerk"])
         cijfers = self.data["cijfers"]
         
-        # Veilig berekenen van het gemiddelde
         geldige_cijfers = []
         for c in cijfers:
             try:
@@ -632,38 +711,21 @@ class SchoolOS(ctk.CTk):
                 regel = f"• {d.strftime('%Y-%m-%d')} - {naam} (" + ("vandaag!" if delta == 0 else f"over {delta} dagen") + ")"
                 ctk.CTkLabel(scroll_vrij, text=regel, font=("Segoe UI", 12), text_color=t["text"]).pack(anchor="w", padx=10, pady=1)
 
-        # Versienummer Rechtsonder in het dashboard scherm
         version_label = ctk.CTkLabel(self.main, text=f"Versie: {HUIDIGE_VERSIE}", font=("Segoe UI", 11), text_color=t["text"])
         version_label.pack(side="bottom", anchor="e", padx=20, pady=10)
 
         self.apply_theme()
 
     def update_clock(self):
-        # Controleer of het klok label bestaat (voorkomt fouten bij schermwisselingen)
         if self.clock_label and self.clock_label.winfo_exists():
             nu = dt.datetime.now()
             tijd_str = nu.strftime("%d-%m-%Y | %H:%M:%S")
             self.clock_label.configure(text=tijd_str)
-            # Roep deze functie na 1000ms (1 seconde) opnieuw aan
             self.after(1000, self.update_clock)
 
     # --------------------------------------------------------
     # VIEWS: HUISWERK
     # --------------------------------------------------------
-
-    def _update_hw_list_colors(self):
-        if not self.hw_list: return
-        t = THEMES[self.theme_name]
-        vandaag = dt.date.today()
-
-        for idx, h in enumerate(self.data.get("huiswerk", [])):
-            kleur = t["list_fg"]
-            try:
-                jaar, maand, dag = map(int, h.get("datum", "").split("-"))
-                if dt.date(jaar, maand, dag) < vandaag: kleur = "#ff0000"
-            except Exception: pass
-            try: self.hw_list.itemconfig(idx, fg=kleur)
-            except Exception: pass
 
     def show_huiswerk(self):
         self.clear_main()
@@ -780,7 +842,7 @@ class SchoolOS(ctk.CTk):
         self.show_notities()
 
     # --------------------------------------------------------
-    # VIEWS: CIJFERS
+    # VIEWS: CIJFERS & SETTINGS
     # --------------------------------------------------------
 
     def show_cijfers(self):
@@ -824,7 +886,6 @@ class SchoolOS(ctk.CTk):
         self.cijfer_datum = ctk.CTkEntry(right_frame, placeholder_text="yyyy-mm-dd")
         self.cijfer_datum.pack(fill="x", padx=10, pady=5)
         
-        # De code breekt hier af in je prompt, dus we sluiten het hier logisch af:
         ctk.CTkButton(right_frame, text="Toevoegen", fg_color=t["accent"], text_color="white", command=self.cijfer_toevoegen).pack(fill="x", padx=10, pady=10)
         self.apply_theme()
 
@@ -835,7 +896,6 @@ class SchoolOS(ctk.CTk):
         opslaan(self.data)
         self.show_cijfers()
 
-    # Placeholder voor instellingen om crashes te voorkomen
     def show_settings(self):
         self.clear_main()
         t = THEMES[self.theme_name]
