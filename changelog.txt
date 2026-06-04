@@ -1,1 +1,2 @@
-test
+Je kunt nu je voor en Achternaam toevoegen,
+zo dat het zichtbaar is als welkomst bericht op je dashboard
