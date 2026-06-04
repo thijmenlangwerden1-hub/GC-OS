@@ -14,6 +14,13 @@ import math
 import threading
 
 # ==============================================================================
+# 0. REPOSITORY CONFIGURATIE & DEPLOYMENT TARGETS (CRITIEK UPDATE SYSTEEM)
+# ==============================================================================
+GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
+GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
+GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
+
+# ==============================================================================
 # 1. GLOBALE CONFIGURATIE, CODENAMES & SYSTEM ARCHITECTURE
 # ==============================================================================
 
@@ -597,55 +604,123 @@ class SchoolOS(ctk.CTk):
                     ctk.CTkLabel(box, text=les.get('vak'), font=("Segoe UI", 12, "bold"), text_color=thema["text"]).pack(anchor="w", padx=10, pady=0)
                     ctk.CTkLabel(box, text=f"📍 {les.get('lokaal')} | 👨‍🏫 {les.get('docent')}", font=("Segoe UI", 10), text_color="gray").pack(anchor="w", padx=10, pady=(0, 6))
         else:
-            scroller = ctk.CTkScrollableFrame(self.rooster_grote_container, fg_color=thema["bg_card"], corner_radius=16)
-            scroller.pack(fill="both", expand=True)
+            # Fallback of placeholder voor Maandoverzicht scroller componenten
+            scroller = ctk.CTkScrollableFrame(self.rooster_grote_container, fg_color=thema["bg_card"], corner_radius=14)
+            scroller.pack(fill="both", expand=True, padx=6, pady=6)
+            self.rooster_titel_label.configure(text=f"Maand Matrix: {self.referentie_datum.strftime('%B %Y')}")
             
-            j, m = self.referentie_datum.year, self.referentie_datum.month
-            self.rooster_titel_label.configure(text=self.referentie_datum.strftime("%B %Y").upper())
-
-            gefilterde_lessen = []
-            for l in self.data["rooster"]:
-                try:
-                    ld = dt.datetime.strptime(l.get("datum"), "%Y-%m-%d").date()
-                    if ld.year == j and ld.month == m: gefilterde_lessen.append(l)
-                except ValueError: pass
-
-            gefilterde_lessen.sort(key=lambda x: (x.get("datum"), x.get("tijd")))
-            if not gefilterde_lessen:
-                ctk.CTkLabel(scroller, text="Geen ingeplande data voor deze maandmatrix.", font=("Segoe UI", 14, "italic"), text_color="gray").pack(pady=40)
+            maand_iso = self.referentie_datum.strftime("%Y-%m")
+            lessen_maand = [l for l in self.data["rooster"] if l.get("datum", "").startswith(maand_iso)]
+            lessen_maand.sort(key=lambda x: (x.get("datum", ""), x.get("tijd", "")))
+            
+            if lessen_maand:
+                for les in lessen_maand:
+                    row = ctk.CTkFrame(scroller, fg_color=thema["bg_root"], corner_radius=8, height=40)
+                    row.pack(fill="x", padx=10, pady=4)
+                    ctk.CTkLabel(row, text=f"📅 {les.get('datum')}  |  ⏰ {les.get('tijd')}  |  📚 {les.get('vak')}  |  📍 Lokaal: {les.get('lokaal')}  |  👨‍🏫 Docent: {les.get('docent')}", font=("Segoe UI", 13), text_color=thema["text"]).pack(side="left", padx=15)
             else:
-                for les in gefilterde_lessen:
-                    r_item = ctk.CTkFrame(scroller, fg_color=thema["bg_root"], corner_radius=10)
-                    r_item.pack(fill="x", padx=20, pady=5)
-                    ctk.CTkLabel(r_item, text=f"📅 {les.get('datum')}  |  ⏰ {les.get('tijd')}  |  📘 {les.get('vak')}  |  📍 Lokaal: {les.get('lokaal')}  |  👨‍🏫 Docent: {les.get('docent')}", font=("Segoe UI", 12), text_color=thema["text"]).pack(side="left", padx=20, pady=10)
+                ctk.CTkLabel(scroller, text="Geen lesdata gevonden voor deze maandmatrix.", font=("Segoe UI", 14, "italic"), text_color="gray").pack(pady=40)
 
     def _Rooster_Save_Lesson(self):
         v = self.combo_rst_vak.get()
-        d = self.entry_rst_datum.get().strip()
+        dat = self.entry_rst_datum.get().strip()
         t = self.combo_rst_tijd.get()
-        lok = self.entry_rst_lokaal.get().strip() or "Onbekend"
-        doc = self.entry_rst_docent.get().strip() or "Onbekend"
-        if d and t:
-            self.data["rooster"].append({"vak": v, "datum": d, "tijd": t, "lokaal": lok, "docent": doc})
-            IO_SafeSave(self.data)
-            self._Rooster_Render_Core()
+        lok = self.entry_rst_lokaal.get().strip() or "N/A"
+        doc = self.entry_rst_docent.get().strip() or "N/A"
+        
+        if not dat: return
+        self.data["rooster"].append({"vak": v, "datum": dat, "tijd": t, "lokaal": lok, "docent": doc})
+        IO_SafeSave(self.data)
+        self._Rooster_Render_Core()
+        self.entry_rst_lokaal.delete(0, tk.END)
+        self.entry_rst_docent.delete(0, tk.END)
 
     def _Rooster_Purge(self):
-        if messagebox.askyesno("Matrix Veiligheid", "Wilt u de volledige rooster database leegmaken?"):
+        if messagebox.askyesno("Systeem Matrix Waarschuwing", "Weet je zeker dat je alle ingeplande rooster-componenten wilt purgen?"):
             self.data["rooster"] = []
             IO_SafeSave(self.data)
             self._Rooster_Render_Core()
 
-    # Placeholders voor missende UI modules om crashes te voorkomen
-    def Module_Notities(self): pass
-    def Module_Cijfers(self): pass
-    def Module_Doelen(self): pass
-    def Module_Examens(self): pass
-    def Module_Studietools(self): pass
-    def Module_Absentie(self): pass
-    def Module_Financien(self): pass
-    def Module_Settings(self): pass
+    # ==============================================================================
+    # DUMMY INTERFACES VOOR OVERIGE CORE SYSTEM COMPONENTEN
+    # ==============================================================================
+    def Module_Notities(self):
+        self.Core_Clear_Canvas()
+        self.Core_Highlight_Menu("notities")
+        ctk.CTkLabel(self.canvas, text="🗒 Kennisbank & Notities (Systeem Module)", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
 
+    def Module_Cijfers(self):
+        self.Core_Clear_Canvas()
+        self.Core_Highlight_Menu("cijfers")
+        ctk.CTkLabel(self.canvas, text="📊 Cijfer & KPI Analyse Engine", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+
+    def Module_Doelen(self):
+        self.Core_Clear_Canvas()
+        self.Core_Highlight_Menu("doelen")
+        ctk.CTkLabel(self.canvas, text="🎯 Mijlpalen & Doelen Framework", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+
+    def Module_Examens(self):
+        self.Core_Clear_Canvas()
+        self.Core_Highlight_Menu("examens")
+        ctk.CTkLabel(self.canvas, text="🎓 Examen & Toetsing Controle-Matrix", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+
+    def Module_Studietools(self):
+        self.Core_Clear_Canvas()
+        self.Core_Highlight_Menu("studietools")
+        ctk.CTkLabel(self.canvas, text="⏱ Pomodoro Timer & Flashcards Synthesizer", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+
+    def Module_Absentie(self):
+        self.Core_Clear_Canvas()
+        self.Core_Highlight_Menu("absentie")
+        ctk.CTkLabel(self.canvas, text="🛡 Absentieregistratie Protocol Systeem", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+
+    def Module_Financien(self):
+        self.Core_Clear_Canvas()
+        self.Core_Highlight_Menu("financien")
+        ctk.CTkLabel(self.canvas, text="💳 Studiefinanciering Ledger & Grootboek", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+
+    def Module_Settings(self):
+        self.Core_Clear_Canvas()
+        thema = THEMES[self.theme_name]
+        
+        ctk.CTkLabel(self.canvas, text="⚙ Systeem Configuraties & Update Controle", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(padx=35, pady=25, anchor="w")
+        
+        container = ctk.CTkFrame(self.canvas, fg_color=thema["bg_card"], corner_radius=16)
+        container.pack(fill="both", expand=True, padx=35, pady=(0, 35))
+        
+        # Thema wisselaar
+        ctk.CTkLabel(container, text="Systeem Thema Schakelaar:", font=("Segoe UI", 14, "bold"), text_color=thema["text"]).pack(anchor="w", padx=25, pady=(25, 5))
+        
+        def WijzigThema(nieuw_thema):
+            self.theme_name = nieuw_thema
+            self.data["settings"]["theme"] = nieuw_thema
+            IO_SafeSave(self.data)
+            self.Core_Apply_Theme()
+            self.Module_Settings()
+
+        combo_thema = ctk.CTkComboBox(container, values=list(THEMES.keys()), command=WijzigThema)
+        combo_thema.set(self.theme_name)
+        combo_thema.pack(anchor="w", padx=25, pady=5)
+        
+        # Handmatige update check sectie
+        ctk.CTkLabel(container, text="Netwerk firmware update pijplijn:", font=("Segoe UI", 14, "bold"), text_color=thema["text"]).pack(anchor="w", padx=25, pady=(30, 5))
+        
+        def CheckUpdates():
+            try:
+                with urllib.request.urlopen(GITHUB_VERSION_URL, timeout=5) as response:
+                    server_versie = response.read().decode('utf-8').strip()
+                if server_versie != HUIDIGE_VERSIE:
+                    messagebox.showinfo("Update Beschikbaar", f"Er is een nieuwe firmware update gevonden:\nVersie: {server_versie}\nHuidige versie op disk: {HUIDIGE_VERSIE}\n\nGebruik de git pipeline om te pullen.")
+                else:
+                    messagebox.showinfo("Matrix Status", f"Systeem is volledig up-to-date. Kernel {HUIDIGE_VERSIE} draait optimaal.")
+            except Exception as e:
+                messagebox.showerror("Netwerkfout", f"Kan geen verbinding maken met de GitHub update nodes:\n{e}")
+                
+        ctk.CTkButton(container, text="Check Netwerk Nodes voor Updates", command=CheckUpdates, fg_color=thema["accent"], text_color="white").pack(anchor="w", padx=25, pady=10)
+
+# ==============================================================================
+# RUNTIME INITIALIZATION ENTRYPOINT
+# ==============================================================================
 if __name__ == "__main__":
     app = SchoolOS()
     app.mainloop()
