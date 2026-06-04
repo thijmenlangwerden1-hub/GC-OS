@@ -103,7 +103,7 @@ THEMES = {
 # CONFIGURATIE
 # ============================================================
 
-HUIDIGE_VERSIE = "1.1.1"
+HUIDIGE_VERSIE = "1.30"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BESTAND = os.path.join(SCRIPT_DIR, "gc_os_data.json")
 
@@ -177,9 +177,16 @@ class SchoolOS(ctk.CTk):
         self.title("GraafschapCollege‑OS")
         self.geometry("1100x650")
 
+        # Algemene vakkenlijst voor huiswerk en rooster (inclusief Vrije Afspraak)
         self.vakken_hw = [
             "Nederlands", "Engels", "Rekenen", "Hardware",
             "Netwerken", "Techlab", "Burgerschap", "Loopbaan", "Vrije Afspraak"
+        ]
+        
+        # Specifieke vakkenlijst voor cijfers (zonder Vrije Afspraak)
+        self.vakken_cijfers = [
+            "Nederlands", "Engels", "Rekenen", "Hardware",
+            "Netwerken", "Techlab", "Burgerschap", "Loopbaan"
         ]
         
         self.sidebar_width = 230
@@ -540,7 +547,8 @@ class SchoolOS(ctk.CTk):
         main_container.pack(fill="both", expand=True, padx=20, pady=5)
 
         vak_gemiddelden = {}
-        for vak in self.vakken_hw:
+        # Gemiddelden berekenen op basis van de specifieke cijfer-vakkenlijst
+        for vak in self.vakken_cijfers:
             cijfers_voor_vak = [float(c["cijfer"]) for c in self.data["cijfers"] if c.get("vak") == vak]
             if cijfers_voor_vak:
                 vak_gemiddelden[vak] = sum(cijfers_voor_vak) / len(cijfers_voor_vak)
@@ -549,8 +557,9 @@ class SchoolOS(ctk.CTk):
         left_side.pack(side="left", fill="both", expand=False, padx=(0, 10))
 
         ctk.CTkLabel(left_side, text="Nieuw Cijfer", font=("Segoe UI", 14, "bold"), text_color=t["text"]).pack(pady=5)
-        self.cijfer_vak = ctk.CTkComboBox(left_side, values=self.vakken_hw, state="readonly")
-        self.cijfer_vak.set(self.vakken_hw[0])
+        # Dropdown vullen met de lijst waar 'Vrije Afspraak' uit is gehaald
+        self.cijfer_vak = ctk.CTkComboBox(left_side, values=self.vakken_cijfers, state="readonly")
+        self.cijfer_vak.set(self.vakken_cijfers[0])
         self.cijfer_vak.pack(fill="x", padx=15, pady=5)
 
         self.cijfer_val = ctk.CTkEntry(left_side, placeholder_text="bijv. 7.5")
@@ -562,7 +571,7 @@ class SchoolOS(ctk.CTk):
         scroll_gem = ctk.CTkScrollableFrame(left_side, height=200, fg_color="transparent")
         scroll_gem.pack(fill="both", expand=True, padx=10, pady=5)
 
-        for vak in self.vakken_hw:
+        for vak in self.vakken_cijfers:
             g = vak_gemiddelden.get(vak, None)
             g_txt = f"{g:.1f}" if g is not None else "--"
             ctk.CTkLabel(scroll_gem, text=f"{vak}: {g_txt}", font=("Segoe UI", 12), text_color=t["text"]).pack(anchor="w", padx=10, pady=2)
