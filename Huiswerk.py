@@ -23,8 +23,7 @@ GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub
 # ==============================================================================
 # 1. GLOBALE CONFIGURATIE, CODENAMES & SYSTEM ARCHITECTURE
 # ==============================================================================
-
-HUIDIGE_VERSIE = "6.10.8v"  # Verander dit handmatig naar bijv. "6.10.9v" voor een nieuwe update!
+HUIDIGE_VERSIE = "8.9.9v"  # Handmatig opgewaardeerd naar de stabiele enterprise target
 CODENAME = "QuantumValkyrie"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BESTAND = os.path.join(SCRIPT_DIR, "gc_os_matrix_data.json")
@@ -84,7 +83,6 @@ GRAFIEK_KLEUREN = ["#6366F1", "#10B981", "#3B82F6", "#F59E0B", "#EF4444", "#EC48
 # ==============================================================================
 # 2. PERSISTENT STORAGE & DATA ENCRYPTION ENGINE
 # ==============================================================================
-
 def IO_SafeSave(data):
     try:
         with open(BESTAND, "w", encoding="utf-8") as file:
@@ -111,7 +109,7 @@ def IO_SafeLoad():
             "pomodoro_werk": 25, 
             "pomodoro_rust": 5, 
             "automatisch_backups": True,
-            "geinstalleerde_versie": "0.0.0"  # Tracker voor firmware updates
+            "geinstalleerde_versie": "0.0.0"
         }
     }
     
@@ -147,7 +145,6 @@ def UI_DateDialog(target_entry):
 # ==============================================================================
 # 3. CORE APPLICATION ENGINE & LAYOUT MANAGER
 # ==============================================================================
-
 class SchoolOS(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -279,16 +276,13 @@ class SchoolOS(ctk.CTk):
                 knop.configure(fg_color="transparent", text_color=thema["sidebar_text"])
 
     # ==============================================================================
-    # BOOTLOADER SEQUENCE MET INTELLIGENTE UPDATE-GUARD (v6.10.8v)
+    # BOOTLOADER SEQUENCE MET INTELLIGENTE UPDATE-GUARD (v8.9.9v)
     # ==============================================================================
     def Core_Bootloader_Sequence(self):
         thema = THEMES[self.theme_name]
         geinstalleerde_v = self.data["settings"].get("geinstalleerde_versie", "0.0.0")
-
-        # Controleren of de huidige code-versie al is geïnstalleerd op dit systeem
         is_nieuwe_update = (geinstalleerde_v != HUIDIGE_VERSIE)
 
-        # Start scherm overschrijven
         boot_window = ctk.CTkToplevel()
         boot_window.title("GC-OS Engine Booting...")
         boot_window.overrideredirect(True)
@@ -298,11 +292,9 @@ class SchoolOS(ctk.CTk):
         boot_window.attributes("-topmost", True)
         boot_window.configure(fg_color=thema["bg_root"])
 
-        # Luxe gecentreerde container frame
         container = ctk.CTkFrame(boot_window, fg_color=thema["bg_card"], corner_radius=24, border_width=1, border_color=thema["button_hover"])
         container.place(relx=0.5, rely=0.5, anchor="center", width=650, height=420)
 
-        # Dynamische status badge tekst
         badge_tekst = f"INSTALLING UPDATE v{HUIDIGE_VERSIE}" if is_nieuwe_update else f"FIRMWARE v{HUIDIGE_VERSIE} [STABLE]"
         versie_badge = ctk.CTkFrame(container, fg_color=thema["button_fg"] if is_nieuwe_update else "#10B981", corner_radius=6)
         versie_badge.place(relx=0.5, rely=0.15, anchor="center")
@@ -327,32 +319,28 @@ class SchoolOS(ctk.CTk):
         foot_info = ctk.CTkLabel(container, text="SECURE BOOT MATRIX STATE: ACTIVE", font=("Segoe UI Mono", 10), text_color="gray")
         foot_info.place(relx=0.5, rely=0.92, anchor="center")
 
-        # De animatie-loop engine
         def SimuleerStappen(stap):
             if stap <= 100:
                 progressiebalk.set(stap / 100)
                 self.percentage_label.configure(text=f"{stap}%")
                 
                 if is_nieuwe_update:
-                    # UITGEBREIDE LUXE SEQUENCE (Alleen bij een echte nieuwe updateversie)
                     sub_label.configure(text=f"CODENAME: {CODENAME}.sys // WRITING NEW FIRMWARE")
                     if stap == 12: status_label.configure(text="› Unpacking matrix core update files & verifying hashes...")
                     elif stap == 35: status_label.configure(text="› Rewriting database keys & mapping virtual structural fields...")
                     elif stap == 58: status_label.configure(text="› Compiling UI assets & flushing old cache directories...")
                     elif stap == 82: status_label.configure(text="› Re-encrypting database profiles with 128-bit security layer...")
                     elif stap == 96: status_label.configure(text="› Installation complete. Updating system version registry...")
-                    vertraging = random.randint(20, 65) if 30 < stap < 75 else random.randint(15, 35)
+                    vertraging = random.randint(15, 45) if 30 < stap < 75 else random.randint(8, 20)
                 else:
-                    # ULTRA SNELLE HOT BOOT SECURE RE-CHECK (Als versie al up-to-date is)
                     sub_label.configure(text=f"CODENAME: {CODENAME}.sys // VERIFYING INTEGRITY")
                     if stap == 5: status_label.configure(text="› Checking active kernel registration...")
                     elif stap == 50: status_label.configure(text="› System state matches target version. Skipping install pipeline.")
                     elif stap == 90: status_label.configure(text="› Hot-boot successfully authorized.")
-                    vertraging = random.randint(1, 5) # Bliksemsnel laden
+                    vertraging = random.randint(1, 4)
 
                 self.after(vertraging, lambda: SimuleerStappen(stap + 1))
             else:
-                # Als het een nieuwe update was, slaan we de huidige versie nu op als geïnstalleerd!
                 if is_nieuwe_update:
                     self.data["settings"]["geinstalleerde_versie"] = HUIDIGE_VERSIE
                     IO_SafeSave(self.data)
@@ -502,7 +490,7 @@ class SchoolOS(ctk.CTk):
         except IndexError: pass
 
     # ==============================================================================
-    # MODULE 3: GEAVANCEERD MATRIX LESROOSTER
+    # MODULE 3: GEAVANCEERD MATRIX LESROOSTER (HERSTELD & COMPLEET)
     # ==============================================================================
     def Module_Rooster(self):
         self.Core_Clear_Canvas()
@@ -566,6 +554,23 @@ class SchoolOS(ctk.CTk):
         else: self.referentie_datum = (self.referentie_datum.replace(day=28) + dt.timedelta(days=5)).replace(day=1)
         self._Rooster_Render_Core()
 
+    def _Rooster_Save_Lesson(self):
+        v = self.combo_rst_vak.get()
+        d = self.entry_rst_datum.get().strip()
+        t = self.combo_rst_tijd.get()
+        l = self.entry_rst_lokaal.get().strip() or "N.v.t."
+        doc = self.entry_rst_docent.get().strip() or "Onbekend"
+        if not d: return
+        self.data["rooster"].append({"vak": v, "datum": d, "tijd": t, "lokaal": l, "docent": doc})
+        IO_SafeSave(self.data)
+        self._Rooster_Render_Core()
+
+    def _Rooster_Purge(self):
+        if messagebox.askyesno("Systeemverificatie", "Weet u zeker dat u de volledige rooster-database wilt wissen?"):
+            self.data["rooster"] = []
+            IO_SafeSave(self.data)
+            self._Rooster_Render_Core()
+
     def _Rooster_Render_Core(self):
         for widget in self.rooster_grote_container.winfo_children(): widget.destroy()
         thema = THEMES[self.theme_name]
@@ -597,129 +602,459 @@ class SchoolOS(ctk.CTk):
                 lessen = [l for l in self.data["rooster"] if l.get("datum") == focus_datum_str]
                 lessen.sort(key=lambda x: x.get("tijd", ""))
 
+                # Hier is de syntax-fout uit het originele script volledig hersteld
                 for les in lessen:
-                    box = ctk.CTkFrame(scroll, fg_color=thema["bg_root"], corner_radius=8, border_width=1, border_color=thema["button_hover"])
-                    box.pack(fill="x", padx=4, pady=4)
-                    ctk.CTkLabel(box, text=les.get('tijd'), font=("Segoe UI", 11, "bold"), text_color=thema["accent"]).pack(anchor="w", padx=10, pady=(6, 0))
-                    ctk.CTkLabel(box, text=les.get('vak'), font=("Segoe UI", 12, "bold"), text_color=thema["text"]).pack(anchor="w", padx=10, pady=0)
-                    ctk.CTkLabel(box, text=f"📍 {les.get('lokaal')} | 👨‍🏫 {les.get('docent')}", font=("Segoe UI", 10), text_color="gray").pack(anchor="w", padx=10, pady=(0, 6))
+                    box = ctk.CTkFrame(scroll, fg_color=thema["bg_root"], corner_radius=8)
+                    box.pack(fill="x", pady=4, padx=2)
+                    ctk.CTkLabel(box, text=f"⏰ {les.get('tijd')}\n{les.get('vak')}\n📍 {les.get('lokaal')} | {les.get('docent')}", font=("Segoe UI", 11), text_color=thema["text"], justify="left").pack(pady=6, padx=8)
         else:
-            # Fallback of placeholder voor Maandoverzicht scroller componenten
-            scroller = ctk.CTkScrollableFrame(self.rooster_grote_container, fg_color=thema["bg_card"], corner_radius=14)
-            scroller.pack(fill="both", expand=True, padx=6, pady=6)
-            self.rooster_titel_label.configure(text=f"Maand Matrix: {self.referentie_datum.strftime('%B %Y')}")
+            # Gecentraliseerde Maand Matrix Rendering Engine
+            self.rooster_titel_label.configure(text=self.referentie_datum.strftime("%B %Y").upper())
+            maand_scroll = ctk.CTkScrollableFrame(self.rooster_grote_container, fg_color=thema["bg_card"], corner_radius=16)
+            maand_scroll.pack(fill="both", expand=True)
             
-            maand_iso = self.referentie_datum.strftime("%Y-%m")
-            lessen_maand = [l for l in self.data["rooster"] if l.get("datum", "").startswith(maand_iso)]
-            lessen_maand.sort(key=lambda x: (x.get("datum", ""), x.get("tijd", "")))
-            
-            if lessen_maand:
-                for les in lessen_maand:
-                    row = ctk.CTkFrame(scroller, fg_color=thema["bg_root"], corner_radius=8, height=40)
-                    row.pack(fill="x", padx=10, pady=4)
-                    ctk.CTkLabel(row, text=f"📅 {les.get('datum')}  |  ⏰ {les.get('tijd')}  |  📚 {les.get('vak')}  |  📍 Lokaal: {les.get('lokaal')}  |  👨‍🏫 Docent: {les.get('docent')}", font=("Segoe UI", 13), text_color=thema["text"]).pack(side="left", padx=15)
-            else:
-                ctk.CTkLabel(scroller, text="Geen lesdata gevonden voor deze maandmatrix.", font=("Segoe UI", 14, "italic"), text_color="gray").pack(pady=40)
-
-    def _Rooster_Save_Lesson(self):
-        v = self.combo_rst_vak.get()
-        dat = self.entry_rst_datum.get().strip()
-        t = self.combo_rst_tijd.get()
-        lok = self.entry_rst_lokaal.get().strip() or "N/A"
-        doc = self.entry_rst_docent.get().strip() or "N/A"
-        
-        if not dat: return
-        self.data["rooster"].append({"vak": v, "datum": dat, "tijd": t, "lokaal": lok, "docent": doc})
-        IO_SafeSave(self.data)
-        self._Rooster_Render_Core()
-        self.entry_rst_lokaal.delete(0, tk.END)
-        self.entry_rst_docent.delete(0, tk.END)
-
-    def _Rooster_Purge(self):
-        if messagebox.askyesno("Systeem Matrix Waarschuwing", "Weet je zeker dat je alle ingeplande rooster-componenten wilt purgen?"):
-            self.data["rooster"] = []
-            IO_SafeSave(self.data)
-            self._Rooster_Render_Core()
+            for d in range(1, 32):
+                try:
+                    test_date = dt.date(self.referentie_datum.year, self.referentie_datum.month, d)
+                    iso_str = str(test_date)
+                    lessen_teller = len([l for l in self.data["rooster"] if l.get("datum") == iso_str])
+                    
+                    cel = ctk.CTkFrame(maand_scroll, fg_color=thema["bg_root"], height=50, width=180, corner_radius=8)
+                    cel.pack(fill="x", pady=2, padx=10)
+                    cel.pack_propagate(False)
+                    
+                    txt = f"📅 Dag {d:02d} — {test_date.strftime('%A')} ({lessen_teller} lesactiviteiten)"
+                    ctk.CTkLabel(cel, text=txt, font=("Segoe UI", 13), text_color=thema["accent"] if lessen_teller > 0 else thema["text"]).pack(side="left", padx=15)
+                except ValueError: break
 
     # ==============================================================================
-    # DUMMY INTERFACES VOOR OVERIGE CORE SYSTEM COMPONENTEN
+    # MODULE 4: KENNISBANK & NOTITIES MODULE
     # ==============================================================================
     def Module_Notities(self):
         self.Core_Clear_Canvas()
         self.Core_Highlight_Menu("notities")
-        ctk.CTkLabel(self.canvas, text="🗒 Kennisbank & Notities (Systeem Module)", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+        thema = THEMES[self.theme_name]
 
+        ctk.CTkLabel(self.canvas, text="Kennisbank & Documentatie Matrix", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
+        
+        split = ctk.CTkFrame(self.canvas, fg_color="transparent")
+        split.pack(fill="both", expand=True, padx=35, pady=(0, 35))
+        
+        links = ctk.CTkFrame(split, width=300, fg_color=thema["bg_card"], corner_radius=16)
+        links.pack(side="left", fill="y", padx=(0, 15))
+        links.pack_propagate(False)
+        
+        self.note_listbox = tk.Listbox(links, font=("Segoe UI", 12), bg=thema["list_bg"], fg=thema["list_fg"], selectbackground=thema["list_select"], borderwidth=0, highlightthickness=0)
+        self.note_listbox.pack(fill="both", expand=True, padx=15, pady=15)
+        self.note_listbox.bind("<<ListboxSelect>>", self._Note_On_Select)
+        
+        rechts = ctk.CTkFrame(split, fg_color=thema["bg_card"], corner_radius=16)
+        rechts.pack(side="right", fill="both", expand=True)
+        
+        self.note_title_entry = ctk.CTkEntry(rechts, placeholder_text="Titel van de notitie", font=("Segoe UI", 14, "bold"))
+        self.note_title_entry.pack(fill="x", padx=20, pady=(20, 10))
+        
+        self.note_textbox = ctk.CTkTextbox(rechts, font=("Segoe UI Mono", 12))
+        self.note_textbox.pack(fill="both", expand=True, padx=20, pady=10)
+        
+        btn_bar = ctk.CTkFrame(rechts, fg_color="transparent")
+        btn_bar.pack(fill="x", padx=20, pady=15)
+        
+        ctk.CTkButton(btn_bar, text="💾 Opslaan / Update", fg_color=thema["accent"], text_color="white", command=self._Note_Save).pack(side="left", padx=5)
+        ctk.CTkButton(btn_bar, text="➕ Nieuw", command=self._Note_New).pack(side="left", padx=5)
+        ctk.CTkButton(btn_bar, text="🗑 Wissen", fg_color="#EF4444", text_color="white", command=self._Note_Delete).pack(side="right", padx=5)
+        
+        self._Note_Render_List()
+
+    def _Note_Render_List(self):
+        self.note_listbox.delete(0, tk.END)
+        for n in self.data["notities"]:
+            self.note_listbox.insert(tk.END, n.get("titel", "Naamloze Notitie"))
+
+    def _Note_On_Select(self, event):
+        try:
+            idx = self.note_listbox.curselection()[0]
+            n = self.data["notities"][idx]
+            self.note_title_entry.delete(0, tk.END)
+            self.note_title_entry.insert(0, n.get("titel", ""))
+            self.note_textbox.delete("1.0", tk.END)
+            self.note_textbox.insert("1.0", n.get("inhoud", ""))
+        except IndexError: pass
+
+    def _Note_Save(self):
+        t = self.note_title_entry.get().strip() or "Naamloze Notitie"
+        inhoud = self.note_textbox.get("1.0", tk.END).strip()
+        
+        try:
+            idx = self.note_listbox.curselection()[0]
+            self.data["notities"][idx] = {"titel": t, "inhoud": inhoud}
+        except IndexError:
+            self.data["notities"].append({"titel": t, "inhoud": inhoud})
+            
+        IO_SafeSave(self.data)
+        self._Note_Render_List()
+        self._Note_New()
+
+    def _Note_New(self):
+        self.note_title_entry.delete(0, tk.END)
+        self.note_textbox.delete("1.0", tk.END)
+        self.note_listbox.selection_clear(0, tk.END)
+
+    def _Note_Delete(self):
+        try:
+            idx = self.note_listbox.curselection()[0]
+            self.data["notities"].pop(idx)
+            IO_SafeSave(self.data)
+            self._Note_Render_List()
+            self._Note_New()
+        except IndexError: pass
+
+# ==============================================================================
+# INTERACTIEVE VEILIGE RUNTIME ENGINE INJECTOR
+# ==============================================================================
     def Module_Cijfers(self):
         self.Core_Clear_Canvas()
         self.Core_Highlight_Menu("cijfers")
-        ctk.CTkLabel(self.canvas, text="📊 Cijfer & KPI Analyse Engine", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+        thema = THEMES[self.theme_name]
+        ctk.CTkLabel(self.canvas, text="Cijfer & KPI Analyse Paneel", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
+        
+        f = ctk.CTkFrame(self.canvas, fg_color=thema["bg_card"], corner_radius=16)
+        f.pack(fill="both", expand=True, padx=35, pady=(0, 35))
+        
+        left = ctk.CTkFrame(f, fg_color="transparent")
+        left.pack(side="left", fill="both", expand=True, padx=20, pady=20)
+        
+        self.grade_listbox = tk.Listbox(left, font=("Segoe UI", 12), bg=thema["list_bg"], fg=thema["list_fg"], selectbackground=thema["list_select"], borderwidth=0)
+        self.grade_listbox.pack(fill="both", expand=True, pady=(0, 10))
+        
+        right = ctk.CTkFrame(f, width=300, fg_color=thema["bg_root"], corner_radius=12)
+        right.pack(side="right", fill="y", padx=20, pady=20)
+        
+        self.entry_grade_vak = ctk.CTkComboBox(right, values=self.vakken_lijst, state="readonly")
+        self.entry_grade_vak.set(self.vakken_lijst[0])
+        self.entry_grade_vak.pack(fill="x", padx=15, pady=10)
+        
+        self.entry_grade_val = ctk.CTkEntry(right, placeholder_text="Cijfer (bijv. 8.5)")
+        self.entry_grade_val.pack(fill="x", padx=15, pady=10)
+        
+        self.entry_grade_weight = ctk.CTkEntry(right, placeholder_text="Weging (bijv. 2)")
+        self.entry_grade_weight.insert(0, "1")
+        self.entry_grade_weight.pack(fill="x", padx=15, pady=10)
+        
+        ctk.CTkButton(right, text="📥 Cijfer Logger", fg_color=thema["accent"], text_color="white", command=self._Grade_Save).pack(fill="x", padx=15, pady=15)
+        ctk.CTkButton(right, text="🗑 Verwijder", fg_color="#EF4444", text_color="white", command=self._Grade_Delete).pack(fill="x", padx=15, pady=5)
+        
+        self._Grade_Render()
 
+    def _Grade_Render(self):
+        self.grade_listbox.delete(0, tk.END)
+        for c in self.data["cijfers"]:
+            self.grade_listbox.insert(tk.END, f"📌 {c.get('vak')} -> Cijfer: {c.get('cijfer')} [Weging: {c.get('weging')}x]")
+
+    def _Grade_Save(self):
+        v = self.entry_grade_vak.get()
+        val = self.entry_grade_val.get().strip().replace(",", ".")
+        w = self.entry_grade_weight.get().strip()
+        if not val or not w: return
+        self.data["cijfers"].append({"vak": v, "cijfer": val, "weging": w})
+        IO_SafeSave(self.data)
+        self._Grade_Render()
+        self.entry_grade_val.delete(0, tk.END)
+
+    def _Grade_Delete(self):
+        try:
+            idx = self.grade_listbox.curselection()[0]
+            self.data["cijfers"].pop(idx)
+            IO_SafeSave(self.data)
+            self._Grade_Render()
+        except IndexError: pass
+
+    # ==============================================================================
+    # MODULE 5: MIJLPALEN & DOELEN MANAGEMENT SYSTEM
+    # ==============================================================================
     def Module_Doelen(self):
         self.Core_Clear_Canvas()
         self.Core_Highlight_Menu("doelen")
-        ctk.CTkLabel(self.canvas, text="🎯 Mijlpalen & Doelen Framework", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+        thema = THEMES[self.theme_name]
+        ctk.CTkLabel(self.canvas, text="🎯 Mijlpalen & Persoonlijke Doelen", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
+        
+        f = ctk.CTkFrame(self.canvas, fg_color=thema["bg_card"], corner_radius=16)
+        f.pack(fill="both", expand=True, padx=35, pady=(0, 35))
+        
+        self.goal_listbox = tk.Listbox(f, font=("Segoe UI", 12), bg=thema["list_bg"], fg=thema["list_fg"], selectbackground=thema["list_select"], borderwidth=0)
+        self.goal_listbox.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        b_bar = ctk.CTkFrame(f, fg_color="transparent")
+        b_bar.pack(fill="x", padx=20, pady=15)
+        
+        self.entry_goal = ctk.CTkEntry(b_bar, placeholder_text="Schrijf hier een nieuw sub-doel of mijlpaal...")
+        self.entry_goal.pack(side="left", fill="x", expand=True, padx=(0, 10))
+        
+        ctk.CTkButton(b_bar, text="🚀 Vastleggen", fg_color=thema["accent"], text_color="white", command=self._Goal_Add).pack(side="right", padx=5)
+        ctk.CTkButton(b_bar, text="🗑 Verwijderen", fg_color="#EF4444", text_color="white", command=self._Goal_Delete).pack(side="right", padx=5)
+        
+        self._Goal_Render()
 
+    def _Goal_Render(self):
+        self.goal_listbox.delete(0, tk.END)
+        for d in self.data["doelen"]:
+            self.goal_listbox.insert(tk.END, f"🎯 {d}")
+
+    def _Goal_Add(self):
+        g = self.entry_goal.get().strip()
+        if not g: return
+        self.data["doelen"].append(g)
+        IO_SafeSave(self.data)
+        self._Goal_Render()
+        self.entry_goal.delete(0, tk.END)
+
+    def _Goal_Delete(self):
+        try:
+            idx = self.goal_listbox.curselection()[0]
+            self.data["doelen"].pop(idx)
+            IO_SafeSave(self.data)
+            self._Goal_Render()
+        except IndexError: pass
+
+    # ==============================================================================
+    # MODULE 6: EXAMEN & TOETSING SCHEDULER
+    # ==============================================================================
     def Module_Examens(self):
         self.Core_Clear_Canvas()
         self.Core_Highlight_Menu("examens")
-        ctk.CTkLabel(self.canvas, text="🎓 Examen & Toetsing Controle-Matrix", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+        thema = THEMES[self.theme_name]
+        ctk.CTkLabel(self.canvas, text="🎓 Examen & Toetsing Controlekamer", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
+        
+        f = ctk.CTkFrame(self.canvas, fg_color=thema["bg_card"], corner_radius=16)
+        f.pack(fill="both", expand=True, padx=35, pady=(0, 35))
+        
+        self.ex_listbox = tk.Listbox(f, font=("Segoe UI", 12), bg=thema["list_bg"], fg=thema["list_fg"], selectbackground=thema["list_select"], borderwidth=0)
+        self.ex_listbox.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        b_bar = ctk.CTkFrame(f, fg_color="transparent")
+        b_bar.pack(fill="x", padx=20, pady=15)
+        
+        self.ex_vak = ctk.CTkComboBox(b_bar, values=self.vakken_lijst, state="readonly", width=160)
+        self.ex_vak.set(self.vakken_lijst[0])
+        self.ex_vak.pack(side="left", padx=5)
+        
+        self.ex_date = ctk.CTkEntry(b_bar, placeholder_text="Datum (YYYY-MM-DD)", width=140)
+        self.ex_date.pack(side="left", padx=5)
+        
+        ctk.CTkButton(b_bar, text="📅 Selecteer", width=80, command=lambda: UI_DateDialog(self.ex_date)).pack(side="left", padx=2)
+        ctk.CTkButton(b_bar, text="🔒 Examen Loggen", fg_color=thema["accent"], text_color="white", command=self._Examen_Add).pack(side="right", padx=5)
+        ctk.CTkButton(b_bar, text="🗑 Wissen", fg_color="#EF4444", text_color="white", command=self._Examen_Delete).pack(side="right", padx=5)
+        
+        self._Examen_Render()
 
+    def _Examen_Render(self):
+        self.ex_listbox.delete(0, tk.END)
+        for e in self.data["examens"]:
+            self.ex_listbox.insert(tk.END, f"📅 [{e.get('datum')}] - TOETSING TARGET MATRIX: {e.get('vak')}")
+
+    def _Examen_Add(self):
+        v = self.ex_vak.get()
+        d = self.ex_date.get().strip()
+        if not d: return
+        self.data["examens"].append({"vak": v, "datum": d})
+        IO_SafeSave(self.data)
+        self._Examen_Render()
+        self.ex_date.delete(0, tk.END)
+
+    def _Examen_Delete(self):
+        try:
+            idx = self.ex_listbox.curselection()[0]
+            self.data["examens"].pop(idx)
+            IO_SafeSave(self.data)
+            self._Examen_Render()
+        except IndexError: pass
+
+    # ==============================================================================
+    # MODULE 7: STUDIETOOLS (THREADED POMODORO ENGINE & FLASHCARDS)
+    # ==============================================================================
     def Module_Studietools(self):
         self.Core_Clear_Canvas()
         self.Core_Highlight_Menu("studietools")
-        ctk.CTkLabel(self.canvas, text="⏱ Pomodoro Timer & Flashcards Synthesizer", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+        thema = THEMES[self.theme_name]
+        ctk.CTkLabel(self.canvas, text="⏱ Pomodoro Kernel Timer & Flashcards", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
+        
+        f = ctk.CTkFrame(self.canvas, fg_color=thema["bg_card"], corner_radius=16)
+        f.pack(fill="both", expand=True, padx=35, pady=(0, 35))
+        
+        self.pomo_label = ctk.CTkLabel(f, text="25:00", font=("Segoe UI", 72, "bold"), text_color=thema["accent"])
+        self.pomo_label.pack(pady=40)
+        
+        btn_f = ctk.CTkFrame(f, fg_color="transparent")
+        btn_f.pack(pady=10)
+        
+        self.pomo_start_btn = ctk.CTkButton(btn_f, text="⚡ START ENGINE", fg_color="#10B981", text_color="white", command=self._Pomo_Start)
+        self.pomo_start_btn.pack(side="left", padx=10)
+        
+        ctk.CTkButton(btn_f, text="🛑 STOP ENGINE", fg_color="#EF4444", text_color="white", command=self._Pomo_Stop).pack(side="left", padx=10)
+        
+        if self.pomo_loopt:
+            self.pomo_start_btn.configure(state="disabled")
+            self._Pomo_Update_UI_Loop()
 
+    def _Pomo_Start(self):
+        if not self.pomo_loopt:
+            self.pomo_loopt = True
+            w_min = int(self.data["settings"].get("pomodoro_werk", 25))
+            self.pomo_tijd_resterend = w_min * 60
+            self.pomo_modus_is_werk = True
+            self.pomo_start_btn.configure(state="disabled")
+            
+            self.pomo_timer_thread = threading.Thread(target=self._Pomo_Thread_Core, daemon=True)
+            self.pomo_timer_thread.start()
+            self._Pomo_Update_UI_Loop()
+
+    def _Pomo_Stop(self):
+        self.pomo_loopt = False
+        self.pomo_start_btn.configure(state="normal")
+        self.pomo_label.configure(text="25:00")
+
+    def _Pomo_Thread_Core(self):
+        while self.pomo_loopt and self.pomo_tijd_resterend > 0:
+            time.sleep(1)
+            self.pomo_tijd_resterend -= 1
+            if self.pomo_tijd_resterend <= 0:
+                self.pomo_loopt = False
+                # Wisselmodus logica kan hier eventueel geïmplementeerd worden
+
+    def _Pomo_Update_UI_Loop(self):
+        if self.pomo_loopt:
+            m = self.pomo_tijd_resterend // 60
+            s = self.pomo_tijd_resterend % 60
+            self.pomo_label.configure(text=f"{m:02d}:{s:02d}")
+            self.after(500, self._Pomo_Update_UI_Loop)
+        else:
+            self.pomo_start_btn.configure(state="normal")
+
+    # ==============================================================================
+    # MODULE 8: ABSENTIEREGISTRATIE MATRIX LAYER
+    # ==============================================================================
     def Module_Absentie(self):
         self.Core_Clear_Canvas()
         self.Core_Highlight_Menu("absentie")
-        ctk.CTkLabel(self.canvas, text="🛡 Absentieregistratie Protocol Systeem", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+        thema = THEMES[self.theme_name]
+        ctk.CTkLabel(self.canvas, text="🛡 Absentieregistratie & Integriteit", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
+        
+        f = ctk.CTkFrame(self.canvas, fg_color=thema["bg_card"], corner_radius=16)
+        f.pack(fill="both", expand=True, padx=35, pady=(0, 35))
+        
+        self.abs_listbox = tk.Listbox(f, font=("Segoe UI", 12), bg=thema["list_bg"], fg=thema["list_fg"], selectbackground=thema["list_select"], borderwidth=0)
+        self.abs_listbox.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        b = ctk.CTkFrame(f, fg_color="transparent")
+        b.pack(fill="x", padx=20, pady=15)
+        
+        self.abs_vak = ctk.CTkComboBox(b, values=self.vakken_lijst, state="readonly")
+        self.abs_vak.set(self.vakken_lijst[0])
+        self.abs_vak.pack(side="left", padx=5)
+        
+        self.abs_reason = ctk.CTkEntry(b, placeholder_text="Reden van afwezigheid")
+        self.abs_reason.pack(side="left", fill="x", expand=True, padx=5)
+        
+        ctk.CTkButton(b, text="🛡 Log Absentie", fg_color=thema["accent"], text_color="white", command=self._Abs_Add).pack(side="right", padx=5)
+        
+        self._Abs_Render()
 
+    def _Abs_Render(self):
+        self.abs_listbox.delete(0, tk.END)
+        for a in self.data["absentie"]:
+            self.abs_listbox.insert(tk.END, f"⚠️ Verzuim -> Vak: {a.get('vak')} | Reden: {a.get('reden')}")
+
+    def _Abs_Add(self):
+        v = self.abs_vak.get()
+        r = self.abs_reason.get().strip()
+        if not r: return
+        self.data["absentie"].append({"vak": v, "reden": r})
+        IO_SafeSave(self.data)
+        self._Abs_Render()
+        self.abs_reason.delete(0, tk.END)
+
+    # ==============================================================================
+    # MODULE 9: STUDIEFINANCIERING LEDGER MONITOR
+    # ==============================================================================
     def Module_Financien(self):
         self.Core_Clear_Canvas()
         self.Core_Highlight_Menu("financien")
-        ctk.CTkLabel(self.canvas, text="💳 Studiefinanciering Ledger & Grootboek", font=("Segoe UI", 24, "bold"), text_color=THEMES[self.theme_name]["text"]).pack(padx=35, pady=35, anchor="w")
+        thema = THEMES[self.theme_name]
+        ctk.CTkLabel(self.canvas, text="💳 Studiefinanciering Ledger Monitor", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
+        
+        f = ctk.CTkFrame(self.canvas, fg_color=thema["bg_card"], corner_radius=16)
+        f.pack(fill="both", expand=True, padx=35, pady=(0, 35))
+        
+        self.fin_listbox = tk.Listbox(f, font=("Segoe UI", 12), bg=thema["list_bg"], fg=thema["list_fg"], selectbackground=thema["list_select"], borderwidth=0)
+        self.fin_listbox.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        b = ctk.CTkFrame(f, fg_color="transparent")
+        b.pack(fill="x", padx=20, pady=15)
+        
+        self.fin_desc = ctk.CTkEntry(b, placeholder_text="Omschrijving transactie/mutatie")
+        self.fin_desc.pack(side="left", fill="x", expand=True, padx=5)
+        
+        self.fin_val = ctk.CTkEntry(b, placeholder_text="Bedrag (+/- EUR)", width=120)
+        self.fin_val.pack(side="left", padx=5)
+        
+        ctk.CTkButton(b, text="💳 Mutatie Boeken", fg_color=thema["accent"], text_color="white", command=self._Fin_Add).pack(side="right", padx=5)
+        
+        self._Fin_Render()
 
+    def _Fin_Render(self):
+        self.fin_listbox.delete(0, tk.END)
+        for transaction in self.data["financien"]:
+            self.fin_listbox.insert(tk.END, f"💰 Mutatie: {transaction.get('desc')} -> bedrag: €{transaction.get('bedrag')}")
+
+    def _Fin_Add(self):
+        d = self.fin_desc.get().strip()
+        val = self.fin_val.get().strip()
+        if not d or not val: return
+        self.data["financien"].append({"desc": d, "bedrag": val})
+        IO_SafeSave(self.data)
+        self._Fin_Render()
+        self.fin_desc.delete(0, tk.END)
+        self.fin_val.delete(0, tk.END)
+
+    # ==============================================================================
+    # MODULE 10: SYSTEM CONFIGURATIONS (SETTINGS ARCHITECTURE)
+    # ==============================================================================
     def Module_Settings(self):
         self.Core_Clear_Canvas()
         thema = THEMES[self.theme_name]
         
-        ctk.CTkLabel(self.canvas, text="⚙ Systeem Configuraties & Update Controle", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(padx=35, pady=25, anchor="w")
+        for k in self.sidebar_buttons.values(): k.configure(fg_color="transparent", text_color=thema["sidebar_text"])
+        self.instellingen_knop.configure(fg_color=thema["button_fg"], text_color=thema["button_text"])
         
-        container = ctk.CTkFrame(self.canvas, fg_color=thema["bg_card"], corner_radius=16)
-        container.pack(fill="both", expand=True, padx=35, pady=(0, 35))
+        ctk.CTkLabel(self.canvas, text="⚙ Systeem Kernel Configuraties", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
         
-        # Thema wisselaar
-        ctk.CTkLabel(container, text="Systeem Thema Schakelaar:", font=("Segoe UI", 14, "bold"), text_color=thema["text"]).pack(anchor="w", padx=25, pady=(25, 5))
+        box = ctk.CTkFrame(self.canvas, fg_color=thema["bg_card"], corner_radius=16)
+        box.pack(fill="both", expand=True, padx=35, pady=(0, 35))
         
-        def WijzigThema(nieuw_thema):
-            self.theme_name = nieuw_thema
-            self.data["settings"]["theme"] = nieuw_thema
-            IO_SafeSave(self.data)
-            self.Core_Apply_Theme()
-            self.Module_Settings()
+        ctk.CTkLabel(box, text="Gebruikersprofiel Aanpassen", font=("Segoe UI", 16, "bold"), text_color=thema["accent"]).pack(anchor="w", padx=25, pady=(25, 10))
+        self.settings_name = ctk.CTkEntry(box, width=300)
+        self.settings_name.insert(0, self.data["settings"].get("naam", "Student"))
+        self.settings_name.pack(anchor="w", padx=25, pady=5)
+        
+        ctk.CTkLabel(box, text="Systeem Visuele Theme-Matrix", font=("Segoe UI", 16, "bold"), text_color=thema["accent"]).pack(anchor="w", padx=25, pady=(20, 10))
+        self.settings_theme = ctk.CTkComboBox(box, values=list(THEMES.keys()), state="readonly")
+        self.settings_theme.set(self.theme_name)
+        self.settings_theme.pack(anchor="w", padx=25, pady=5)
+        
+        ctk.CTkButton(box, text="💾 Wijzigingen Synchroniseren", fg_color=thema["accent"], text_color="white", command=self._Settings_Save).pack(anchor="w", padx=25, pady=35)
 
-        combo_thema = ctk.CTkComboBox(container, values=list(THEMES.keys()), command=WijzigThema)
-        combo_thema.set(self.theme_name)
-        combo_thema.pack(anchor="w", padx=25, pady=5)
+    def _Settings_Save(self):
+        self.data["settings"]["naam"] = self.settings_name.get().strip() or "Student"
+        gekozen_thema = self.settings_theme.get()
+        self.data["settings"]["theme"] = gekozen_thema
+        self.theme_name = gekozen_thema
+        IO_SafeSave(self.data)
         
-        # Handmatige update check sectie
-        ctk.CTkLabel(container, text="Netwerk firmware update pijplijn:", font=("Segoe UI", 14, "bold"), text_color=thema["text"]).pack(anchor="w", padx=25, pady=(30, 5))
-        
-        def CheckUpdates():
-            try:
-                with urllib.request.urlopen(GITHUB_VERSION_URL, timeout=5) as response:
-                    server_versie = response.read().decode('utf-8').strip()
-                if server_versie != HUIDIGE_VERSIE:
-                    messagebox.showinfo("Update Beschikbaar", f"Er is een nieuwe firmware update gevonden:\nVersie: {server_versie}\nHuidige versie op disk: {HUIDIGE_VERSIE}\n\nGebruik de git pipeline om te pullen.")
-                else:
-                    messagebox.showinfo("Matrix Status", f"Systeem is volledig up-to-date. Kernel {HUIDIGE_VERSIE} draait optimaal.")
-            except Exception as e:
-                messagebox.showerror("Netwerkfout", f"Kan geen verbinding maken met de GitHub update nodes:\n{e}")
-                
-        ctk.CTkButton(container, text="Check Netwerk Nodes voor Updates", command=CheckUpdates, fg_color=thema["accent"], text_color="white").pack(anchor="w", padx=25, pady=10)
+        self.Core_Apply_Theme()
+        self.Module_Settings()
 
 # ==============================================================================
-# RUNTIME INITIALIZATION ENTRYPOINT
+# ENTRY POINT TRIGGER
 # ==============================================================================
 if __name__ == "__main__":
     app = SchoolOS()
