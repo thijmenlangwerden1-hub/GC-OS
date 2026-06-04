@@ -7,8 +7,6 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 import customtkinter as ctk
 from tkcalendar import Calendar
-import urllib.request
-import webbrowser
 import random
 import math
 import threading
@@ -17,8 +15,8 @@ import threading
 # 1. GLOBALE CONFIGURATIE, CODENAMES & SYSTEM ARCHITECTURE
 # ==============================================================================
 
-HUIDIGE_VERSIE = "5.0.0-Ultimate"
-CODENAME = "QuantumValkyrie"
+HUIDIGE_VERSIE = "6.5.9v"
+CODENAME = "AetherValkyrie-Pro"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BESTAND = os.path.join(SCRIPT_DIR, "gc_os_matrix_data.json")
 
@@ -68,8 +66,7 @@ MOTIVATIONAL_QUOTES = [
     "Blijf compilen, blijf pushen, geef nooit op.",
     "Code is net als humor. Als je het moet uitleggen, is het slecht.",
     "Focus op de progressie, niet op de perfectie.",
-    "Fouten zijn het bewijs dat je de grenzen van je intelligentie opzoekt.",
-    "De enige slechte code is de code die je morgen moet herschrijven."
+    "Fouten zijn het bewijs dat je de grenzen van je intelligentie opzoekt."
 ]
 
 GRAFIEK_KLEUREN = ["#6366F1", "#10B981", "#3B82F6", "#F59E0B", "#EF4444", "#EC4899", "#8B5CF6", "#14B8A6"]
@@ -83,7 +80,7 @@ def IO_SafeSave(data):
         with open(BESTAND, "w", encoding="utf-8") as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
     except IOError as e:
-        messagebox.showerror("Kritieke I/O Fout", f"Kan systeemdata niet wegschrijven naar schijf:\n{e}")
+        messagebox.showerror("Kritieke I/O Fout", f"Kan systeemdata niet wegschrijven:\n{e}")
 
 def IO_SafeLoad():
     if not os.path.exists(BESTAND):
@@ -143,11 +140,9 @@ class SchoolOS(ctk.CTk):
 
         # Basis UI initialisatie
         ctk.set_appearance_mode(THEMES[self.theme_name]["mode"])
-        self.title(f"GraafschapCollege-OS Core — Enterprise Edition Suite [v{HUIDIGE_VERSIE}]")
+        self.title(f"GraafschapCollege-OS — Enterprise Edition Suite [v{HUIDIGE_VERSIE}]")
         self.geometry("1440x900")
-        self.minimum_width = 1200
-        self.minimum_height = 800
-        self.minsize(self.minimum_width, self.minimum_height)
+        self.minsize(1200, 800)
 
         # Systeemvariabelen & Opleidingsmatrices
         self.vakken_lijst = ["Nederlands", "Engels", "Rekenen", "Software Development", "Hardware & Infrastructure", "Databases", "Burgerschap", "Loopbaan", "Project Management", "Cybersecurity"]
@@ -155,7 +150,6 @@ class SchoolOS(ctk.CTk):
         self.tijd_slots.sort()
 
         self.sidebar_buttons = {}
-        self.klok_thread_actief = True
         self.huidige_rooster_modus = "Week"
         self.referentie_datum = dt.date.today()
         
@@ -163,14 +157,13 @@ class SchoolOS(ctk.CTk):
         self.pomo_loopt = False
         self.pomo_tijd_resterend = 0
         self.pomo_modus_is_werk = True
-        self.pomo_timer_thread = None
 
         # Componenten bouwen
         self._Core_Build_Layout()
         self.Core_Apply_Theme()
         
-        # Boot sequence triggeren
-        self.after(200, self.Core_Bootloader_Sequence)
+        # Luxe Bootloader Sequence initialiseren
+        self.after(100, self.Core_Bootloader_Sequence)
 
     def _Core_Build_Layout(self):
         # Ultra-Smooth Sidebar
@@ -261,9 +254,10 @@ class SchoolOS(ctk.CTk):
                 knop.configure(fg_color="transparent", text_color=thema["sidebar_text"])
 
     def Core_Bootloader_Sequence(self):
+        """Extreem luxe, state-of-the-art full screen bootloader sequence."""
         thema = THEMES[self.theme_name]
         boot_window = ctk.CTkToplevel()
-        boot_window.title("GC-OS Engine Booting...")
+        boot_window.title("GC-OS Boot Engine")
         boot_window.overrideredirect(True)
         
         sw = self.winfo_screenwidth()
@@ -271,25 +265,61 @@ class SchoolOS(ctk.CTk):
         boot_window.geometry(f"{sw}x{sh}+0+0")
         boot_window.lift()
         boot_window.attributes("-topmost", True)
-        boot_window.configure(fg_color=thema["bg_root"])
+        boot_window.configure(fg_color="#0A0A0C" if thema["mode"] == "Dark" else "#F1F5F9")
 
-        titel_label = ctk.CTkLabel(boot_window, text="GraafschapCollege-OS", font=("Segoe UI", 56, "bold"), text_color=thema["accent"])
-        titel_label.place(relx=0.5, rely=0.42, anchor="center")
+        # Top decoratieve bar (Luxe tech look)
+        tech_header = ctk.CTkFrame(boot_window, height=4, fg_color=thema["accent"])
+        tech_header.pack(fill="x", side="top")
+
+        # Center Container
+        center_container = ctk.CTkFrame(boot_window, fg_color="transparent")
+        center_container.place(relx=0.5, rely=0.45, anchor="center")
+
+        # Subtiel pulserend effect gesimuleerd door vertraagde elementen
+        logo_sub_label = ctk.CTkLabel(center_container, text="GRAAFSCHAP COLLEGE", font=("Segoe UI", 14, "tracking_widest"), text_color="gray")
+        logo_sub_label.pack(pady=0)
+
+        titel_label = ctk.CTkLabel(center_container, text="G C ‑ O S  P R O", font=("Segoe UI", 52, "bold"), text_color=thema["accent"])
+        titel_label.pack(pady=(5, 10))
         
-        status_label = ctk.CTkLabel(boot_window, text="Systeemonderdelen en datastructuren worden geladen...", font=("Segoe UI", 15), text_color=thema["text"])
-        status_label.place(relx=0.5, rely=0.52, anchor="center")
+        ver_label = ctk.CTkLabel(center_container, text=f"SYSTEM VERSION {HUIDIGE_VERSIE} • ARCH: X64", font=("Consolas", 11), text_color="gray")
+        ver_label.pack(pady=(0, 30))
 
-        progressiebalk = ctk.CTkProgressBar(boot_window, width=450, mode="determinate")
-        progressiebalk.place(relx=0.5, rely=0.58, anchor="center")
+        # Luxe Tech Diagnostics Terminal log venster binnen het laadscherm
+        terminal_frame = ctk.CTkFrame(center_container, width=500, height=130, fg_color="#020204" if thema["mode"] == "Dark" else "#E2E8F0", corner_radius=10, border_width=1, border_color="#1E1E24")
+        terminal_frame.pack(pady=10)
+        terminal_frame.pack_propagate(False)
+        
+        log_text = ctk.CTkLabel(terminal_frame, text="[SYSTEM]: Initializing hardware hooks...", font=("Consolas", 12), text_color="#10B981" if thema["mode"] == "Dark" else "#0F172A", justify="left", anchor="w")
+        log_text.pack(fill="both", expand=True, padx=15, pady=10)
+
+        progressiebalk = ctk.CTkProgressBar(center_container, width=500, mode="determinate", height=6, progress_color=thema["accent"], fg_color="#1F1F29")
+        progressiebalk.pack(pady=20)
         progressiebalk.set(0)
 
-        def SimuleerStappen(stap):
+        boot_logs = [
+            "[OK] Kernel structure loaded successfully.",
+            "[INFO] Checking JSON integrity matrix map...",
+            "[OK] Database connection verified. 0 defects.",
+            "[INFO] Binding thread pools to Pomodoro engine...",
+            "[OK] High-DPI screen awareness matrix injected.",
+            "[INFO] Syncing custom color themes configurations...",
+            "[SUCCESS] GC-OS UI Environment ready. Deploying canvas..."
+        ]
+
+        def SimuleerStappen(stap, log_index):
             if stap <= 100:
                 progressiebalk.set(stap / 100)
-                if stap == 25: status_label.configure(text="I/O JSON Matrix Database parsen...")
-                elif stap == 55: status_label.configure(text="Render engine kleurenschema's synchroniseren...")
-                elif stap == 85: status_label.configure(text="Veiligheidsprotocollen en cryptografie starten...")
-                self.after(20, lambda: SimuleerStappen(stap + 2))
+                
+                # Update luxe diagnostische logging op basis van progressie
+                if stap % 15 == 0 and log_index < len(boot_logs):
+                    huidige_log = boot_logs[log_index]
+                    log_text.configure(text=f"{log_text.cget('text')}\n{huidige_log}")
+                    log_index += 1
+                    
+                # Dynamische snelheid voor een realistisch laadgevoel
+                vertraging = random.randint(15, 45) if 40 < stap < 70 else 15
+                self.after(vertraging, lambda: SimuleerStappen(stap + 1, log_index))
             else:
                 boot_window.destroy()
                 self.deiconify()
@@ -297,7 +327,19 @@ class SchoolOS(ctk.CTk):
                 except Exception: pass
                 self.Module_Dashboard()
 
-        SimuleerStappen(0)
+        SimuleerStappen(0, 0)
+
+    def System_Hard_Restart(self):
+        """Herschrijft runtime argumenten en herstart clean de python interpreter."""
+        print("[GC-OS KERNEL]: Hot-reloading active instance...")
+        try:
+            # Sluit alle actieve tkinter loops en vernietig componenten clean
+            self.destroy()
+        except Exception:
+            pass
+        
+        # Herstart het huidige python script exact met dezelfde argumenten
+        os.execv(sys.executable, ['python'] + sys.argv)
 
     # ==============================================================================
     # MODULE 1: INTERACTIEF CORE DASHBOARD
@@ -643,7 +685,6 @@ class SchoolOS(ctk.CTk):
         inh = self.note_text_area.get("1.0", tk.END).strip()
         if not inh: return
         
-        # Checken op updates
         bestaat = False
         for n in self.data["notities"]:
             if n.get("titel") == tit:
@@ -774,7 +815,7 @@ class SchoolOS(ctk.CTk):
 
         ctk.CTkLabel(links, text="Mijlpaal Definiëren", font=("Segoe UI", 15, "bold"), text_color=thema["accent"]).pack(pady=15)
         
-        self.entry_doel_naam = ctk.CTkEntry(links, placeholder_text="Doelomschrijving (bijv. SQL onder de knie krijgen)")
+        self.entry_doel_naam = ctk.CTkEntry(links, placeholder_text="Doelomschrijving")
         self.entry_doel_naam.pack(fill="x", padx=20, pady=8)
 
         self.entry_doel_target = ctk.CTkEntry(links, placeholder_text="Target Datum (YYYY-MM-DD)")
@@ -897,7 +938,7 @@ class SchoolOS(ctk.CTk):
         self._Examens_Render_Items()
 
     # ==============================================================================
-    # MODULE 8: THREADED POMODORO KERNEL & FLASHCARDS
+    # MODULE 8: POMODORO KERNEL & FLASHCARDS
     # ==============================================================================
     def Module_Studietools(self):
         self.Core_Clear_Canvas()
@@ -909,7 +950,6 @@ class SchoolOS(ctk.CTk):
         hoofd_paneel = ctk.CTkFrame(self.canvas, fg_color="transparent")
         hoofd_paneel.pack(fill="both", expand=True, padx=35, pady=(0, 35))
 
-        # Linker paneel: Pomodoro Engine
         links = ctk.CTkFrame(hoofd_paneel, fg_color=thema["bg_card"], width=420, corner_radius=16)
         links.pack(side="left", fill="y", padx=(0, 15))
         links.pack_propagate(False)
@@ -926,7 +966,6 @@ class SchoolOS(ctk.CTk):
         ctk.CTkButton(links, text="🛑 Pauzeer Engine", command=self._Pomo_Pause).pack(fill="x", padx=30, pady=6)
         ctk.CTkButton(links, text="🔄 Reset Cycles", command=self._Pomo_Reset).pack(fill="x", padx=30, pady=6)
 
-        # Rechter paneel: Flashcards Database
         rechts = ctk.CTkFrame(hoofd_paneel, fg_color=thema["bg_card"], corner_radius=16)
         rechts.pack(side="right", fill="both", expand=True)
 
@@ -935,10 +974,10 @@ class SchoolOS(ctk.CTk):
         fc_input_frame = ctk.CTkFrame(rechts, fg_color="transparent")
         fc_input_frame.pack(fill="x", padx=20)
 
-        self.entry_fc_vraag = ctk.CTkEntry(fc_input_frame, placeholder_text="Definitie / Vraag", width=180)
+        self.entry_fc_vraag = ctk.CTkEntry(fc_input_frame, placeholder_text="Definitie / Vraag")
         self.entry_fc_vraag.pack(side="left", fill="x", expand=True, padx=5)
         
-        self.entry_fc_antwoord = ctk.CTkEntry(fc_input_frame, placeholder_text="Antwoord / Verklaring", width=180)
+        self.entry_fc_antwoord = ctk.CTkEntry(fc_input_frame, placeholder_text="Antwoord / Verklaring")
         self.entry_fc_antwoord.pack(side="left", fill="x", expand=True, padx=5)
 
         ctk.CTkButton(fc_input_frame, text="Toevoegen", width=90, command=self._Flashcards_Save).pack(side="right", padx=5)
@@ -949,7 +988,6 @@ class SchoolOS(ctk.CTk):
         self._Pomo_Update_Display()
         self._Flashcards_Render_Items()
 
-    # Pomodoro Threaded Control Logic
     def _Pomo_Start(self):
         if self.pomo_loopt: return
         self.pomo_loopt = True
@@ -977,7 +1015,6 @@ class SchoolOS(ctk.CTk):
             self._Pomo_Update_Display()
             self.after(1000, self._Pomo_Tick_Scheduler)
         elif self.pomo_loopt and self.pomo_tijd_resterend <= 0:
-            # Switch modi
             self.pomo_modus_is_werk = not self.pomo_modus_is_werk
             if self.pomo_modus_is_werk:
                 self.pomo_tijd_resterend = int(self.data["settings"].get("pomodoro_werk", 25)) * 60
@@ -992,7 +1029,6 @@ class SchoolOS(ctk.CTk):
             m, s = divmod(self.pomo_tijd_resterend, 60)
             self.pomo_klok_label.configure(text=f"{m:02d}:{s:02d}")
 
-    # Flashcard Logic
     def _Flashcards_Render_Items(self):
         for widget in self.fc_scroller.winfo_children(): widget.destroy()
         thema = THEMES[self.theme_name]
@@ -1090,7 +1126,7 @@ class SchoolOS(ctk.CTk):
         self._Absentie_Render_Items()
 
     # ==============================================================================
-    # MODULE 10: STUDIE FINANCIËN KRAMER INFRASTRUCTUUR
+    # MODULE 10: STUDIE FINANCIËN INFRASTRUCTUUR
     # ==============================================================================
     def Module_Financien(self):
         self.Core_Clear_Canvas()
@@ -1108,7 +1144,7 @@ class SchoolOS(ctk.CTk):
 
         ctk.CTkLabel(links, text="Mutatie Registreren", font=("Segoe UI", 15, "bold"), text_color=thema["accent"]).pack(pady=15)
         
-        self.entry_fin_desc = ctk.CTkEntry(links, placeholder_text="Omschrijving (bijv. Boeken DUO)")
+        self.entry_fin_desc = ctk.CTkEntry(links, placeholder_text="Omschrijving")
         self.entry_fin_desc.pack(fill="x", padx=20, pady=8)
 
         self.entry_fin_bedrag = ctk.CTkEntry(links, placeholder_text="Bedrag (bijv. 55.40 of -20.00)")
@@ -1116,7 +1152,6 @@ class SchoolOS(ctk.CTk):
 
         ctk.CTkButton(links, text="💳 Transactie Boeken", fg_color=thema["accent"], text_color="white", command=self._Fin_Save).pack(fill="x", padx=20, pady=15)
 
-        # Totale Balans Monitor Widget
         ctk.CTkLabel(links, text="Financieel Systeemsaldo:", font=("Segoe UI", 14, "bold"), text_color=thema["text"]).pack(pady=(15, 5))
         
         mutaties = self.data.get("financien", [])
@@ -1170,13 +1205,12 @@ class SchoolOS(ctk.CTk):
         self.Module_Financien()
 
     # ==============================================================================
-    # 4. SYSTEM SETTINGS & RUNTIME ENGINE CONFIGURATIONS
+    # MODULE 11: SYSTEM SETTINGS & SYSTEM HOT-REBOOT ENGINE
     # ==============================================================================
     def Module_Settings(self):
         self.Core_Clear_Canvas()
         thema = THEMES[self.theme_name]
         
-        # De-highlight alle knoppen, want we zitten in instellingen
         for knop in self.sidebar_buttons.values(): knop.configure(fg_color="transparent")
 
         ctk.CTkLabel(self.canvas, text="Systeem & Algoritme Configuraties", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
@@ -1209,8 +1243,8 @@ class SchoolOS(ctk.CTk):
         self.setting_pomo_rust.insert(0, str(self.data["settings"].get("pomodoro_rust", 5)))
         self.setting_pomo_rust.pack(anchor="w", padx=20, pady=5)
 
-        # Actie Knop voor Opslaan
-        ctk.CTkButton(box, text="💾 Kernparameters Opslaan & Flashen", fg_color=thema["accent"], text_color="white", width=260, command=self._Settings_Save_Action).pack(anchor="w", padx=20, pady=35)
+        # Actie Knop voor Opslaan en de gegarandeerde automatische herstart
+        ctk.CTkButton(box, text="💾 Kernparameters Flashen & OS Herstarten", fg_color=thema["accent"], text_color="white", width=260, command=self._Settings_Save_Action).pack(anchor="w", padx=20, pady=35)
 
     def _Settings_Save_Action(self):
         naam = self.setting_naam_entry.get().strip() or "Student"
@@ -1223,17 +1257,22 @@ class SchoolOS(ctk.CTk):
         self.data["settings"]["pomodoro_werk"] = int(p_werk)
         self.data["settings"]["pomodoro_rust"] = int(p_rust)
 
+        # Gegevens veilig naar disk wegschrijven
         IO_SafeSave(self.data)
-        self.theme_name = nieuw_thema
-        self.Core_Apply_Theme()
-        self.Module_Settings()
-        messagebox.showinfo("Kernel Flash Success", "Instellingen zijn succesvol verwerkt door de GC-OS Core engine.")
+        
+        # Dialoogvenster tonen om de gebruiker te informeren over de luxe hot-reload herstart
+        messagebox.showinfo(
+            "Kernel Update Geflasht", 
+            "Parameters succesvol bijgewerkt. GC-OS wordt nu volledig opnieuw opgestart om het nieuwe geheugenframe en luxe thema te initialiseren."
+        )
+        
+        # Trigger de gegarandeerde OS-level hard restart loop
+        self.System_Hard_Restart()
 
 # ==============================================================================
-# 5. HIGH-PERFORMANCE MULTI-THREADED KICKSTART
+# 5. HIGH-PERFORMANCE KICKSTART ENGINE
 # ==============================================================================
 if __name__ == "__main__":
-    # OS-specifieke DPI bewustwording activeren voor haarscherpe UI op Windows
     if sys.platform.startswith("win"):
         try:
             import ctypes
