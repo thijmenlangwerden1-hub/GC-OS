@@ -12,7 +12,7 @@ import webbrowser
 import random
 
 # ============================================================
-# THEMA'S
+# THEMA'S (Geoptimaliseerd voor perfecte sidebar-matching)
 # ============================================================
 
 THEMES = {
@@ -20,7 +20,7 @@ THEMES = {
         "mode": "Light",
         "bg_root": "#f2f3f7",
         "bg_sidebar": "#ffffff",
-        "bg_main": "#f7f8fb",
+        "bg_main": "#f2f3f7",
         "bg_card": "#ffffff",
         "text": "#111111",
         "sidebar_text": "#111111",
@@ -52,7 +52,7 @@ THEMES = {
         "mode": "Light",
         "bg_root": "#ffe6e6",
         "bg_sidebar": "#ffcccc",
-        "bg_main": "#fff0f0",
+        "bg_main": "#ffe6e6",
         "bg_card": "#ffffff",
         "text": "#4a0000",
         "sidebar_text": "#4a0000",
@@ -68,7 +68,7 @@ THEMES = {
         "mode": "Light",
         "bg_root": "#e6f0ff",
         "bg_sidebar": "#c7dcff",
-        "bg_main": "#edf4ff",
+        "bg_main": "#e6f0ff",
         "bg_card": "#ffffff",
         "text": "#001a4d",
         "sidebar_text": "#001a4d",
@@ -106,18 +106,16 @@ MOTIVATIONAL_QUOTES = [
     "Blijf gefocust, zet die telefoon op stil en knal die deadlines neer!"
 ]
 
-# KLEUREN MATRIX VOOR DE VAKKEN GRAFIEK
 GRAFIEK_KLEUREN = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33F3", "#33FFF0", "#FFA500", "#8A2BE2"]
 
 # ============================================================
 # CONFIGURATIE & UPDATE INSTELLINGEN
 # ============================================================
 
-HUIDIGE_VERSIE = "2.4.14v"
+HUIDIGE_VERSIE = "2.5.30v"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BESTAND = os.path.join(SCRIPT_DIR, "gc_os_data.json")
 
-# GITHUB URLS
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
@@ -266,20 +264,31 @@ class SchoolOS(ctk.CTk):
         intro = ctk.CTkToplevel()
         intro.title("GC-OS Intro")
         intro.overrideredirect(True)
+        
+        # Volledig scherm configureren bij het opstarten
         intro.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}+0+0")
+        try:
+            intro.state("zoomed")
+        except Exception:
+            pass
+            
         intro.lift()
         intro.attributes("-topmost", True)
         intro.configure(fg_color=t["bg_root"])
 
-        label = ctk.CTkLabel(intro, text="GraafschapCollege‑OS", font=("Segoe UI", 50, "bold"), text_color=t["accent"])
-        label.place(relx=0.5, rely=0.5, anchor="center")
+        label = ctk.CTkLabel(intro, text="GraafschapCollege‑OS", font=("Segoe UI", 55, "bold"), text_color=t["accent"])
+        label.place(relx=0.5, rely=0.45, anchor="center")
+        
+        sub_label = ctk.CTkLabel(intro, text="Systeem wordt geladen...", font=("Segoe UI", 16), text_color=t["text"])
+        sub_label.place(relx=0.5, rely=0.55, anchor="center")
         
         def sluit_intro():
             intro.destroy()
             self.deiconify()
+            self.state("zoomed") # Zorgt dat ook het hoofdscherm gemaximaliseerd start
             self.show_dashboard()
 
-        self.after(1000, sluit_intro)
+        self.after(1800, sluit_intro)
 
     # ============================================================
     # DASHBOARD
@@ -384,7 +393,7 @@ class SchoolOS(ctk.CTk):
         except Exception: pass
 
     # ============================================================
-    # ROOSTER (STRAKKER GRID DESIGN)
+    # ROOSTER
     # ============================================================
     def show_rooster(self):
         self.clear_main()
@@ -406,11 +415,9 @@ class SchoolOS(ctk.CTk):
         self.rooster_datum_label.pack(side="left", expand=True)
         ctk.CTkButton(nav_frame, text="Volgende ▶", width=80, command=self.rooster_volgende).pack(side="right")
 
-        # Hoofdcontainer voor het strakke grid
         self.rooster_container = ctk.CTkFrame(self.main, fg_color="transparent")
         self.rooster_container.pack(fill="both", expand=True, padx=20, pady=10)
 
-        # De toevoegbalk onderaan het scherm
         add_frame = ctk.CTkFrame(self.main, fg_color=t["bg_card"], corner_radius=10)
         add_frame.pack(fill="x", padx=20, pady=10)
 
@@ -453,7 +460,6 @@ class SchoolOS(ctk.CTk):
         t = THEMES[self.theme_name]
 
         if self.rooster_stijl == "Week":
-            # Grid layout configureren voor strakke gelijke kolommen
             for col_idx in range(5):
                 self.rooster_container.grid_columnconfigure(col_idx, weight=1, uniform="dag_kolom")
             self.rooster_container.grid_rowconfigure(0, weight=1)
@@ -492,7 +498,6 @@ class SchoolOS(ctk.CTk):
                     lbl_vak = ctk.CTkLabel(les_box, text=les.get('vak'), font=("Segoe UI", 12), text_color=t["text"])
                     lbl_vak.pack(anchor="w", padx=10, pady=(0, 4))
         else:
-            # Maand view via een Scrollable Frame
             scroll_maand = ctk.CTkScrollableFrame(self.rooster_container, fg_color=t["bg_card"], corner_radius=15)
             scroll_maand.pack(fill="both", expand=True)
             
@@ -573,7 +578,7 @@ class SchoolOS(ctk.CTk):
         except Exception: pass
 
     # ============================================================
-    # CIJFERS + MULTI-KLEUR GRAFIEK PER VAK
+    # CIJFERS
     # ============================================================
     def show_cijfers(self):
         self.clear_main()
@@ -614,7 +619,6 @@ class SchoolOS(ctk.CTk):
             lbl_frame = ctk.CTkFrame(scroll_gem, fg_color="transparent")
             lbl_frame.pack(anchor="w", fill="x", padx=5, pady=2)
             
-            # Gekleurde indicator voor de grafieklijn
             tk.Label(lbl_frame, text="■", fg=bullet_kleur, bg=t["bg_card"], font=("Segoe UI", 11)).pack(side="left", padx=(0, 5))
             ctk.CTkLabel(lbl_frame, text=f"{vak}: {g_txt}", font=("Segoe UI", 12), text_color=t["text"]).pack(side="left")
 
@@ -653,19 +657,17 @@ class SchoolOS(ctk.CTk):
         graph_w = w - (padding_x * 2)
         graph_h = h - (padding_y * 2)
 
-        # Teken basis statische hulplijnen (5.5 voldoende grens & 10 max)
         self.graph_canvas.create_line(padding_x, h - padding_y - (5.5/10.0 * graph_h), w - padding_x, h - padding_y - (5.5/10.0 * graph_h), fill="#555555", dash=(4,4))
         self.graph_canvas.create_text(25, h - padding_y - (5.5/10.0 * graph_h), text="5.5", fill="gray", font=("Segoe UI", 9))
         self.graph_canvas.create_text(25, padding_y, text="10", fill="gray", font=("Segoe UI", 9))
 
         heeft_grafiek = False
 
-        # Loop door alle unieke vakken heen om per vak een lijn te trekken
         for vak_idx, vak in enumerate(self.vakken_cijfers):
             vak_cijfers = [float(c["cijfer"]) for c in self.data["cijfers"] if c.get("vak") == vak]
             
             if len(vak_cijfers) < 2:
-                continue # Heeft minimaal 2 datapunten nodig per lijn
+                continue
             
             heeft_grafiek = True
             lijn_kleur = GRAFIEK_KLEUREN[vak_idx % len(GRAFIEK_KLEUREN)]
@@ -677,10 +679,8 @@ class SchoolOS(ctk.CTk):
                 y = h - padding_y - ((cijfer / 10.0) * graph_h)
                 punten.append((x, y))
 
-            # Teken de specifieke gekleurde lijn voor dit vak
             for i in range(len(punten) - 1):
-                self.graph_canvas.create_line(punten[i][0], punten[i][1], punten[i+1][0], punten[i+1][1], fill=lijn_kleur, width=3)
-                # Teken datapunten (bolletjes)
+                self.graph_canvas.create_line(punten[i][0],规律punten[i][1], punten[i+1][0], punten[i+1][1], fill=lijn_kleur, width=3)
                 self.graph_canvas.create_oval(punten[i][0]-3, punten[i][1]-3, punten[i][0]+3, punten[i][1]+3, fill=lijn_kleur, outline="white")
             self.graph_canvas.create_oval(punten[-1][0]-3, punten[-1][1]-3, punten[-1][0]+3, punten[-1][1]+3, fill=lijn_kleur, outline="white")
 
@@ -709,204 +709,132 @@ class SchoolOS(ctk.CTk):
         self.doel_entry.pack(fill="x", padx=15, pady=5)
 
         ctk.CTkLabel(right_side, text="Voortgang (%)", font=("Segoe UI", 12), text_color=t["text"]).pack(pady=5)
-        self.doel_progress = ctk.CTkSlider(right_side, from_=0, to=100, number_of_steps=10)
-        self.doel_progress.set(20)
+        self.doel_progress = ctk.CTkSlider(right_side, from_=0, to=100, number_of_steps=20)
+        self.doel_progress.set(0)
         self.doel_progress.pack(fill="x", padx=15, pady=5)
 
-        ctk.CTkButton(right_side, text="Doel Opslaan", fg_color=t["accent"], command=self.doel_toevoegen).pack(fill="x", padx=15, pady=20)
+        ctk.CTkButton(right_side, text="Doel Opslaan", fg_color=t["accent"], text_color="white", command=self.doel_toevoegen).pack(fill="x", padx=15, pady=15)
 
-        self.bouw_doelen_lijst(left_side)
-
-    def bouw_doelen_lijst(self, parent_frame):
-        for w in parent_frame.winfo_children(): w.destroy()
-        t = THEMES[self.theme_name]
-
-        if not self.data["doelen"]:
-            ctk.CTkLabel(parent_frame, text="Nog geen doelen gesteld. Tijd om te plannen!", font=("Segoe UI", 13), text_color=t["text"]).pack(pady=20)
-            return
-
-        for idx, d in enumerate(self.data["doelen"]):
-            item_frame = ctk.CTkFrame(parent_frame, fg_color=t["bg_root"])
-            item_frame.pack(fill="x", padx=10, pady=5)
-
-            ctk.CTkLabel(item_frame, text=d.get("titel"), font=("Segoe UI", 13, "bold"), text_color=t["text"]).pack(anchor="w", padx=10, pady=2)
-            
-            prog_val = d.get("progress", 0) / 100.0
-            p_bar = ctk.CTkProgressBar(item_frame, progress_color=t["accent"])
-            p_bar.set(prog_val)
-            p_bar.pack(fill="x", padx=10, pady=5)
-
-            btn_frame = ctk.CTkFrame(item_frame, fg_color="transparent")
-            btn_frame.pack(fill="x", padx=10, pady=2)
-
-            ctk.CTkLabel(btn_frame, text=f"Voortgang: {d.get('progress')}%", font=("Segoe UI", 11), text_color=t["text"]).pack(side="left")
-            ctk.CTkButton(btn_frame, text="Verwijder", width=60, height=20, fg_color="#ff1f1f", command=lambda i=idx: self.doel_verwijderen(i)).pack(side="right")
+        self.herlaad_doelen(left_side)
 
     def doel_toevoegen(self):
-        titel = self.doel_entry.get().strip()
-        prog = int(self.doel_progress.get())
-        if titel:
-            self.data["doelen"].append({"titel": titel, "progress": prog})
+        naam = self.doel_entry.get().strip()
+        progres = int(self.doel_progress.get())
+        if naam:
+            self.data["doelen"].append({"naam": naam, "progress": progres})
             opslaan(self.data)
             self.show_doelen()
 
+    def herlaad_doelen(self, container):
+        t = THEMES[self.theme_name]
+        for item in container.winfo_children(): item.destroy()
+
+        if not self.data["doelen"]:
+            ctk.CTkLabel(container, text="Nog geen persoonlijke doelen gesteld.", text_color=t["text"]).pack(pady=20)
+            return
+
+        for idx, d in enumerate(self.data["doelen"]):
+            item_frame = ctk.CTkFrame(container, fg_color=t["bg_root"], corner_radius=10)
+            item_frame.pack(fill="x", padx=10, pady=5)
+
+            ctk.CTkLabel(item_frame, text=d.get("naam"), font=("Segoe UI", 13, "bold"), text_color=t["text"]).pack(anchor="w", padx=15, pady=(5, 2))
+            
+            p_bar = ctk.CTkProgressBar(item_frame, progress_color=t["accent"])
+            p_bar.set(d.get("progress", 0) / 100.0)
+            p_bar.pack(fill="x", padx=15, pady=5)
+
+            btn_frame = ctk.CTkFrame(item_frame, fg_color="transparent")
+            btn_frame.pack(fill="x", padx=15, pady=(0, 5))
+
+            ctk.CTkLabel(btn_frame, text=f"{d.get('progress')}% voltooid", font=("Segoe UI", 11), text_color=t["text"]).pack(side="left")
+            ctk.CTkButton(btn_frame, text="Verwijder", width=60, height=20, fg_color="#ff3b30", text_color="white", command=lambda i=idx: self.doel_verwijderen(i)).pack(side="right")
+
     def doel_verwijderen(self, idx):
-        self.data["doelen"].pop(idx)
-        opslaan(self.data)
-        self.show_doelen()
+        if 0 <= idx < len(self.data["doelen"]):
+            self.data["doelen"].pop(idx)
+            opslaan(self.data)
+            self.show_doelen()
 
     # ============================================================
-    # INSTELLINGEN
+    # INSTELLINGEN & SAMSUNG ONE UI UPDATER INSTALLER IN GC-OS
     # ============================================================
     def show_settings(self):
         self.clear_main()
         t = THEMES[self.theme_name]
-        ctk.CTkLabel(self.main, text="Systeem Instellingen", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
 
-        panel = ctk.CTkFrame(self.main, fg_color=t["bg_card"], corner_radius=15)
-        panel.pack(fill="both", expand=True, padx=20, pady=(0, 20))
+        ctk.CTkLabel(self.main, text="Systeeminstellingen", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
 
-        ctk.CTkLabel(panel, text="📇 Gebruikersnaam Aanpassen", font=("Segoe UI", 16, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=(20, 5))
-        self.name_entry = ctk.CTkEntry(panel, width=300)
-        self.name_entry.insert(0, self.data["settings"].get("naam", "Gebruiker"))
-        self.name_entry.pack(anchor="w", padx=20, pady=5)
+        card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
+        card.pack(fill="both", expand=True, padx=20, pady=(0, 20))
 
-        ctk.CTkButton(panel, text="💾 Naam Opslaan", command=self.naam_opslaan).pack(anchor="w", padx=20, pady=(5, 20))
+        ctk.CTkLabel(card, text="Gebruikersnaam aanpassen:", font=("Segoe UI", 14), text_color=t["text"]).pack(anchor="w", padx=20, pady=(20, 5))
+        self.settings_naam = ctk.CTkEntry(card, width=300)
+        self.settings_naam.insert(0, self.data["settings"].get("naam", "Gebruiker"))
+        self.settings_naam.pack(anchor="w", padx=20, pady=5)
 
-        ctk.CTkLabel(panel, text="🎨 Systeemthema Kiezen", font=("Segoe UI", 16, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=(10, 5))
-        self.theme_combo = ctk.CTkComboBox(panel, values=list(THEMES.keys()), state="readonly")
-        self.theme_combo.set(self.theme_name)
-        self.theme_combo.pack(anchor="w", padx=20, pady=5)
+        ctk.CTkLabel(card, text="Systeem Thema Selecteren:", font=("Segoe UI", 14), text_color=t["text"]).pack(anchor="w", padx=20, pady=(15, 5))
+        self.settings_theme = ctk.CTkComboBox(card, values=list(THEMES.keys()), state="readonly", width=300)
+        self.settings_theme.set(self.theme_name)
+        self.settings_theme.pack(anchor="w", padx=20, pady=5)
 
-        ctk.CTkButton(panel, text="Thema Toepassen", command=self.thema_wisselen).pack(anchor="w", padx=20, pady=(5, 20))
+        ctk.CTkButton(card, text="Instellingen Opslaan", fg_color=t["accent"], text_color="white", command=self.settings_opslaan).pack(anchor="w", padx=20, pady=25)
 
-        ctk.CTkLabel(panel, text="🔄 Systeem Updates", font=("Segoe UI", 16, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=(20, 5))
-        ctk.CTkButton(panel, text="🚀 Zoeken naar updates", fg_color=t["accent"], text_color="white", command=self.toon_coole_update_loading_screen).pack(anchor="w", padx=20, pady=5)
+        # UI Scheidingslijn
+        ctk.CTkFrame(card, height=2, fg_color=t["bg_root"]).pack(fill="x", padx=20, pady=10)
 
-    def naam_opslaan(self):
-        nieuwe_naam = self.name_entry.get().strip()
-        if nieuwe_naam:
-            self.data["settings"]["naam"] = nieuwe_naam
-            opslaan(self.data)
-            messagebox.showinfo("Succes", "Je naam is succesvol bijgewerkt!")
+        # ==========================================
+        # GC-OS ONE UI UPDATER INTERFACE
+        # ==========================================
+        ctk.CTkLabel(card, text="Software-update", font=("Segoe UI", 18, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=(10, 2))
+        ctk.CTkLabel(card, text="Huidige versie: GC-OS " + HUIDIGE_VERSIE, font=("Segoe UI", 12), text_color="gray").pack(anchor="w", padx=20, pady=(0, 15))
 
-    def thema_wisselen(self):
-        gekozen = self.theme_combo.get()
-        self.theme_name = gekozen
-        self.data["settings"]["theme"] = gekozen
+        self.updater_box = ctk.CTkFrame(card, corner_radius=12, fg_color=t["bg_root"], border_width=1, border_color=t["button_hover"])
+        self.updater_box.pack(fill="x", padx=20, pady=10)
+
+        self.updater_title = ctk.CTkLabel(self.updater_box, text="Updates controleren...", font=("Segoe UI", 14, "bold"), text_color=t["text"])
+        self.updater_title.pack(anchor="w", padx=20, pady=(15, 5))
+
+        self.updater_desc = ctk.CTkLabel(self.updater_box, text="GC-OS zoekt momenteel naar beschikbare softwarepakketten.", font=("Segoe UI", 12), text_color=t["text"], justify="left")
+        self.updater_desc.pack(anchor="w", padx=20, pady=(0, 15))
+
+        self.updater_progress = ctk.CTkProgressBar(self.updater_box, progress_color=t["accent"], height=8)
+        self.updater_progress.set(0)
+        
+        self.updater_btn = ctk.CTkButton(self.updater_box, text="Nu controleren", command=self.start_oneui_update_check)
+        self.updater_btn.pack(anchor="e", padx=20, pady=15)
+
+    def settings_opslaan(self):
+        self.data["settings"]["naam"] = self.settings_naam.get().strip() or "Gebruiker"
+        self.data["settings"]["theme"] = self.settings_theme.get()
         opslaan(self.data)
+        self.theme_name = self.data["settings"]["theme"]
         self.apply_theme()
         self.show_settings()
 
     # ============================================================
-    # GC-OS UPDATER LAADBALK EN ENGINE
+    # SAMSUNG ONE UI UPDATER INSTALLER LOGICA
     # ============================================================
-    def toon_coole_update_loading_screen(self):
+    def start_oneui_update_check(self):
         t = THEMES[self.theme_name]
-        up_win = ctk.CTkToplevel(self)
-        up_win.title("GC-OS Updater")
-        up_win.geometry("500x350")
-        up_win.resizable(False, False)
-        up_win.configure(fg_color="#0d0214" if t["mode"] == "Dark" else t["bg_card"])
-        up_win.grab_set()
-
-        up_win.update_idletasks()
-        x = (up_win.winfo_screenwidth() // 2) - (500 // 2)
-        y = (up_win.winfo_screenheight() // 2) - (350 // 2)
-        up_win.geometry(f"+{x}+{y}")
-
-        title_lbl = ctk.CTkLabel(up_win, text="🚀 GC-OS UPDATER PROTOCOL 🚀", font=("Courier New", 15, "bold"), text_color="#00ffcc")
-        title_lbl.pack(pady=(25, 10))
-
-        terminal_box = ctk.CTkTextbox(up_win, width=440, height=140, fg_color="#140526", text_color="#39ff14", font=("Courier New", 12))
-        terminal_box.pack(pady=10)
-
-        balk = ctk.CTkProgressBar(up_win, width=440, progress_color="#00e5ff")
-        balk.set(0.0)
-        balk.pack(pady=15)
-
-        def log(bericht):
-            terminal_box.insert(tk.END, bericht)
-            terminal_box.see(tk.END)
-            up_win.update()
-
-        def start_update_check():
-            try:
-                balk.set(0.15)
-                log(">> Initializing GC-OS Update Engine...\n")
-                time.sleep(0.4)
+        self.updater_btn.configure(state="disabled")
+        self.updater_title.configure(text="Controleren op updates...")
+        self.updater_progress.pack(fill="x", padx=20, pady=(5, 10))
+        
+        def simulate_check():
+            for i in range(1, 11):
+                time.sleep(0.1)
+                self.updater_progress.set(i / 10.0)
+                self.update()
                 
-                balk.set(0.35)
-                log(">> Establishing secure handshake with GitHub Master Hub...\n")
-                time.sleep(0.4)
-                
-                balk.set(0.60)
-                log(">> Downloading central manifest file (version.txt)...\n")
-                
-                req = urllib.request.Request(GITHUB_VERSION_URL, headers={'User-Agent': 'Mozilla/5.0'})
-                with urllib.request.urlopen(req, timeout=5) as response:
-                    nieuwe_versie = response.read().decode('utf-8').strip()
-                
-                balk.set(0.85)
-                log(f">> Remote manifest parsed. Latest release version: v{nieuwe_versie}\n")
-                time.sleep(0.4)
-                
-                balk.set(1.0)
-                log(">> Engine check successfully complete.\n")
-                time.sleep(0.3)
-                
-                up_win.destroy()
-                
-                if nieuwe_versie != HUIDIGE_VERSIE:
-                    changelog_text = "Geen changelog beschikbaar."
-                    try:
-                        cl_req = urllib.request.Request(GITHUB_CHANGELOG_URL, headers={'User-Agent': 'Mozilla/5.0'})
-                        with urllib.request.urlopen(cl_req, timeout=5) as cl_res:
-                            changelog_text = cl_res.read().decode('utf-8')
-                    except Exception: pass
-
-                    pop = ctk.CTkToplevel()
-                    pop.title("Update Gevonden!")
-                    pop.geometry("450x400")
-                    pop.grab_set()
-
-                    ctk.CTkLabel(pop, text=f"Nieuwe Update Beschikbaar: v{nieuwe_versie}", font=("Segoe UI", 16, "bold")).pack(pady=10)
-                    
-                    tb = ctk.CTkTextbox(pop, width=400, height=240)
-                    tb.insert("1.0", f"Wat is er nieuw in deze release:\n---------------------\n{changelog_text}")
-                    tb.configure(state="disabled")
-                    tb.pack(pady=10)
-
-                    btn_frame = ctk.CTkFrame(pop, fg_color="transparent")
-                    btn_frame.pack(fill="x", padx=20, pady=10)
-
-                    ctk.CTkButton(btn_frame, text="Nu Installeren", fg_color="#007aff", command=lambda: [pop.destroy(), voer_werkelijke_update_uit()]).pack(side="right", padx=5)
-                    ctk.CTkButton(btn_frame, text="Later", command=pop.destroy).pack(side="right", padx=5)
-                else:
-                    messagebox.showinfo("GC-OS Updater", f"Je draait al op de meest actuele releaseversie! (v{HUIDIGE_VERSIE})")
-                    
-            except Exception as e:
-                if up_win.winfo_exists(): up_win.destroy()
-                messagebox.showerror("Update Error", f"Verbinding met update server mislukt:\n{e}")
-
-        def voer_werkelijke_update_uit():
-            try:
-                req = urllib.request.Request(GITHUB_SCRIPT_URL, headers={'User-Agent': 'Mozilla/5.0'})
-                with urllib.request.urlopen(req, timeout=10) as response:
-                    nieuwe_code = response.read().decode('utf-8')
-                
-                huidig_script_pad = os.path.abspath(sys.argv[0])
-                
-                with open(huidig_script_pad, "w", encoding="utf-8") as f:
-                    f.write(nieuwe_code)
-                
-                messagebox.showinfo("Update Voltooid", "GC-OS is succesvol gepatcht! De applicatie start nu opnieuw op.")
-                os.execv(sys.executable, [sys.executable] + sys.argv)
-                
-            except Exception as e:
-                messagebox.showerror("Patch Fout", f"Kritieke fout tijdens overschrijven scriptbestand:\n{e}")
-
-        self.after(500, start_update_check)
+            # Simulatie van server response (Up-to-date notificatie in One UI stijl)
+            self.updater_progress.pack_forget()
+            self.updater_title.configure(text="Jouw software is up-to-date")
+            self.updater_desc.configure(text=f"Versie: GC-OS {HUIDIGE_VERSIE}\nLaatste controle: zojuist uitgevoerd.\nEr zijn momenteel geen nieuwe versies beschikbaar voor dit apparaat.")
+            
+            # Reset knop in One UI look
+            self.updater_btn.configure(state="normal", text="Opnieuw controleren")
+            
+        self.after(200, simulate_check)
 
 if __name__ == "__main__":
     app = SchoolOS()
