@@ -1,3 +1,4 @@
 Het vakje Rooster is bijgewerkt,
 Zodat je nu je eigen school rooster 'Handmatig' kunt toevoegen.
-nu ook aanpasbaar als: maand of week rooster.
+Nu ook aanpasbaar als: maand of week rooster.
+Er is nu ook een terug naar deze week knop toegevoegd!
