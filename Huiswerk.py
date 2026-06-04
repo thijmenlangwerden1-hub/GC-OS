@@ -135,9 +135,9 @@ THEMES = {
 # INSTELLINGEN & CONFIGURATIE
 # ============================================================
 
-HUIDIGE_VERSIE = "1.0.11"
+HUIDIGE_VERSIE = "1.0.12"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
-GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/version.txt"
+GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -214,7 +214,7 @@ def laden():
             "notities": [],
             "cijfers": [],
             "rooster": [],
-            "settings": {"theme": "Wit"},
+            "settings": {"theme": "Wit", "naam": ""},
             "vrijedagen": [],
         }
     else:
@@ -225,8 +225,9 @@ def laden():
     if "notities" not in data: data["notities"] = []
     if "cijfers" not in data: data["cijfers"] = []
     if "rooster" not in data: data["rooster"] = []
-    if "settings" not in data: data["settings"] = {"theme": "Wit"}
+    if "settings" not in data: data["settings"] = {"theme": "Wit", "naam": ""}
     if "theme" not in data["settings"]: data["settings"]["theme"] = "Wit"
+    if "naam" not in data["settings"]: data["settings"]["naam"] = ""
     if "vrijedagen" not in data: data["vrijedagen"] = []
 
     for c in data.get("cijfers", []):
@@ -283,6 +284,7 @@ class SchoolOS(ctk.CTk):
         self.theme_combo = None
         self.vrijedagen_listbox = None
         self.clock_label = None
+        self.dashboard_title_label = None  # Label voor dynamische begroeting
 
         self._build_layout()
         self.apply_theme()
@@ -633,6 +635,7 @@ class SchoolOS(ctk.CTk):
         self.vrijedagen_listbox = None
         self.theme_combo = None
         self.clock_label = None
+        self.dashboard_title_label = None
 
     def _get_upcoming_vrijedagen(self):
         vandaag = dt.date.today()
@@ -661,7 +664,9 @@ class SchoolOS(ctk.CTk):
         top_bar = ctk.CTkFrame(self.main, fg_color="transparent")
         top_bar.pack(fill="x", padx=20, pady=20)
 
-        ctk.CTkLabel(top_bar, text="Dashboard", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(side="left")
+        # Dynamisch begroetingslabel aangemaakt
+        self.dashboard_title_label = ctk.CTkLabel(top_bar, text="Dashboard", font=("Segoe UI", 24, "bold"), text_color=t["text"])
+        self.dashboard_title_label.pack(side="left")
 
         self.clock_label = ctk.CTkLabel(top_bar, text="", font=("Segoe UI", 14, "bold"), text_color=t["accent"])
         self.clock_label.pack(side="right", padx=10)
@@ -702,7 +707,7 @@ class SchoolOS(ctk.CTk):
             scroll_vrij.pack(fill="both", expand=True, padx=10, pady=5)
 
             for d, delta, naam in upcoming[:15]:
-                regel = f"• {d.strftime('%Y-%m-%d')} - {naam} (" + ("vandaag!" if delta == 0 else f"over {delta} dagen") + ")"
+                regel = f"• {d.strftime('%Y-%m-%d')} - {naam} (" + ("vandaag!" if delta == 0 else f"over {delta} days") + ")"
                 ctk.CTkLabel(scroll_vrij, text=regel, font=("Segoe UI", 12), text_color=t["text"]).pack(anchor="w", padx=10, pady=1)
 
         version_label = ctk.CTkLabel(self.main, text=f"Versie: {HUIDIGE_VERSIE}", font=("Segoe UI", 11), text_color=t["text"])
@@ -715,6 +720,24 @@ class SchoolOS(ctk.CTk):
             nu = dt.datetime.now()
             tijd_str = nu.strftime("%d-%m-%Y | %H:%M:%S")
             self.clock_label.configure(text=tijd_str)
+            
+            # Update hier ook direct de begroeting op basis van het uur
+            if self.dashboard_title_label and self.dashboard_title_label.winfo_exists():
+                naam = self.data["settings"].get("naam", "").strip()
+                naam_str = f" {naam}" if naam else ""
+                
+                uur = nu.hour
+                if 6 <= uur < 12:
+                    begroeting = f"Goedemorgen{naam_str}!"
+                elif 12 <= uur < 18:
+                    begroeting = f"Hoi{naam_str}!"
+                elif 18 <= uur < 24:
+                    begroeting = f"Goedenavond{naam_str}!"
+                else:
+                    begroeting = f"Goedenacht{naam_str}!"
+                    
+                self.dashboard_title_label.configure(text=begroeting)
+
             self.after(1000, self.update_clock)
 
     # --------------------------------------------------------
@@ -900,7 +923,26 @@ class SchoolOS(ctk.CTk):
         
         ctk.CTkLabel(self.main, text="Instellingen", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
         
-        # 1. KAART VOOR THEMA SELECTIE
+        # 1. KAART VOOR GEBRUIKERSNAAM
+        user_card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
+        user_card.pack(fill="x", padx=20, pady=10)
+        
+        ctk.CTkLabel(user_card, text="👤 Gebruikersnaam instellen", font=("Segoe UI", 16, "bold"), text_color=t["text"]).pack(anchor="w", padx=15, pady=(15, 5))
+        
+        # Input veld met de reeds opgeslagen naam ingevuld
+        self.name_entry = ctk.CTkEntry(user_card, placeholder_text="Vul je naam in...")
+        self.name_entry.insert(0, self.data["settings"].get("naam", ""))
+        self.name_entry.pack(anchor="w", padx=15, pady=5)
+        
+        ctk.CTkButton(
+            user_card, 
+            text="Naam Opslaan", 
+            fg_color=t["accent"], 
+            text_color="white", 
+            command=self.naam_opslaan
+        ).pack(anchor="w", padx=15, pady=(5, 15))
+
+        # 2. KAART VOOR THEMA SELECTIE
         theme_card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
         theme_card.pack(fill="x", padx=20, pady=10)
         
@@ -910,7 +952,7 @@ class SchoolOS(ctk.CTk):
         self.theme_combo.set(self.theme_name)
         self.theme_combo.pack(anchor="w", padx=15, pady=(5, 15))
         
-        # 2. NIEUWE KAART VOOR HANDMATIGE UPDATES
+        # 3. KAART VOOR HANDMATIGE UPDATES
         update_card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
         update_card.pack(fill="x", padx=20, pady=10)
         
@@ -924,7 +966,6 @@ class SchoolOS(ctk.CTk):
             text_color=t["text"]
         ).pack(anchor="w", padx=15, pady=5)
         
-        # Knop die de update checker geforceerd/niet-silent start
         ctk.CTkButton(
             update_card, 
             text="🔄 Handmatig zoeken naar updates", 
@@ -934,6 +975,12 @@ class SchoolOS(ctk.CTk):
         ).pack(anchor="w", padx=15, pady=(10, 15))
         
         self.apply_theme()
+
+    def naam_opslaan(self):
+        nieuwe_naam = self.name_entry.get().strip()
+        self.data["settings"]["naam"] = nieuwe_naam
+        opslaan(self.data)
+        messagebox.showinfo("Succes", f"Je naam is succesvol opgeslagen als: '{nieuwe_naam}'")
 
     def wijzig_thema(self, nieuw_thema):
         self.theme_name = nieuw_thema
