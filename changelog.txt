@@ -1,2 +1,2 @@
-Je kunt nu je voor en Achternaam toevoegen,
-zo dat het zichtbaar is als welkomst bericht op je dashboard
+Het vakje Rooster is bijgewerkt,
+Zodat je nu je eigen school rooster 'Handmatig' kunt toevoegen.
