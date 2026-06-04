@@ -17,7 +17,7 @@ import threading
 # 1. GLOBALE CONFIGURATIE, CODENAMES & SYSTEM ARCHITECTURE
 # ==============================================================================
 
-HUIDIGE_VERSIE = "6.10.8v"
+HUIDIGE_VERSIE = "6.10.8v"  # Verander dit handmatig naar bijv. "6.10.9v" voor een nieuwe update!
 CODENAME = "QuantumValkyrie"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BESTAND = os.path.join(SCRIPT_DIR, "gc_os_matrix_data.json")
@@ -98,12 +98,23 @@ def IO_SafeLoad():
     SysteemDefaults = {
         "huiswerk": [], "notities": [], "cijfers": [], "rooster": [], "doelen": [],
         "examens": [], "absentie": [], "financien": [], "flashcards": [],
-        "settings": {"theme": "Zwart", "naam": "Student", "pomodoro_werk": 25, "pomodoro_rust": 5, "automatisch_backups": True}
+        "settings": {
+            "theme": "Zwart", 
+            "naam": "Student", 
+            "pomodoro_werk": 25, 
+            "pomodoro_rust": 5, 
+            "automatisch_backups": True,
+            "geinstalleerde_versie": "0.0.0"  # Tracker voor firmware updates
+        }
     }
     
     for sleutel, waarde in SysteemDefaults.items():
         if sleutel not in data:
             data[sleutel] = waarde
+
+    for k, v in SysteemDefaults["settings"].items():
+        if k not in data["settings"]:
+            data["settings"][k] = v
             
     if "theme" not in data["settings"]: data["settings"]["theme"] = "Zwart"
     if "naam" not in data["settings"]: data["settings"]["naam"] = "Student"
@@ -261,74 +272,84 @@ class SchoolOS(ctk.CTk):
                 knop.configure(fg_color="transparent", text_color=thema["sidebar_text"])
 
     # ==============================================================================
-    # LUXE EN GEOPTIMALISEERDE BOOTLOADER / UPDATE ENGINE (v6.10.8v)
+    # BOOTLOADER SEQUENCE MET INTELLIGENTE UPDATE-GUARD (v6.10.8v)
     # ==============================================================================
     def Core_Bootloader_Sequence(self):
         thema = THEMES[self.theme_name]
-        
-        # Volledig scherm overschrijven voor luxe dedicated interface effect
+        geinstalleerde_v = self.data["settings"].get("geinstalleerde_versie", "0.0.0")
+
+        # Controleren of de huidige code-versie al is geïnstalleerd op dit systeem
+        is_nieuwe_update = (geinstalleerde_v != HUIDIGE_VERSIE)
+
+        # Start scherm overschrijven
         boot_window = ctk.CTkToplevel()
         boot_window.title("GC-OS Engine Booting...")
         boot_window.overrideredirect(True)
-        
-        sw = self.winfo_screenwidth()
-        sh = self.winfo_screenheight()
+        sw, sh = self.winfo_screenwidth(), self.winfo_screenheight()
         boot_window.geometry(f"{sw}x{sh}+0+0")
         boot_window.lift()
         boot_window.attributes("-topmost", True)
         boot_window.configure(fg_color=thema["bg_root"])
 
-        # Luxe gecentreerde container frame om de interface perfect te schalen
+        # Luxe gecentreerde container frame
         container = ctk.CTkFrame(boot_window, fg_color=thema["bg_card"], corner_radius=24, border_width=1, border_color=thema["button_hover"])
         container.place(relx=0.5, rely=0.5, anchor="center", width=650, height=420)
 
-        # OS Merk & Versie badge
-        versie_badge = ctk.CTkFrame(container, fg_color=thema["button_fg"], corner_radius=6)
+        # Dynamische status badge tekst
+        badge_tekst = f"INSTALLING UPDATE v{HUIDIGE_VERSIE}" if is_nieuwe_update else f"FIRMWARE v{HUIDIGE_VERSIE} [STABLE]"
+        versie_badge = ctk.CTkFrame(container, fg_color=thema["button_fg"] if is_nieuwe_update else "#10B981", corner_radius=6)
         versie_badge.place(relx=0.5, rely=0.15, anchor="center")
-        ctk.CTkLabel(versie_badge, text=f"SYSTEM FIRMWARE v{HUIDIGE_VERSIE}", font=("Segoe UI Mono", 11, "bold"), text_color=thema["button_text"], padx=10, pady=2).pack()
+        ctk.CTkLabel(versie_badge, text=badge_tekst, font=("Segoe UI Mono", 11, "bold"), text_color="white", padx=10, pady=2).pack()
 
         titel_label = ctk.CTkLabel(container, text="GraafschapCollege-OS", font=("Segoe UI", 38, "bold"), text_color=thema["text"])
         titel_label.place(relx=0.5, rely=0.28, anchor="center")
         
-        sub_label = ctk.CTkLabel(container, text=f"CODENAME: {CODENAME}.sys // INITIALIZING COMPONENTS", font=("Segoe UI Mono", 12), text_color="gray")
+        sub_label = ctk.CTkLabel(container, text="", font=("Segoe UI Mono", 12), text_color="gray")
         sub_label.place(relx=0.5, rely=0.38, anchor="center")
 
-        # Premium percentage tracker (Grote neon-look cijfers)
         self.percentage_label = ctk.CTkLabel(container, text="0%", font=("Segoe UI", 48, "bold"), text_color=thema["accent"])
         self.percentage_label.place(relx=0.5, rely=0.55, anchor="center")
 
-        # Prachtige, strakke, minimalistische progressiebalk
         progressiebalk = ctk.CTkProgressBar(container, width=480, height=6, mode="determinate", progress_color=thema["accent"], fg_color=thema["bg_root"])
         progressiebalk.place(relx=0.5, rely=0.70, anchor="center")
         progressiebalk.set(0)
 
-        # Real-time console status logs onder de balk
-        status_label = ctk.CTkLabel(container, text="Booting Quantum Core...", font=("Segoe UI Mono", 11), text_color="gray")
+        status_label = ctk.CTkLabel(container, text="Initializing...", font=("Segoe UI Mono", 11), text_color="gray")
         status_label.place(relx=0.5, rely=0.78, anchor="center")
 
-        # Decoratieve luxe architectuur-informatie onderaan de kaart
-        foot_info = ctk.CTkLabel(container, text="SECURE BOOT MATRIX STATE: ACTIVE [128-BIT ENCRYPTION LAYER]", font=("Segoe UI Mono", 10), text_color="gray")
+        foot_info = ctk.CTkLabel(container, text="SECURE BOOT MATRIX STATE: ACTIVE", font=("Segoe UI Mono", 10), text_color="gray")
         foot_info.place(relx=0.5, rely=0.92, anchor="center")
 
-        # Geavanceerd, asynchroon aansturingsalgoritme voor vloeiende laadstappen
+        # De animatie-loop engine
         def SimuleerStappen(stap):
             if stap <= 100:
-                # Bereken willekeurige micro-laadvertragingen om een luxe realistische analyse te simuleren
                 progressiebalk.set(stap / 100)
                 self.percentage_label.configure(text=f"{stap}%")
                 
-                # Realistische, high-end systeem logs triggeren op exacte stappen
-                if stap == 12: status_label.configure(text="› Mapped virtual clusters & parsing localized I/O JSON databases...")
-                elif stap == 34: status_label.configure(text="› Synchronizing graphical hardware acceleration assets...")
-                elif stap == 56: status_label.configure(text="› Launching isolated thread safe cryptography engines...")
-                elif stap == 78: status_label.configure(text="› Allocating volatile memory buffers & resolving system defaults...")
-                elif stap == 92: status_label.configure(text="› Finalizing integrity handshakes, clearing temporary registers...")
-                
-                # Snelheidsvariatie toevoegen voor een realistisch premium gevoel
-                volgende_vertraging = random.randint(15, 60) if 40 < stap < 70 else random.randint(25, 45)
-                self.after(volgende_vertraging, lambda: SimuleerStappen(stap + 1))
+                if is_nieuwe_update:
+                    # UITGEBREIDE LUXE SEQUENCE (Alleen bij een echte nieuwe updateversie)
+                    sub_label.configure(text=f"CODENAME: {CODENAME}.sys // WRITING NEW FIRMWARE")
+                    if stap == 12: status_label.configure(text="› Unpacking matrix core update files & verifying hashes...")
+                    elif stap == 35: status_label.configure(text="› Rewriting database keys & mapping virtual structural fields...")
+                    elif stap == 58: status_label.configure(text="› Compiling UI assets & flushing old cache directories...")
+                    elif stap == 82: status_label.configure(text="› Re-encrypting database profiles with 128-bit security layer...")
+                    elif stap == 96: status_label.configure(text="› Installation complete. Updating system version registry...")
+                    vertraging = random.randint(20, 65) if 30 < stap < 75 else random.randint(15, 35)
+                else:
+                    # ULTRA SNELLE HOT BOOT SECURE RE-CHECK (Als versie al up-to-date is)
+                    sub_label.configure(text=f"CODENAME: {CODENAME}.sys // VERIFYING INTEGRITY")
+                    if stap == 5: status_label.configure(text="› Checking active kernel registration...")
+                    elif stap == 50: status_label.configure(text="› System state matches target version. Skipping install pipeline.")
+                    elif stap == 90: status_label.configure(text="› Hot-boot successfully authorized.")
+                    vertraging = random.randint(1, 5) # Bliksemsnel laden
+
+                self.after(vertraging, lambda: SimuleerStappen(stap + 1))
             else:
-                # Subtiele 'fade-out' simulatie en de-iconificatie van het hoofdvenster
+                # Als het een nieuwe update was, slaan we de huidige versie nu op als geïnstalleerd!
+                if is_nieuwe_update:
+                    self.data["settings"]["geinstalleerde_versie"] = HUIDIGE_VERSIE
+                    IO_SafeSave(self.data)
+
                 boot_window.destroy()
                 self.deiconify()
                 try: self.state("zoomed")
@@ -360,22 +381,17 @@ class SchoolOS(ctk.CTk):
         grid.columnconfigure((0, 1), weight=1, uniform="dash_grid")
         grid.rowconfigure((0, 1), weight=1, uniform="dash_row")
 
-        # Widget 1: Real-time Cijfer KPI Analyser
         card1 = ctk.CTkFrame(grid, corner_radius=16, fg_color=thema["bg_card"])
         card1.grid(row=0, column=0, padx=12, pady=12, sticky="nsew")
         ctk.CTkLabel(card1, text="📊 Cijfer Analyse & Gemiddelden", font=("Segoe UI", 16, "bold"), text_color=thema["accent"]).pack(anchor="w", padx=20, pady=15)
-        
         alle_cijfers = [float(c["cijfer"]) for c in self.data["cijfers"] if "cijfer" in c]
         algemeen_gemiddelde = sum(alle_cijfers) / len(alle_cijfers) if alle_cijfers else 0.0
-        
         ctk.CTkLabel(card1, text=f"• Totaal aantal ingevoerde cijfers: {len(alle_cijfers)}", font=("Segoe UI", 14), text_color=thema["text"]).pack(anchor="w", padx=25, pady=4)
         ctk.CTkLabel(card1, text=f"• Gewogen Algemeen Gemiddelde: {algemeen_gemiddelde:.2f}", font=("Segoe UI", 14), text_color=thema["text"]).pack(anchor="w", padx=25, pady=4)
 
-        # Widget 2: Rooster voor Vandaag
         card2 = ctk.CTkFrame(grid, corner_radius=16, fg_color=thema["bg_card"])
         card2.grid(row=0, column=1, padx=12, pady=12, sticky="nsew")
         ctk.CTkLabel(card2, text="📅 Agenda & Lessen Vandaag", font=("Segoe UI", 16, "bold"), text_color=thema["accent"]).pack(anchor="w", padx=20, pady=15)
-        
         vandaag_iso = str(dt.date.today())
         lessen_vandaag = [l for l in self.data["rooster"] if l.get("datum") == vandaag_iso]
         if lessen_vandaag:
@@ -384,17 +400,14 @@ class SchoolOS(ctk.CTk):
         else:
             ctk.CTkLabel(card2, text="Geen lesactiviteiten gepland voor vandaag.", font=("Segoe UI", 13, "italic"), text_color="gray").pack(anchor="w", padx=25, pady=10)
 
-        # Widget 3: Motivatie & AI Algoritme Quotes
         card3 = ctk.CTkFrame(grid, corner_radius=16, fg_color=thema["bg_card"])
         card3.grid(row=1, column=0, padx=12, pady=12, sticky="nsew")
         ctk.CTkLabel(card3, text="💡 Systeem Filosofie", font=("Segoe UI", 16, "bold"), text_color=thema["accent"]).pack(anchor="w", padx=20, pady=15)
         ctk.CTkLabel(card3, text=f'"{random.choice(MOTIVATIONAL_QUOTES)}"', font=("Segoe UI", 13, "italic"), text_color=thema["text"], wrap=True).pack(anchor="w", padx=25, pady=10)
 
-        # Widget 4: Kritieke Openstaande Deadlines
         card4 = ctk.CTkFrame(grid, corner_radius=16, fg_color=thema["bg_card"])
         card4.grid(row=1, column=1, padx=12, pady=12, sticky="nsew")
         ctk.CTkLabel(card4, text="🚨 Kritieke Openstaande Deadlines", font=("Segoe UI", 16, "bold"), text_color=thema["accent"]).pack(anchor="w", padx=20, pady=15)
-        
         open_taken = [h for h in self.data["huiswerk"] if not h.get("afgerond", False)]
         if open_taken:
             for taak in open_taken[:4]:
@@ -416,7 +429,6 @@ class SchoolOS(ctk.CTk):
         thema = THEMES[self.theme_name]
 
         ctk.CTkLabel(self.canvas, text="Huiswerk Projecten & Management", font=("Segoe UI", 24, "bold"), text_color=thema["text"]).pack(anchor="w", padx=35, pady=20)
-
         paneel = ctk.CTkFrame(self.canvas, fg_color="transparent")
         paneel.pack(fill="both", expand=True, padx=35, pady=(0, 35))
 
@@ -431,7 +443,6 @@ class SchoolOS(ctk.CTk):
         rechts.pack_propagate(False)
 
         ctk.CTkLabel(rechts, text="Nieuw Project Registreren", font=("Segoe UI", 15, "bold"), text_color=thema["accent"]).pack(pady=15)
-        
         self.entry_hw_vak = ctk.CTkComboBox(rechts, values=self.vakken_lijst, state="readonly")
         self.entry_hw_vak.set(self.vakken_lijst[0])
         self.entry_hw_vak.pack(fill="x", padx=20, pady=8)
@@ -444,9 +455,7 @@ class SchoolOS(ctk.CTk):
 
         ctk.CTkButton(rechts, text="📅 Systeemdatum Selecteren", command=lambda: UI_DateDialog(self.entry_hw_datum)).pack(fill="x", padx=20, pady=6)
         ctk.CTkButton(rechts, text="🚀 Project Toevoegen", fg_color=thema["accent"], text_color="white", command=self._Hw_Action_Save).pack(fill="x", padx=20, pady=15)
-        
         ctk.CTkFrame(rechts, height=2, fg_color=thema["bg_root"]).pack(fill="x", padx=20, pady=10)
-
         ctk.CTkButton(rechts, text="✔ Wijzig Status (Toggle)", command=self._Hw_Action_Toggle).pack(fill="x", padx=20, pady=6)
         ctk.CTkButton(rechts, text="🗑 Verwijder Selectie", fg_color="#EF4444", text_color="white", command=self._Hw_Action_Delete).pack(fill="x", padx=20, pady=6)
 
