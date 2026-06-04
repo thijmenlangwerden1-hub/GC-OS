@@ -110,7 +110,7 @@ MOTIVATIONAL_QUOTES = [
 # CONFIGURATIE & UPDATE INSTELLINGEN
 # ============================================================
 
-HUIDIGE_VERSIE = "1.40"
+HUIDIGE_VERSIE = "1.41"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BESTAND = os.path.join(SCRIPT_DIR, "gc_os_data.json")
 
@@ -160,7 +160,6 @@ def laden():
             except Exception:
                 data = {}
 
-    # Validatie van keys zodat oude JSON data niet crasht
     if "huiswerk" not in data: data["huiswerk"] = []
     if "notities" not in data: data["notities"] = []
     if "cijfers" not in data: data["cijfers"] = []
@@ -201,6 +200,13 @@ class SchoolOS(ctk.CTk):
             "Nederlands", "Engels", "Rekenen", "Hardware",
             "Netwerken", "Techlab", "Burgerschap", "Loopbaan"
         ]
+
+        # Genereer tijdenlijst van 08:00 tot 17:00 met stappen van 30 minuten
+        self.rooster_tijden = []
+        for uur in range(8, 18):
+            self.rooster_tijden.append(f"{uur:02d}:00")
+            if uur != 17:  # Stop exact op 17:00
+                self.rooster_tijden.append(f"{uur:02d}:30")
         
         self.sidebar_width = 230
         self.sidebar_buttons = []
@@ -305,7 +311,6 @@ class SchoolOS(ctk.CTk):
         ctk.CTkLabel(card, text=f"📚 Huiswerk taken open: {hw_open} van de {hw_total}", font=("Segoe UI", 16), text_color=t["text"]).pack(anchor="w", pady=5, padx=10)
         ctk.CTkLabel(card, text=f"📊 Jouw algemeen gemiddelde: {gem:.2f}" if gem is not None else "📊 Nog geen cijfers ingevoerd", font=("Segoe UI", 16), text_color=t["text"]).pack(anchor="w", pady=5, padx=10)
 
-        # Quote van de dag op dashboard
         quote_card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
         quote_card.pack(fill="x", padx=20, pady=20)
         ctk.CTkLabel(quote_card, text="💡 Motivatie voor vandaag:", font=("Segoe UI", 12, "italic"), text_color=t["accent"]).pack(anchor="w", padx=10, pady=2)
@@ -377,7 +382,7 @@ class SchoolOS(ctk.CTk):
         except Exception: pass
 
     # ============================================================
-    # ROOSTER (WEEK & MAAND)
+    # ROOSTER (WEEK & MAAND MET SELECTIEBALK TIJDEN)
     # ============================================================
     def show_rooster(self):
         self.clear_main()
@@ -402,10 +407,11 @@ class SchoolOS(ctk.CTk):
         self.rooster_panel = ctk.CTkScrollableFrame(self.main, fg_color=t["bg_card"], corner_radius=15)
         self.rooster_panel.pack(fill="both", expand=True, padx=20, pady=10)
 
+        # HIER IS DE BIJGEWERKTE TOEVOEG-BALK
         add_frame = ctk.CTkFrame(self.main, fg_color="transparent")
         add_frame.pack(fill="x", padx=20, pady=10)
 
-        self.rst_vak = ctk.CTkComboBox(add_frame, values=self.vakken_hw, width=150)
+        self.rst_vak = ctk.CTkComboBox(add_frame, values=self.vakken_hw, width=150, state="readonly")
         self.rst_vak.set(self.vakken_hw[0])
         self.rst_vak.pack(side="left", padx=5)
 
@@ -413,9 +419,10 @@ class SchoolOS(ctk.CTk):
         self.rst_datum.insert(0, str(dt.date.today()))
         self.rst_datum.pack(side="left", padx=5)
 
-        self.rst_tijd = ctk.CTkEntry(add_frame, placeholder_text="HH:MM", width=70)
-        self.rst_tijd.insert(0, "08:30")
-        self.rst_tijd.pack(side="left", padx=5)
+        # De nieuwe CTkComboBox selectiebalk voor de tijden (08:00 t/m 17:00)
+        self.rst_tijd_combo = ctk.CTkComboBox(add_frame, values=self.rooster_tijden, width=100, state="readonly")
+        self.rst_tijd_combo.set("08:30")
+        self.rst_tijd_combo.pack(side="left", padx=5)
 
         ctk.CTkButton(add_frame, text="➕ Toevoegen", command=self.rooster_toevoegen).pack(side="left", padx=5)
 
@@ -490,7 +497,7 @@ class SchoolOS(ctk.CTk):
     def rooster_toevoegen(self):
         v = self.rst_vak.get()
         d = self.rst_datum.get().strip()
-        t = self.rst_tijd.get().strip()
+        t = self.rst_tijd_combo.get()  # Haalt de gekozen waarde uit de selectiebalk
         if d and t:
             self.data["rooster"].append({"vak": v, "datum": d, "tijd": t})
             opslaan(self.data)
@@ -579,7 +586,6 @@ class SchoolOS(ctk.CTk):
         for vak in self.vakken_cijfers:
             g = vak_gemiddelden.get(vak, None)
             g_txt = f"{g:.1f}" if g is not None else "--"
-            # Kleurindicatie op basis van voldoende/onvoldoende
             kleur = t["text"] if g is None else ("#39ff14" if g >= 5.5 else "#ff1f1f")
             ctk.CTkLabel(scroll_gem, text=f"{vak}: {g_txt}", font=("Segoe UI", 12), text_color=kleur).pack(anchor="w", padx=10, pady=2)
 
@@ -596,6 +602,10 @@ class SchoolOS(ctk.CTk):
             self.cijfer_list.insert(tk.END, f"{c.get('vak')}: {c.get('cijfer')}")
 
         self.teken_lijngrafiek()
+
+    def cipher_toevoegen(self):
+        # Fallback fix voor typfout in eerdere versies
+        self.cijfer_toevoegen()
 
     def cijfer_toevoegen(self):
         v = self.cijfer_vak.get()
@@ -639,7 +649,7 @@ class SchoolOS(ctk.CTk):
             self.graph_canvas.create_line(punten[i][0], punten[i][1], punten[i+1][0], punten[i+1][1], fill=t["accent"], width=3)
 
     # ============================================================
-    # EXTRA EXTRA: DOELEN & VOORTGANG (NIEUW TABBLAD)
+    # DOELEN & VOORTGANG
     # ============================================================
     def show_doelen(self):
         self.clear_main()
@@ -655,9 +665,8 @@ class SchoolOS(ctk.CTk):
         right_side = ctk.CTkFrame(container, fg_color=t["bg_card"], width=300, corner_radius=15)
         right_side.pack(side="right", fill="y", padx=(10, 0))
 
-        # Doel toevoegen UI
         ctk.CTkLabel(right_side, text="Nieuw Doel", font=("Segoe UI", 14, "bold"), text_color=t["text"]).pack(pady=10)
-        self.doel_entry = ctk.CTkEntry(right_frame := right_side, placeholder_text="bijv. Netwerken hoofdstuk 4")
+        self.doel_entry = ctk.CTkEntry(right_side, placeholder_text="bijv. Netwerken hoofdstuk 4")
         self.doel_entry.pack(fill="x", padx=15, pady=5)
 
         ctk.CTkLabel(right_side, text="Voortgang (%)", font=("Segoe UI", 12), text_color=t["text"]).pack(pady=5)
@@ -692,8 +701,6 @@ class SchoolOS(ctk.CTk):
             btn_frame.pack(fill="x", padx=10, pady=2)
 
             ctk.CTkLabel(btn_frame, text=f"Voortgang: {d.get('progress')}%", font=("Segoe UI", 11), text_color=t["text"]).pack(side="left")
-            
-            # Verwijderknop per doel
             ctk.CTkButton(btn_frame, text="Verwijder", width=60, height=20, fg_color="#ff1f1f", command=lambda i=idx: self.doel_verwijderen(i)).pack(side="right")
 
     def doel_toevoegen(self):
@@ -812,7 +819,6 @@ class SchoolOS(ctk.CTk):
                 up_win.destroy()
                 
                 if nieuwe_versie != HUIDIGE_VERSIE:
-                    # Haal ook de changelog op om te laten zien aan de gebruiker!
                     changelog_text = "Geen changelog beschikbaar."
                     try:
                         cl_req = urllib.request.Request(GITHUB_CHANGELOG_URL, headers={'User-Agent': 'Mozilla/5.0'})
@@ -820,7 +826,6 @@ class SchoolOS(ctk.CTk):
                             changelog_text = cl_res.read().decode('utf-8')
                     except Exception: pass
 
-                    # Laat de changelog zien in een pop-up alvorens te updaten
                     pop = ctk.CTkToplevel()
                     pop.title("Update Gevonden!")
                     pop.geometry("450x400")
