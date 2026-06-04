@@ -251,7 +251,7 @@ def laden():
 # UPDATE CHECKER
 # ============================================================
 
-HUIDIGE_VERSIE = "1.0.0"
+HUIDIGE_VERSIE = "1.0.1"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_PAGE = "https://github.com/thijmenlangwerden1-hub/GC-OS"
 
