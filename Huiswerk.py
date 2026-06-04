@@ -112,7 +112,7 @@ GRAFIEK_KLEUREN = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33F3", "#33FF
 # CONFIGURATIE & UPDATE INSTELLINGEN
 # ============================================================
 
-HUIDIGE_VERSIE = "2.5.30v"
+HUIDIGE_VERSIE = "2.6.98"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BESTAND = os.path.join(SCRIPT_DIR, "gc_os_data.json")
 
@@ -265,7 +265,6 @@ class SchoolOS(ctk.CTk):
         intro.title("GC-OS Intro")
         intro.overrideredirect(True)
         
-        # Volledig scherm configureren bij het opstarten
         intro.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}+0+0")
         try:
             intro.state("zoomed")
@@ -285,7 +284,7 @@ class SchoolOS(ctk.CTk):
         def sluit_intro():
             intro.destroy()
             self.deiconify()
-            self.state("zoomed") # Zorgt dat ook het hoofdscherm gemaximaliseerd start
+            self.state("zoomed")
             self.show_dashboard()
 
         self.after(1800, sluit_intro)
@@ -680,7 +679,7 @@ class SchoolOS(ctk.CTk):
                 punten.append((x, y))
 
             for i in range(len(punten) - 1):
-                self.graph_canvas.create_line(punten[i][0],规律punten[i][1], punten[i+1][0], punten[i+1][1], fill=lijn_kleur, width=3)
+                self.graph_canvas.create_line(punten[i][0], punten[i][1], punten[i+1][0], punten[i+1][1], fill=lijn_kleur, width=3)
                 self.graph_canvas.create_oval(punten[i][0]-3, punten[i][1]-3, punten[i][0]+3, punten[i][1]+3, fill=lijn_kleur, outline="white")
             self.graph_canvas.create_oval(punten[-1][0]-3, punten[-1][1]-3, punten[-1][0]+3, punten[-1][1]+3, fill=lijn_kleur, outline="white")
 
@@ -715,126 +714,158 @@ class SchoolOS(ctk.CTk):
 
         ctk.CTkButton(right_side, text="Doel Opslaan", fg_color=t["accent"], text_color="white", command=self.doel_toevoegen).pack(fill="x", padx=15, pady=15)
 
-        self.herlaad_doelen(left_side)
+        for w in left_side.winfo_children(): w.destroy()
+        for idx, d in enumerate(self.data["doelen"]):
+            d_frame = ctk.CTkFrame(left_side, fg_color=t["bg_root"], corner_radius=10)
+            d_frame.pack(fill="x", padx=10, pady=5)
+            
+            ctk.CTkLabel(d_frame, text=d.get("titel"), font=("Segoe UI", 13, "bold"), text_color=t["text"]).pack(anchor="w", padx=15, pady=(5,0))
+            
+            p_bar = ctk.CTkProgressBar(d_frame, progress_color=t["accent"])
+            p_bar.set(float(d.get("progress", 0)) / 100.0)
+            p_bar.pack(fill="x", padx=15, pady=5)
+            
+            ctk.CTkLabel(d_frame, text=f"{d.get('progress')}% voltooid", font=("Segoe UI", 11), text_color="gray").pack(anchor="w", padx=15, pady=(0,5))
 
     def doel_toevoegen(self):
-        naam = self.doel_entry.get().strip()
-        progres = int(self.doel_progress.get())
-        if naam:
-            self.data["doelen"].append({"naam": naam, "progress": progres})
-            opslaan(self.data)
-            self.show_doelen()
-
-    def herlaad_doelen(self, container):
-        t = THEMES[self.theme_name]
-        for item in container.winfo_children(): item.destroy()
-
-        if not self.data["doelen"]:
-            ctk.CTkLabel(container, text="Nog geen persoonlijke doelen gesteld.", text_color=t["text"]).pack(pady=20)
-            return
-
-        for idx, d in enumerate(self.data["doelen"]):
-            item_frame = ctk.CTkFrame(container, fg_color=t["bg_root"], corner_radius=10)
-            item_frame.pack(fill="x", padx=10, pady=5)
-
-            ctk.CTkLabel(item_frame, text=d.get("naam"), font=("Segoe UI", 13, "bold"), text_color=t["text"]).pack(anchor="w", padx=15, pady=(5, 2))
-            
-            p_bar = ctk.CTkProgressBar(item_frame, progress_color=t["accent"])
-            p_bar.set(d.get("progress", 0) / 100.0)
-            p_bar.pack(fill="x", padx=15, pady=5)
-
-            btn_frame = ctk.CTkFrame(item_frame, fg_color="transparent")
-            btn_frame.pack(fill="x", padx=15, pady=(0, 5))
-
-            ctk.CTkLabel(btn_frame, text=f"{d.get('progress')}% voltooid", font=("Segoe UI", 11), text_color=t["text"]).pack(side="left")
-            ctk.CTkButton(btn_frame, text="Verwijder", width=60, height=20, fg_color="#ff3b30", text_color="white", command=lambda i=idx: self.doel_verwijderen(i)).pack(side="right")
-
-    def doel_verwijderen(self, idx):
-        if 0 <= idx < len(self.data["doelen"]):
-            self.data["doelen"].pop(idx)
+        titel = self.doel_entry.get().strip()
+        prog = int(self.doel_progress.get())
+        if titel:
+            self.data["doelen"].append({"titel": titel, "progress": prog})
             opslaan(self.data)
             self.show_doelen()
 
     # ============================================================
-    # INSTELLINGEN & SAMSUNG ONE UI UPDATER INSTALLER IN GC-OS
+    # INSTELLINGEN & UPDATE MECHANISME
     # ============================================================
     def show_settings(self):
         self.clear_main()
         t = THEMES[self.theme_name]
 
-        ctk.CTkLabel(self.main, text="Systeeminstellingen", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
+        ctk.CTkLabel(self.main, text="Instellingen & Systeem", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
 
-        card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
+        card = ctk.CTkFrame(self.main, fg_color=t["bg_card"], corner_radius=15)
         card.pack(fill="both", expand=True, padx=20, pady=(0, 20))
 
         ctk.CTkLabel(card, text="Gebruikersnaam aanpassen:", font=("Segoe UI", 14), text_color=t["text"]).pack(anchor="w", padx=20, pady=(20, 5))
-        self.settings_naam = ctk.CTkEntry(card, width=300)
+        self.settings_naam = ctk.CTkEntry(card, width=250)
         self.settings_naam.insert(0, self.data["settings"].get("naam", "Gebruiker"))
         self.settings_naam.pack(anchor="w", padx=20, pady=5)
 
-        ctk.CTkLabel(card, text="Systeem Thema Selecteren:", font=("Segoe UI", 14), text_color=t["text"]).pack(anchor="w", padx=20, pady=(15, 5))
-        self.settings_theme = ctk.CTkComboBox(card, values=list(THEMES.keys()), state="readonly", width=300)
+        ctk.CTkLabel(card, text="Interface Kleurenthema:", font=("Segoe UI", 14), text_color=t["text"]).pack(anchor="w", padx=20, pady=(15, 5))
+        self.settings_theme = ctk.CTkComboBox(card, values=list(THEMES.keys()), state="readonly")
         self.settings_theme.set(self.theme_name)
         self.settings_theme.pack(anchor="w", padx=20, pady=5)
 
         ctk.CTkButton(card, text="Instellingen Opslaan", fg_color=t["accent"], text_color="white", command=self.settings_opslaan).pack(anchor="w", padx=20, pady=25)
 
-        # UI Scheidingslijn
-        ctk.CTkFrame(card, height=2, fg_color=t["bg_root"]).pack(fill="x", padx=20, pady=10)
-
-        # ==========================================
-        # GC-OS ONE UI UPDATER INTERFACE
-        # ==========================================
-        ctk.CTkLabel(card, text="Software-update", font=("Segoe UI", 18, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=(10, 2))
-        ctk.CTkLabel(card, text="Huidige versie: GC-OS " + HUIDIGE_VERSIE, font=("Segoe UI", 12), text_color="gray").pack(anchor="w", padx=20, pady=(0, 15))
-
-        self.updater_box = ctk.CTkFrame(card, corner_radius=12, fg_color=t["bg_root"], border_width=1, border_color=t["button_hover"])
-        self.updater_box.pack(fill="x", padx=20, pady=10)
-
-        self.updater_title = ctk.CTkLabel(self.updater_box, text="Updates controleren...", font=("Segoe UI", 14, "bold"), text_color=t["text"])
-        self.updater_title.pack(anchor="w", padx=20, pady=(15, 5))
-
-        self.updater_desc = ctk.CTkLabel(self.updater_box, text="GC-OS zoekt momenteel naar beschikbare softwarepakketten.", font=("Segoe UI", 12), text_color=t["text"], justify="left")
-        self.updater_desc.pack(anchor="w", padx=20, pady=(0, 15))
-
-        self.updater_progress = ctk.CTkProgressBar(self.updater_box, progress_color=t["accent"], height=8)
-        self.updater_progress.set(0)
+        # Update Sectie
+        ctk.CTkLabel(card, text="Systeemupdates", font=("Segoe UI", 16, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=(10, 5))
+        ctk.CTkLabel(card, text=f"Huidige softwareversie: v{HUIDIGE_VERSIE}", font=("Segoe UI", 12), text_color="gray").pack(anchor="w", padx=20, pady=2)
         
-        self.updater_btn = ctk.CTkButton(self.updater_box, text="Nu controleren", command=self.start_oneui_update_check)
-        self.updater_btn.pack(anchor="e", padx=20, pady=15)
+        ctk.CTkButton(card, text="🔄 Controleren op Updates", command=self.check_for_updates).pack(anchor="w", padx=20, pady=10)
 
     def settings_opslaan(self):
-        self.data["settings"]["naam"] = self.settings_naam.get().strip() or "Gebruiker"
+        self.data["settings"]["naam"] = self.settings_naam.get().strip()
         self.data["settings"]["theme"] = self.settings_theme.get()
         opslaan(self.data)
         self.theme_name = self.data["settings"]["theme"]
         self.apply_theme()
         self.show_settings()
 
-    # ============================================================
-    # SAMSUNG ONE UI UPDATER INSTALLER LOGICA
-    # ============================================================
-    def start_oneui_update_check(self):
+    def check_for_updates(self):
+        try:
+            with urllib.request.urlopen(GITHUB_VERSION_URL, timeout=5) as response:
+                remote_version = response.read().decode('utf-8').strip()
+            
+            if remote_version != HUIDIGE_VERSIE:
+                if messagebox.askyesno("Update Beschikbaar", f"Er is een nieuwe versie beschikbaar: v{remote_version}\nWilt u nu updaten?"):
+                    self.start_updating_animation()
+            else:
+                messagebox.showinfo("GC-OS Updates", "Je gebruikt al de nieuwste versie van GraafschapCollege-OS.")
+        except Exception as e:
+            messagebox.showerror("Fout", f"Kan niet verbinden met update-server:\n{e}")
+
+    def start_updating_animation(self):
         t = THEMES[self.theme_name]
-        self.updater_btn.configure(state="disabled")
-        self.updater_title.configure(text="Controleren op updates...")
-        self.updater_progress.pack(fill="x", padx=20, pady=(5, 10))
         
-        def simulate_check():
-            for i in range(1, 11):
-                time.sleep(0.1)
-                self.updater_progress.set(i / 10.0)
-                self.update()
-                
-            # Simulatie van server response (Up-to-date notificatie in One UI stijl)
-            self.updater_progress.pack_forget()
-            self.updater_title.configure(text="Jouw software is up-to-date")
-            self.updater_desc.configure(text=f"Versie: GC-OS {HUIDIGE_VERSIE}\nLaatste controle: zojuist uitgevoerd.\nEr zijn momenteel geen nieuwe versies beschikbaar voor dit apparaat.")
+        # Maak een volledig dekkend updatevenster aan
+        self.update_win = ctk.CTkToplevel()
+        self.update_win.title("GC-OS Update Manager")
+        self.update_win.overrideredirect(True)
+        self.update_win.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}+0+0")
+        try:
+            self.update_win.state("zoomed")
+        except Exception:
+            pass
+        self.update_win.lift()
+        self.update_win.attributes("-topmost", True)
+        self.update_win.configure(fg_color=t["bg_root"])
+
+        # Fading label config
+        self.fade_label = ctk.CTkLabel(self.update_win, text="GC-OS", font=("Segoe UI", 65, "bold"), text_color=t["accent"])
+        self.fade_label.place(relx=0.5, rely=0.4, anchor="center")
+
+        # Laadbalk
+        self.up_progress = ctk.CTkProgressBar(self.update_win, width=450, progress_color=t["accent"])
+        self.up_progress.set(0)
+        self.up_progress.place(relx=0.5, rely=0.52, anchor="center")
+
+        # Percentage tekst onder de laadbalk
+        self.up_perc_label = ctk.CTkLabel(self.update_win, text="0%", font=("Segoe UI", 16, "bold"), text_color=t["text"])
+        self.up_perc_label.place(relx=0.5, rely=0.57, anchor="center")
+
+        # Variabelen voor de animaties
+        self.anim_start_time = time.time()
+        self.duration = 10.0  # Exact 10 seconden
+        self.alpha = 1.0
+        self.fade_direction = -1  # -1 is uitfaden, 1 is infaden
+
+        def update_loop():
+            elapsed = time.time() - self.anim_start_time
+            if elapsed >= self.duration:
+                self.up_progress.set(1.0)
+                self.up_perc_label.configure(text="100%")
+                self.update_win.destroy()
+                messagebox.showinfo("Gereed", "Update succesvol geïnstalleerd! Start de applicatie opnieuw op.")
+                self.quit()
+                return
+
+            # Bereken voortgang percentage
+            progress_val = elapsed / self.duration
+            self.up_progress.set(progress_val)
+            self.up_perc_label.configure(text=f"{int(progress_val * 100)}%")
+
+            # Fade logica voor de GC-OS tekst (Ademend effect op basis van hex-kleuren)
+            # Switch richting bij grenzen
+            if self.alpha <= 0.2:
+                self.fade_direction = 1
+            elif self.alpha >= 1.0:
+                self.fade_direction = -1
+
+            self.alpha += self.fade_direction * 0.04
+            self.alpha = max(0.2, min(1.0, self.alpha))
+
+            # Dynamisch de kleur faden naar de achtergrondkleur om de illusie van transparantie te wekken
+            bg_hex = t["bg_root"].lstrip('#')
+            accent_hex = t["accent"].lstrip('#')
             
-            # Reset knop in One UI look
-            self.updater_btn.configure(state="normal", text="Opnieuw controleren")
+            # RGB waarden extraheren
+            r_bg, g_bg, b_bg = int(bg_hex[0:2], 16), int(bg_hex[2:4], 16), int(bg_hex[4:6], 16)
+            r_ac, g_ac, b_ac = int(accent_hex[0:2], 16), int(accent_hex[2:4], 16), int(accent_hex[4:6], 16)
             
-        self.after(200, simulate_check)
+            # Linear interpolation (mixen van kleuren op basis van alpha)
+            r_mix = int(r_bg + (r_ac - r_bg) * self.alpha)
+            g_mix = int(g_bg + (g_ac - g_bg) * self.alpha)
+            b_mix = int(b_bg + (b_ac - b_bg) * self.alpha)
+            
+            mixed_color = f"#{r_mix:02x}{g_mix:02x}{b_mix:02x}"
+            self.fade_label.configure(text_color=mixed_color)
+
+            # Loop elke 30ms voor een soepele 33fps animatie
+            self.update_win.after(30, update_loop)
+
+        update_loop()
 
 if __name__ == "__main__":
     app = SchoolOS()
