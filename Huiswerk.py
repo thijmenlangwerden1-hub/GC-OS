@@ -137,7 +137,7 @@ THEMES = {
 
 HUIDIGE_VERSIE = "1.0.1"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
-GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/main.py"
+GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_PAGE = "https://github.com/thijmenlangwerden1-hub/GC-OS/blob/GC-OS/Huiswerk.py"
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
