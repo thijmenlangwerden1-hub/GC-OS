@@ -106,7 +106,7 @@ THEMES = {
         "text": "#003319",
         "sidebar_text": "#003319",
         "button_text": "#003319",
-        "button_fg": "#bdeecb",
+        "button_fg": "#bideecb",
         "button_hover": "#a6e4b8",
         "accent": "#34c759",
         "list_bg": "#ffffff",
@@ -132,10 +132,10 @@ THEMES = {
 }
 
 # ============================================================
-# INSTELLINGEN & CONFIGURATIE (Versie 1.0.20)
+# INSTELLINGEN & CONFIGURATIE (Versie 1.0.23)
 # ============================================================
 
-HUIDIGE_VERSIE = "1.0.21"
+HUIDIGE_VERSIE = "1.0.23"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
@@ -310,7 +310,7 @@ class SchoolOS(ctk.CTk):
         t = THEMES[self.theme_name]
         intro = ctk.CTkToplevel()
         intro.title("GC-OS Intro")
-        intro.overrideredirect(True)
+        intro.overridersdirect(True)
 
         try:
             intro.state("zoomed")
@@ -693,14 +693,13 @@ class SchoolOS(ctk.CTk):
             nu = dt.datetime.now()
             self.clock_label.configure(text=nu.strftime("%d-%m-%Y | %H:%M:%S"))
             
-            # Hier is de verandering toegepast: de titel blijft altijd hardcode "Dashboard"
             if self.dashboard_title_label and self.dashboard_title_label.winfo_exists():
                 self.dashboard_title_label.configure(text="Dashboard")
 
             self.after(1000, self.update_clock)
 
     # ============================================================
-    # HUISWERK BEHEER
+    # HUISWERK LOGICA
     # ============================================================
     def show_huiswerk(self):
         self.clear_main()
@@ -720,8 +719,7 @@ class SchoolOS(ctk.CTk):
         sb.pack(side="right", fill="y")
         self.hw_list.config(yscrollcommand=sb.set)
 
-        for h in self.data["huiswerk"]:
-            self.hw_list.insert(tk.END, f"{'✔' if h.get('afgerond') else '✘'} {h.get('datum')} - {h.get('vak')}: {h.get('beschrijving')}")
+        self._herlaad_huiswerk_lijst()
 
         right_frame = ctk.CTkFrame(container, corner_radius=15, fg_color=t["bg_card"])
         right_frame.pack(side="right", fill="y", padx=(10, 0))
@@ -741,15 +739,387 @@ class SchoolOS(ctk.CTk):
         ctk.CTkButton(right_frame, text="Toevoegen", fg_color=t["accent"], text_color="white", command=self.hw_toevoegen).pack(fill="x", padx=10, pady=(10, 5))
         ctk.CTkButton(right_frame, text="Afronden", fg_color=t["button_fg"], hover_color=t["button_hover"], text_color=t["button_text"], command=self.hw_afronden).pack(fill="x", padx=10, pady=5)
         ctk.CTkButton(right_frame, text="Verwijderen", fg_color=t["button_fg"], hover_color=t["button_hover"], text_color=t["button_text"], command=self.hw_verwijderen).pack(fill="x", padx=10, pady=5)
+        self.apply_theme()
 
-    # Placeholder functies om eventuele foutmeldingen bij ontbrekende logica te voorkomen
-    def show_rooster(self): pass
-    def show_notities(self): pass
-    def show_cijfers(self): pass
-    def show_settings(self): pass
-    def hw_toevoegen(self): pass
-    def hw_afronden(self): pass
-    def hw_verwijderen(self): pass
+    def _herlaad_huiswerk_lijst(self):
+        if self.hw_list:
+            self.hw_list.delete(0, tk.END)
+            for h in self.data["huiswerk"]:
+                status = "✔" if h.get("afgerond") else "✘"
+                self.hw_list.insert(tk.END, f"{status} {h.get('datum')} - {h.get('vak')}: {h.get('beschrijving')}")
+
+    def hw_toevoegen(self):
+        vak = self.hw_vak.get()
+        desc = self.hw_beschrijving.get().strip()
+        datum = self.hw_datum.get().strip()
+        if not desc or not datum:
+            messagebox.showerror("Fout", "Vul alle velden in.")
+            return
+        self.data["huiswerk"].append({"vak": vak, "beschrijving": desc, "datum": datum, "afgerond": False})
+        opslaan(self.data)
+        self._herlaad_huiswerk_lijst()
+        self.hw_beschrijving.delete(0, tk.END)
+        self.hw_datum.delete(0, tk.END)
+
+    def hw_afronden(self):
+        sel = self.hw_list.curselection()
+        if not sel: return
+        idx = sel[0]
+        self.data["huiswerk"][idx]["afgerond"] = not self.data["huiswerk"][idx]["afgerond"]
+        opslaan(self.data)
+        self._herlaad_huiswerk_lijst()
+
+    def hw_verwijderen(self):
+        sel = self.hw_list.curselection()
+        if not sel: return
+        idx = sel[0]
+        del self.data["huiswerk"][idx]
+        opslaan(self.data)
+        self._herlaad_huiswerk_lijst()
+
+    # ============================================================
+    # ROOSTER BEHEER
+    # ============================================================
+    def show_rooster(self):
+        self.clear_main()
+        t = THEMES[self.theme_name]
+        ctk.CTkLabel(self.main, text="Rooster Planner", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
+
+        nav_frame = ctk.CTkFrame(self.main, fg_color="transparent")
+        nav_frame.pack(fill="x", padx=20, pady=5)
+
+        ctk.CTkButton(nav_frame, text="◀ Vorige", width=80, fg_color=t["button_fg"], text_color=t["button_text"], hover_color=t["button_hover"], command=lambda: self._navigeer_rooster(-1)).pack(side="left", padx=2)
+        self.rooster_info_label = ctk.CTkLabel(nav_frame, text="", font=("Segoe UI", 14, "bold"), text_color=t["text"])
+        self.rooster_info_label.pack(side="left", padx=15)
+        ctk.CTkButton(nav_frame, text="Volgende ▶", width=80, fg_color=t["button_fg"], text_color=t["button_text"], hover_color=t["button_hover"], command=lambda: self._navigeer_rooster(1)).pack(side="left", padx=2)
+
+        self.stijl_btn = ctk.CTkButton(nav_frame, text=f"Weergave: {self.rooster_stijl}", fg_color=t["accent"], text_color="white", command=self._toggle_rooster_stijl)
+        self.stijl_btn.pack(side="right", padx=5)
+
+        container = ctk.CTkFrame(self.main, fg_color="transparent")
+        container.pack(fill="both", expand=True, padx=20, pady=(5, 20))
+
+        left_frame = ctk.CTkFrame(container, corner_radius=15, fg_color=t["bg_card"])
+        left_frame.pack(side="left", fill="both", expand=True, padx=(0, 10))
+
+        self.rooster_listbox = tk.Listbox(left_frame, font=("Segoe UI", 11), activestyle="none")
+        self.rooster_listbox.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+
+        right_frame = ctk.CTkFrame(container, corner_radius=15, fg_color=t["bg_card"])
+        right_frame.pack(side="right", fill="y", padx=(10, 0))
+
+        ctk.CTkLabel(right_frame, text="Les Toevoegen", font=("Segoe UI", 16, "bold"), text_color=t["text"]).pack(anchor="w", padx=10, pady=(10, 5))
+        self.rst_vak = ctk.CTkComboBox(right_frame, values=self.vakken_hw, state="readonly")
+        self.rst_vak.set(self.vakken_hw[0])
+        self.rst_vak.pack(fill="x", padx=10, pady=5)
+
+        self.rst_tijd = ctk.CTkEntry(right_frame, placeholder_text="uu:mm - uu:mm (bijv. 08:30-10:00)")
+        self.rst_tijd.pack(fill="x", padx=10, pady=5)
+
+        self.rst_datum = ctk.CTkEntry(right_frame, placeholder_text="yyyy-mm-dd")
+        self.rst_datum.pack(fill="x", padx=10, pady=5)
+
+        ctk.CTkButton(right_frame, text="📅 Kies datum", fg_color=t["button_fg"], text_color=t["button_text"], hover_color=t["button_hover"], command=lambda: kies_datum(self.rst_datum)).pack(fill="x", padx=10, pady=5)
+        ctk.CTkButton(right_frame, text="Toevoegen", fg_color=t["accent"], text_color="white", command=self._rooster_toevoegen).pack(fill="x", padx=10, pady=(10, 5))
+        ctk.CTkButton(right_frame, text="Verwijderen", fg_color=t["button_fg"], text_color=t["button_text"], hover_color=t["button_hover"], command=self._rooster_verwijderen).pack(fill="x", padx=10, pady=5)
+
+        self._herlaad_rooster()
+        self.apply_theme()
+
+    def _toggle_rooster_stijl(self):
+        self.rooster_stijl = "Dag" if self.rooster_stijl == "Week" else "Week"
+        self.stijl_btn.configure(text=f"Weergave: {self.rooster_stijl}")
+        self._herlaad_rooster()
+
+    def _navigeer_rooster(self, richting):
+        delta = dt.timedelta(weeks=richting) if self.rooster_stijl == "Week" else dt.timedelta(days=richting)
+        self.huidige_rooster_datum += delta
+        self._herlaad_rooster()
+
+    def _herlaad_rooster(self):
+        if not self.rooster_listbox: return
+        self.rooster_listbox.delete(0, tk.END)
+        
+        if self.rooster_stijl == "Week":
+            start = self.huidige_rooster_datum - dt.timedelta(days=self.huidige_rooster_datum.weekday())
+            eind = start + dt.timedelta(days=6)
+            self.rooster_info_label.configure(text=f"Week: {start.strftime('%d %b')} t/m {eind.strftime('%d %b %Y')}")
+            
+            geldige_lessen = []
+            for item in self.data["rooster"]:
+                try:
+                    d = dt.datetime.strptime(item["datum"], "%Y-%m-%d").date()
+                    if start <= d <= eind:
+                        geldige_lessen.append((d, item))
+                except Exception: pass
+            geldige_lessen.sort(key=lambda x: (x[0], x[1].get("tijd", "")))
+            for d, item in geldige_lessen:
+                self.rooster_listbox.insert(tk.END, f"[{d.strftime('%a %d-%m')}] {item['tijd']} -> {item['vak']}")
+        else:
+            self.rooster_info_label.configure(text=f"Dag: {self.huidige_rooster_datum.strftime('%A %d %B %Y')}")
+            geldige_lessen = []
+            for item in self.data["rooster"]:
+                if item["datum"] == self.huidige_rooster_datum.strftime("%Y-%m-%d"):
+                    geldige_lessen.append(item)
+            geldige_lessen.sort(key=lambda x: x.get("tijd", ""))
+            for item in geldige_lessen:
+                self.rooster_listbox.insert(tk.END, f"{item['tijd']} -> {item['vak']}")
+
+    def _rooster_toevoegen(self):
+        vak = self.rst_vak.get()
+        tijd = self.rst_tijd.get().strip()
+        datum = self.rst_datum.get().strip()
+        if not tijd or not datum:
+            messagebox.showerror("Fout", "Vul alle velden in.")
+            return
+        self.data["rooster"].append({"vak": vak, "tijd": tijd, "datum": datum})
+        opslaan(self.data)
+        self._herlaad_rooster()
+        self.rst_tijd.delete(0, tk.END)
+        self.rst_datum.delete(0, tk.END)
+
+    def _rooster_verwijderen(self):
+        sel = self.rooster_listbox.curselection()
+        if not sel: return
+        idx = sel[0]
+        
+        # Bepaal welk echt item verwijderd moet worden op basis van de huidige filter weergave
+        if self.rooster_stijl == "Week":
+            start = self.huidige_rooster_datum - dt.timedelta(days=self.huidige_rooster_datum.weekday())
+            eind = start + dt.timedelta(days=6)
+            geldige_lessen = []
+            for item in self.data["rooster"]:
+                try:
+                    d = dt.datetime.strptime(item["datum"], "%Y-%m-%d").date()
+                    if start <= d <= eind: geldige_lessen.append(item)
+                except Exception: pass
+            geldige_lessen.sort(key=lambda x: (x["datum"], x.get("tijd", "")))
+            target = geldige_lessen[idx]
+            self.data["rooster"].remove(target)
+        else:
+            geldige_lessen = [i for i in self.data["rooster"] if i["datum"] == self.huidige_rooster_datum.strftime("%Y-%m-%d")]
+            geldige_lessen.sort(key=lambda x: x.get("tijd", ""))
+            target = geldige_lessen[idx]
+            self.data["rooster"].remove(target)
+            
+        opslaan(self.data)
+        self._herlaad_rooster()
+
+    # ============================================================
+    # NOTITIES BEHEER
+    # ============================================================
+    def show_notities(self):
+        self.clear_main()
+        t = THEMES[self.theme_name]
+        ctk.CTkLabel(self.main, text="Notitieblok", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
+
+        container = ctk.CTkFrame(self.main, fg_color="transparent")
+        container.pack(fill="both", expand=True, padx=20, pady=(0, 20))
+
+        left_frame = ctk.CTkFrame(container, width=250, corner_radius=15, fg_color=t["bg_card"])
+        left_frame.pack(side="left", fill="y", padx=(0, 10))
+        left_frame.pack_propagate(False)
+
+        self.note_list = tk.Listbox(left_frame, font=("Segoe UI", 11), activestyle="none")
+        self.note_list.pack(fill="both", expand=True, padx=10, pady=10)
+        self.note_list.bind("<<ListboxSelect>>", self._laad_geselecteerde_notitie)
+
+        ctk.CTkButton(left_frame, text="+ Nieuwe Notitie", fg_color=t["accent"], text_color="white", command=self._notitie_nieuw).pack(fill="x", padx=10, pady=5)
+        ctk.CTkButton(left_frame, text="Verwijderen", fg_color=t["button_fg"], text_color=t["button_text"], hover_color=t["button_hover"], command=self._notitie_verwijderen).pack(fill="x", padx=10, pady=(0, 10))
+
+        right_frame = ctk.CTkFrame(container, corner_radius=15, fg_color=t["bg_card"])
+        right_frame.pack(side="right", fill="both", expand=True, padx=(10, 0))
+
+        self.note_text_area = tk.Text(right_frame, font=("Segoe UI", 12), bd=0, highlightthickness=0, wrap="word")
+        self.note_text_area.pack(fill="both", expand=True, padx=15, pady=15)
+        self.note_text_area.bind("<KeyRelease>", self._automatisch_opslaan_notitie)
+
+        self._herlaad_notitie_lijst()
+        self.apply_theme()
+
+    def _herlaad_notitie_lijst(self):
+        if self.note_list:
+            self.note_list.delete(0, tk.END)
+            for n in self.data["notities"]:
+                self.note_list.insert(tk.END, n.get("titel", "Lege notitie"))
+
+    def _laad_geselecteerde_notitie(self, event=None):
+        sel = self.note_list.curselection()
+        if not sel: return
+        idx = sel[0]
+        self.note_text_area.delete("1.0", tk.END)
+        self.note_text_area.insert("1.0", self.data["notities"][idx].get("inhoud", ""))
+
+    def _notitie_nieuw(self):
+        nieuwe_notitie = {"titel": "Nieuwe Notitie", "inhoud": ""}
+        self.data["notities"].append(nieuwe_notitie)
+        opslaan(self.data)
+        self._herlaad_notitie_lijst()
+        self.note_list.selection_clear(0, tk.END)
+        self.note_list.selection_set(tk.END)
+        self._laad_geselecteerde_notitie()
+
+    def _automatisch_opslaan_notitie(self, event=None):
+        sel = self.note_list.curselection()
+        if not sel: return
+        idx = sel[0]
+        inhoud = self.note_text_area.get("1.0", "end-1c")
+        
+        regels = [r.strip() for r in inhoud.split("\n") if r.strip()]
+        titel = regels[0][:25] if regels else "Lege notitie"
+        
+        self.data["notities"][idx]["inhoud"] = inhoud
+        self.data["notities"][idx]["titel"] = titel
+        opslaan(self.data)
+        
+        # Werk de titel live bij in de lijst zonder focus te verliezen
+        self.note_list.delete(idx)
+        self.note_list.insert(idx, titel)
+        self.note_list.selection_set(idx)
+
+    def _notitie_verwijderen(self):
+        sel = self.note_list.curselection()
+        if not sel: return
+        idx = sel[0]
+        del self.data["notities"][idx]
+        opslaan(self.data)
+        self.note_text_area.delete("1.0", tk.END)
+        self._herlaad_notitie_lijst()
+
+    # ============================================================
+    # CIJFERS REGISTRATIE LOGICA
+    # ============================================================
+    def show_cijfers(self):
+        self.clear_main()
+        t = THEMES[self.theme_name]
+        ctk.CTkLabel(self.main, text="Cijferregistratie", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
+
+        container = ctk.CTkFrame(self.main, fg_color="transparent")
+        container.pack(fill="both", expand=True, padx=20, pady=(0, 20))
+
+        left_frame = ctk.CTkFrame(container, corner_radius=15, fg_color=t["bg_card"])
+        left_frame.pack(side="left", fill="both", expand=True, padx=(0, 10))
+
+        self.cijfer_list = tk.Listbox(left_frame, font=("Segoe UI", 11), activestyle="none")
+        self.cijfer_list.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+
+        right_frame = ctk.CTkFrame(container, corner_radius=15, fg_color=t["bg_card"])
+        right_frame.pack(side="right", fill="y", padx=(10, 0))
+
+        ctk.CTkLabel(right_frame, text="Cijfer Toevoegen", font=("Segoe UI", 16, "bold"), text_color=t["text"]).pack(anchor="w", padx=10, pady=(10, 5))
+        self.cjf_vak = ctk.CTkComboBox(right_frame, values=self.vakken_hw, state="readonly")
+        self.cjf_vak.set(self.vakken_hw[0])
+        self.cjf_vak.pack(fill="x", padx=10, pady=5)
+
+        self.cjf_cijfer = ctk.CTkEntry(right_frame, placeholder_text="Cijfer (bijv. 7.5)")
+        self.cjf_cijfer.pack(fill="x", padx=10, pady=5)
+
+        self.cjf_periode = ctk.CTkComboBox(right_frame, values=self.periodes, state="readonly")
+        self.cjf_periode.set(self.periodes[0])
+        self.cjf_periode.pack(fill="x", padx=10, pady=5)
+
+        ctk.CTkButton(right_frame, text="Toevoegen", fg_color=t["accent"], text_color="white", command=self._cijfer_toevoegen).pack(fill="x", padx=10, pady=(10, 5))
+        ctk.CTkButton(right_frame, text="Verwijderen", fg_color=t["button_fg"], text_color=t["button_text"], hover_color=t["button_hover"], command=self._cijfer_verwijderen).pack(fill="x", padx=10, pady=5)
+
+        self.gemiddelden_box = ctk.CTkTextbox(right_frame, width=200, height=150, font=("Segoe UI", 12))
+        self.gemiddelden_box.pack(fill="x", padx=10, pady=10)
+
+        self._herlaad_cijfers()
+        self.apply_theme()
+
+    def _herlaad_cijfers(self):
+        if not self.cijfer_list: return
+        self.cijfer_list.delete(0, tk.END)
+        for c in self.data["cijfers"]:
+            self.cijfer_list.insert(tk.END, f"{c['vak']} - {c['cijfer']} ({c['periode']})")
+        
+        # Bereken periodieke gemiddelden live
+        stats = {p: [] for p in self.periodes}
+        totaal_cijfers = []
+        for c in self.data["cijfers"]:
+            try:
+                val = float(c["cijfer"])
+                stats[c["periode"]].append(val)
+                totaal_cijfers.append(val)
+            except ValueError: pass
+
+        self.gemiddelden_box.configure(state="normal")
+        self.gemiddelden_box.delete("1.0", tk.END)
+        self.gemiddelden_box.insert(tk.END, "📊 GEMIDDELDEN:\n\n")
+        for p in self.periodes:
+            cijfers = stats[p]
+            gem = sum(cijfers) / len(cijfers) if cijfers else 0.0
+            self.gemiddelden_box.insert(tk.END, f"{p}: {f'{gem:.1f}' if gem > 0 else 'N/A'}\n")
+        
+        alg_gem = sum(totaal_cijfers) / len(totaal_cijfers) if totaal_cijfers else 0.0
+        self.gemiddelden_box.insert(tk.END, f"\nAlgemeen Totaal: {f'{alg_gem:.2f}' if alg_gem > 0 else 'N/A'}")
+        self.gemiddelden_box.configure(state="disabled")
+
+    def _cijfer_toevoegen(self):
+        vak = self.cjf_vak.get()
+        cijfer_str = self.cjf_cijfer.get().replace(",", ".")
+        periode = self.cjf_periode.get()
+        try:
+            val = float(cijfer_str)
+            if not (1.0 <= val <= 10.0): raise ValueError
+        except ValueError:
+            messagebox.showerror("Fout", "Voer een geldig cijfer in tussen 1.0 en 10.0")
+            return
+        
+        self.data["cijfers"].append({"vak": vak, "cijfer": f"{val:.1f}", "periode": periode})
+        opslaan(self.data)
+        self._herlaad_cijfers()
+        self.cjf_cijfer.delete(0, tk.END)
+
+    def _cijfer_verwijderen(self):
+        sel = self.cijfer_list.curselection()
+        if not sel: return
+        idx = sel[0]
+        del self.data["cijfers"][idx]
+        opslaan(self.data)
+        self._herlaad_cijfers()
+
+    # ============================================================
+    # INSTELLINGEN BEHEER
+    # ============================================================
+    def show_settings(self):
+        self.clear_main()
+        t = THEMES[self.theme_name]
+        ctk.CTkLabel(self.main, text="Instellingen", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
+
+        card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
+        card.pack(fill="x", padx=20, pady=10)
+
+        ctk.CTkLabel(card, text="Personaliseer interface", font=("Segoe UI", 16, "bold"), text_color=t["text"]).pack(anchor="w", padx=15, pady=10)
+
+        ctk.CTkLabel(card, text="Gebruikersnaam:", text_color=t["text"]).pack(anchor="w", padx=15, pady=2)
+        self.naam_entry = ctk.CTkEntry(card, width=300)
+        self.naam_entry.insert(0, self.data["settings"].get("naam", ""))
+        self.naam_entry.pack(anchor="w", padx=15, pady=5)
+
+        ctk.CTkLabel(card, text="Kleurthema:", text_color=t["text"]).pack(anchor="w", padx=15, pady=2)
+        self.theme_combo = ctk.CTkComboBox(card, values=list(THEMES.keys()), state="readonly")
+        self.theme_combo.set(self.theme_name)
+        self.theme_combo.pack(anchor="w", padx=15, pady=5)
+
+        ctk.CTkButton(card, text="Opslaan & Toepassen", fg_color=t["accent"], text_color="white", command=self._instellingen_opslaan).pack(anchor="w", padx=15, pady=20)
+        
+        # Handmatige update knop voor de gebruiker
+        ctk.CTkButton(card, text="🔄 Zoeken naar updates", fg_color=t["button_fg"], text_color=t["button_text"], hover_color=t["button_hover"], command=lambda: self.toon_update_laadbalk(silent=False)).pack(anchor="w", padx=15, pady=(0, 15))
+        
+        self.apply_theme()
+
+    def _instellingen_opslaan(self):
+        naam = self.naam_entry.get().strip()
+        nieuw_thema = self.theme_combo.get()
+        
+        self.data["settings"]["naam"] = naam
+        self.data["settings"]["theme"] = nieuw_thema
+        opslaan(self.data)
+        
+        self.theme_name = nieuw_thema
+        self.apply_theme()
+        messagebox.showinfo("Succes", "Instellingen succesvol bijgewerkt!")
 
 if __name__ == "__main__":
     app = SchoolOS()
