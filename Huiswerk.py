@@ -16,7 +16,7 @@ import urllib.request
 # 1. GLOBALE CONFIGURATIE, GITHUB LINKS & SYSTEM ARCHITECTURE
 # ==============================================================================
 
-HUIDIGE_VERSIE = "1.0.9"
+HUIDIGE_VERSIE = "9.1v"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
