@@ -14,7 +14,7 @@ import threading
 # ============================================================
 # VERSIONING & GITHUB LINKS
 # ============================================================
-HUIDIGE_VERSIE = "1.1.0"
+HUIDIGE_VERSIE = "9.6v"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
