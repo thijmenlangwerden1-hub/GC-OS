@@ -12,12 +12,13 @@ import urllib.request
 import threading
 
 # ============================================================
-# SYSTEM CONFIGURATION & VERSIONING (v9.8.2v)
+# SYSTEM CONFIGURATION & VERSIONING (v9.8.3v)
 # ============================================================
-HUIDIGE_VERSIE = "9.8.5v"
+HUIDIGE_VERSIE = "0.1v"
+# URLs zijn omgezet naar de meest stabiele raw-formats om urllib-errors te voorkomen
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
-GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
-GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
+GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/Huiswerk.py"
+GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/changelog.txt"
 
 try:
     import matplotlib
@@ -106,7 +107,6 @@ def opslaan(data):
         messagebox.showerror("Systeemfout", f"Kan data niet wegschrijven:\n{e}")
 
 def _standaard_rooster():
-    # Genereer een maandstructuur bestaande uit 4 weken
     rooster = {}
     dagen = ["Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag"]
     for week in range(1, 5):
@@ -144,7 +144,6 @@ def laden():
     if "notities" not in data: data["notities"] = []
     if "cijfers" not in data: data["cijfers"] = []
     if "rooster" not in data: data["rooster"] = _standaard_rooster()
-    # Migratiecontrole voor oude wekelijkse roosters naar maandoverzicht
     if "Week 1" not in data["rooster"]: data["rooster"] = _standaard_rooster()
     if "settings" not in data: data["settings"] = {"theme": "Cyberpunk (Dark)"}
     return data
@@ -183,7 +182,6 @@ class SchoolOS(ctk.CTk):
         self.geometry("1280x760")
         self.minsize(1080, 700)
 
-        # Core app variabelen
         self.vakken_hw = ["Nederlands", "Engels", "Rekenen", "Hardware", "Netwerken", "Techlab", "Burgerschap", "Loopbaan", "Project"]
         self.periodes = ["Periode 1", "Periode 2", "Periode 3", "Periode 4"]
         self.sidebar_buttons = []
@@ -265,7 +263,7 @@ class SchoolOS(ctk.CTk):
             widget.destroy()
 
     # ============================================================
-    # COOL UPDATE & BOOT GUI LOADER ENGINE
+    # REGEERDE & GEOPTIMALISEERDE UPDATE ENGINE
     # ============================================================
     def toon_post_update_loader(self):
         self.clear_main()
@@ -295,21 +293,21 @@ class SchoolOS(ctk.CTk):
                 elif stap == 80: status_lbl.configure(text="Systeemregisters en UI-Thema's herladen...")
                 elif stap == 100: status_lbl.configure(text="Update voltooid! Systeem paraat.")
                 
-                wachttijd = 15 if stap < 80 else (30 if stap < 95 else 80)
+                wachttijd = 10 if stap < 80 else 20
                 self.after(wachttijd, lambda: simuleer_installatie(stap + 1))
             else:
-                self.after(600, lambda: [
+                self.after(400, lambda: [
                     self.sidebar.pack(side="left", fill="y"),
                     sys.argv.remove("--post-update") if "--post-update" in sys.argv else None,
                     self.show_dashboard()
                 ])
 
-        self.after(400, lambda: simuleer_installatie(0))
+        self.after(200, lambda: simuleer_installatie(0))
 
     def _check_updates_background(self):
         try:
-            req = urllib.request.Request(GITHUB_VERSION_URL, headers={'User-Agent': 'Mozilla/5.0'})
-            with urllib.request.urlopen(req, timeout=5) as response:
+            req = urllib.request.Request(GITHUB_VERSION_URL, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+            with urllib.request.urlopen(req, timeout=7) as response:
                 remote_version = response.read().decode('utf-8').strip()
             if remote_version != HUIDIGE_VERSIE:
                 self.after(1500, lambda: self._toon_update_dialoog(remote_version))
@@ -317,20 +315,20 @@ class SchoolOS(ctk.CTk):
 
     def _handmatige_update_check(self):
         try:
-            req = urllib.request.Request(GITHUB_VERSION_URL, headers={'User-Agent': 'Mozilla/5.0'})
-            with urllib.request.urlopen(req, timeout=5) as response:
+            req = urllib.request.Request(GITHUB_VERSION_URL, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+            with urllib.request.urlopen(req, timeout=7) as response:
                 remote_version = response.read().decode('utf-8').strip()
             if remote_version == HUIDIGE_VERSIE:
                 messagebox.showinfo("GC-OS Update Sync", f"Je draait de allernieuwste Core: v{HUIDIGE_VERSIE} 😎")
             else:
                 self._toon_update_dialoog(remote_version)
         except Exception as e:
-            messagebox.showerror("Update Fout", f"Verbinding met GitHub Core geweigerd:\n{e}")
+            messagebox.showerror("Update Fout", f"Verbinding met GitHub mislukt.\nControleer je internetverbinding of URL structuren.\n\nFoutmelding: {e}")
 
     def _toon_update_dialoog(self, nieuwe_versie):
         changelog = "Geen live changelog data gevonden op GitHub repository."
         try:
-            req = urllib.request.Request(GITHUB_CHANGELOG_URL, headers={'User-Agent': 'Mozilla/5.0'})
+            req = urllib.request.Request(GITHUB_CHANGELOG_URL, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
             with urllib.request.urlopen(req, timeout=5) as response:
                 changelog = response.read().decode('utf-8')
         except Exception: pass
@@ -366,34 +364,44 @@ class SchoolOS(ctk.CTk):
             def download_async():
                 try:
                     for i in range(1, 41):
-                        time.sleep(0.02)
-                        self.after(0, lambda v=i: [progress_dl.set(v/100), status_dl_lbl.configure(text=f"Downloaden van repository componenten... ({v}%)")])
+                        time.sleep(0.01)
+                        self.after(0, lambda v=i: [progress_dl.set(v/100), status_dl_lbl.configure(text=f"Verbinding maken met server componenten... ({v}%)")])
                     
-                    req_script = urllib.request.Request(GITHUB_SCRIPT_URL, headers={'User-Agent': 'Mozilla/5.0'})
+                    req_script = urllib.request.Request(GITHUB_SCRIPT_URL, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
                     with urllib.request.urlopen(req_script) as response:
                         nieuw_script = response.read().decode('utf-8')
                     
                     for i in range(41, 101):
                         time.sleep(0.01)
-                        self.after(0, lambda v=i: [progress_dl.set(v/100), status_dl_lbl.configure(text=f"Script overschrijven en back-up genereren... ({v}%)")])
+                        self.after(0, lambda v=i: [progress_dl.set(v/100), status_dl_lbl.configure(text=f"Buffer overschrijven en controleren... ({v}%)")])
                     
-                    huidig_script = sys.argv[0]
-                    with open(huidig_script, "w", encoding="utf-8") as f:
+                    # GEOPTIMALISEERDE SCHRIJFMETHODE: Voorkomt lock-up crashes op Windows systemen
+                    huidig_script = os.path.abspath(sys.argv[0])
+                    tijdelijk_script = squid_path = huidig_script + ".tmp"
+                    
+                    with open(tijdelijk_script, "w", encoding="utf-8") as f:
                         f.write(nieuw_script)
-                        
-                    self.after(300, lambda: succes_update())
+                    
+                    self.after(300, lambda: succes_update(huidig_script, tijdelijk_script))
                 except Exception as e:
                     self.after(0, lambda: fout_update(e))
 
-            def succes_update():
+            def succes_update(orig_path, temp_path):
                 top.destroy()
-                os.execv(sys.executable, ['python', sys.argv[0], '--post-update'])
+                # Maak een extern batch-commando om de file replace uit te voeren na afsluiten
+                if os.name == 'nt':
+                    cmd = f"timeout /t 1 /nobreak && move /y \"{temp_path}\" \"{orig_path}\" && start python \"{orig_path}\" --post-update"
+                    subprocess.Popen(cmd, shell=True)
+                else:
+                    cmd = f"sleep 1 && mv -f \"{temp_path}\" \"{orig_path}\" && python3 \"{orig_path}\" --post-update &"
+                    subprocess.Popen(cmd, shell=True)
+                sys.exit()
 
             def fout_update(err):
                 status_dl_lbl.configure(text="Fout opgetreden!")
                 progress_dl.pack_forget()
                 btn_frame.pack(fill="x", padx=30, pady=15)
-                messagebox.showerror("Update Mislukt", f"Fout tijdens overschrijven script:\n{err}")
+                messagebox.showerror("Update Mislukt", f"Fout tijdens ophalen van code:\n{err}")
 
             threading.Thread(target=download_async, daemon=True).start()
 
@@ -572,7 +580,7 @@ class SchoolOS(ctk.CTk):
         self._herlaad_huiswerk_lijst()
 
     # ============================================================
-    # ENGINE CORE MODULES: 3. INTERACTIEF MAANDOVERZICHT ROOSTER
+    # ENGINE CORE MODULES: 3. MAANDOVERZICHT ROOSTER
     # ============================================================
     def show_rooster(self):
         self.clear_main()
@@ -583,7 +591,6 @@ class SchoolOS(ctk.CTk):
         
         ctk.CTkLabel(top_bar, text="📅 Wekelijks & Maandelijks Rooster Matrix", font=("Segoe UI", 26, "bold"), text_color=t["text"]).pack(side="left")
         
-        # Maand selector (gekoppeld aan 4 weken van de matrix)
         self.week_selector = ctk.CTkComboBox(top_bar, values=["Week 1", "Week 2", "Week 3", "Week 4"], state="readonly", width=120, command=self._wissel_rooster_week)
         self.week_selector.set(self.huidige_rooster_week)
         self.week_selector.pack(side="right", padx=10)
@@ -705,7 +712,7 @@ class SchoolOS(ctk.CTk):
         self.note_txt.delete("1.0", tk.END)
 
     # ============================================================
-    # ENGINE CORE MODULES: 5. OPERATIONELE CIJFER MATRIX & ANALYSE
+    # ENGINE CORE MODULES: 5. CIJFER MATRIX
     # ============================================================
     def show_cijfers(self):
         self.clear_main()
@@ -725,12 +732,10 @@ class SchoolOS(ctk.CTk):
         left_side = ctk.CTkFrame(container, fg_color="transparent")
         left_side.pack(side="left", fill="both", expand=True, padx=(0, 15))
         
-        # Grafiekscherm bovenin
         self.graph_card = ctk.CTkFrame(left_side, corner_radius=15, fg_color=t["bg_card"], border_width=1, border_color=t["border_color"])
         self.graph_card.pack(fill="both", expand=True, pady=(0, 15))
         self._teken_gecombineerde_grafiek()
         
-        # Cijferlijst onderin
         list_card = ctk.CTkFrame(left_side, corner_radius=15, fg_color=t["bg_card"], height=220, border_width=1, border_color=t["border_color"])
         list_card.pack(fill="x")
         list_card.pack_propagate(False)
@@ -738,12 +743,10 @@ class SchoolOS(ctk.CTk):
         self.cijfer_list = tk.Listbox(list_card, font=("Segoe UI", 11), borderwidth=0, highlightthickness=0, bg=t["bg_card"], fg=t["text"], selectbackground=t["accent"], selectforeground=t["bg_root"])
         self.cijfer_list.pack(side="left", fill="both", expand=True, padx=15, pady=15)
         
-        # Verwijderknop naast cijferlijst
         ctk.CTkButton(list_card, text="🗑 Wissen", width=80, fg_color="#ff4757", text_color="#ffffff", command=self._verwijder_cijfer).pack(side="right", padx=15, pady=15, anchor="s")
         
         self._herlaad_cijfer_matrix()
 
-        # Invoer paneel rechts
         right_side = ctk.CTkFrame(container, corner_radius=15, fg_color=t["bg_card"], width=310, border_width=1, border_color=t["border_color"])
         right_side.pack(side="right", fill="y")
         right_side.pack_propagate(False)
@@ -804,7 +807,6 @@ class SchoolOS(ctk.CTk):
         sel = self.cijfer_list.curselection()
         if not sel: return
         
-        # Zoek de juiste index op in de originele dataset (i.v.m. actieve filters)
         gefilterde_items = []
         for i, c in enumerate(self.data["cijfers"]):
             p = c.get("periode", "Periode 1")
@@ -821,7 +823,6 @@ class SchoolOS(ctk.CTk):
         for w in self.graph_card.winfo_children(): w.destroy()
         t = THEMES[self.theme_name]
         
-        # Data verzamelen & filteren
         punten = []
         labels = []
         for c in self.data["cijfers"]:
@@ -829,10 +830,9 @@ class SchoolOS(ctk.CTk):
                 continue
             try:
                 punten.append(float(c["cijfer"]))
-                labels.append(c["vak"][:4])  # Kort de namen af voor het scherm
+                labels.append(c["vak"][:4])
             except Exception: pass
 
-        # Maak matplotlib figuur aan
         fig = Figure(figsize=(5, 2.2), dpi=100)
         fig.patch.set_facecolor(t["bg_card"])
         ax = fig.add_subplot(111)
@@ -858,7 +858,7 @@ class SchoolOS(ctk.CTk):
         canvas.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
 
     # ============================================================
-    # CONFIGURATIE & INSTELLINGEN INTERFACE
+    # INSTELLINGEN INTERFACE
     # ============================================================
     def show_settings(self):
         self.clear_main()
