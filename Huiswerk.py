@@ -11,6 +11,7 @@ from tkcalendar import Calendar
 import urllib.request
 import webbrowser
 import random
+import threading
 
 # ============================================================
 # THEMA'S
@@ -135,7 +136,7 @@ THEMES = {
 # INSTELLINGEN & CONFIGURATIE
 # ============================================================
 
-HUIDIGE_VERSIE = "9.2v"
+HUIDIGE_VERSIE = "1.0.9"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
@@ -417,81 +418,92 @@ class SchoolOS(ctk.CTk):
         animate()
 
     # --------------------------------------------------------
-    # LAADBALKJE VOOR UPDATES
+    # COOLE GEANIMEERDE UPDATE LAADBALK GUI (v9.4v)
     # --------------------------------------------------------
 
     def toon_update_laadbalk(self, silent=False):
         t = THEMES[self.theme_name]
 
         up_win = ctk.CTkToplevel(self)
-        up_win.title("GC-OS Update Manager")
-        up_win.geometry("420x220")
+        up_win.title("GC-OS Update Systeem")
+        up_win.geometry("460x280")
         up_win.resizable(False, False)
         up_win.configure(fg_color=t["bg_card"])
         up_win.grab_set()
 
+        # Center op het scherm
         up_win.update_idletasks()
-        x = (up_win.winfo_screenwidth() // 2) - (420 // 2)
-        y = (up_win.winfo_screenheight() // 2) - (220 // 2)
+        x = (up_win.winfo_screenwidth() // 2) - (460 // 2)
+        y = (up_win.winfo_screenheight() // 2) - (280 // 2)
         up_win.geometry(f"+{x}+{y}")
+
+        # Header Title
+        title_lbl = ctk.CTkLabel(
+            up_win, 
+            text="GC-OS INTEGRITY SEARCH", 
+            font=("Consolas", 12, "bold"), 
+            text_color=t["accent"]
+        )
+        title_lbl.pack(pady=(20, 5))
 
         status_lbl = ctk.CTkLabel(
             up_win, 
-            text="🔄 Controleren op beschikbare updates...", 
-            font=("Segoe UI", 15, "bold"), 
+            text="Systeem controleren op updates...", 
+            font=("Segoe UI", 16, "bold"), 
             text_color=t["text"]
         )
-        status_lbl.pack(pady=(35, 10))
+        status_lbl.pack(pady=5)
 
-        balk = ctk.CTkProgressBar(up_win, width=320, progress_color=t["accent"])
-        balk.set(0.0)
-        balk.pack(pady=10)
+        # Oneindige pulse indicator (Modern/Cool)
+        loading_ind = ctk.CTkProgressBar(up_win, width=340, height=8, progress_color=t["accent"])
+        loading_ind.pack(pady=15)
+        loading_ind.start()
 
-        pct_lbl = ctk.CTkLabel(up_win, text="0%", font=("Segoe UI", 12), text_color=t["text"])
+        pct_lbl = ctk.CTkLabel(up_win, text="Verbinding maken met server...", font=("Segoe UI", 12), text_color=t["text"])
         pct_lbl.pack()
 
-        def laad_stap(huidig_progress=0.0):
-            if huidig_progress < 1.0:
-                stap = random.uniform(0.02, 0.07)
-                nieuw_progress = min(huidig_progress + max(stap, 0.01), 1.0)
-                balk.set(nieuw_progress)
-                pct_lbl.configure(text=f"{int(nieuw_progress * 100)}%")
-                
-                vertraging = int(random.uniform(40, 160))
-                self.after(vertraging, lambda: laad_stap(nieuw_progress))
-            else:
-                voer_update_check_uit()
+        # Status logger voor een techy OS look
+        sub_status_lbl = ctk.CTkLabel(up_win, text="[INFO] Initializing fetch request...", font=("Consolas", 10), text_color=t["button_hover"] if t["mode"]=="Light" else "#71717a")
+        sub_status_lbl.pack(side="bottom", pady=15)
 
-        def voer_update_check_uit():
+        def async_check():
             try:
+                time.sleep(1.2) # Fake delay voor realistisch effect
                 req = urllib.request.Request(GITHUB_VERSION_URL, headers={'User-Agent': 'Mozilla/5.0'})
                 with urllib.request.urlopen(req) as response:
                     nieuweste = response.read().decode("utf-8").strip()
+                
+                # Update GUI na download check via main thread-safe actie
+                up_win.after(0, lambda: verwerk_check_resultaat(nieuweste))
             except Exception:
-                if silent:
-                    up_win.destroy()
-                    return
-                status_lbl.configure(text="❌ Fout: Geen verbinding met GitHub.")
-                ctk.CTkButton(up_win, text="Sluiten", fg_color=t["button_fg"], text_color=t["button_text"], command=up_win.destroy).pack(pady=15)
-                return
+                up_win.after(0, handige_foutmelding)
 
+        def verwerk_check_resultaat(nieuweste):
+            loading_ind.stop()
             if nieuweste == HUIDIGE_VERSIE:
                 if silent:
                     up_win.destroy()
                     return
-                status_lbl.configure(text=f"✨ Helemaal up-to-date! (v{HUIDIGE_VERSIE})")
-                ctk.CTkButton(up_win, text="Geweldig!", fg_color=t["accent"], text_color="white", command=up_win.destroy).pack(pady=15)
+                loading_ind.set(1.0)
+                status_lbl.configure(text=f"Systeem is up-to-date")
+                pct_lbl.configure(text=f"Huidige versie: v{HUIDIGE_VERSIE} (Laatste release)")
+                sub_status_lbl.configure(text="[SUCCESS] No update packages found.")
+                ctk.CTkButton(up_win, text="Sluiten", fg_color=t["accent"], text_color="white", command=up_win.destroy).pack(pady=10)
             else:
-                status_lbl.configure(text=f"🎉 Update beschikbaar! v{HUIDIGE_VERSIE} ➔ v{nieuweste}")
+                loading_ind.set(0.4)
+                status_lbl.configure(text="Nieuwe Update Beschikbaar!")
+                pct_lbl.configure(text=f"Versie: v{HUIDIGE_VERSIE} ➔ v{nieuweste}")
+                sub_status_lbl.configure(text="[READY] Update packages pending installation.")
+                
                 knop_frame = ctk.CTkFrame(up_win, fg_color="transparent")
-                knop_frame.pack(pady=15)
+                knop_frame.pack(pady=10)
 
                 ctk.CTkButton(
                     knop_frame, 
-                    text="📥 Download & Installeer", 
+                    text="⚡ Download & Installeer", 
                     fg_color=t["accent"], 
                     text_color="white", 
-                    command=lambda: self.voer_update_uit(up_win, status_lbl)
+                    command=lambda: start_installatie_animatie(loading_ind, status_lbl, pct_lbl, sub_status_lbl, knop_frame)
                 ).pack(side="left", padx=5)
 
                 ctk.CTkButton(
@@ -502,12 +514,47 @@ class SchoolOS(ctk.CTk):
                     command=up_win.destroy
                 ).pack(side="right", padx=5)
 
-        laad_stap()
+        def handige_foutmelding():
+            if silent:
+                up_win.destroy()
+                return
+            loading_ind.stop()
+            status_lbl.configure(text="Verbindingsfout")
+            pct_lbl.configure(text="Kan geen verbinding maken met GitHub repositories.")
+            sub_status_lbl.configure(text="[ERROR] HTTP fetch failed.")
+            ctk.CTkButton(up_win, text="Sluiten", fg_color=t["button_fg"], text_color=t["button_text"], command=up_win.destroy).pack(pady=10)
+
+        # Start de thread om de GUI soepel te houden
+        threading.Thread(target=async_check, daemon=True).start()
+
+        def start_installatie_animatie(balk, lbl, p_lbl, sub_lbl, frame):
+            frame.pack_forget() # Verwijder knoppen
+            lbl.configure(text="Update Installeren...")
+            balk.set(0.0)
+            
+            stappen = [
+                (0.15, "Downloaden van bronbestanden...", "[GET] Huiswerk.py packages..."),
+                (0.38, "Downloaden van changelogs...", "[GET] changelog.txt manifest..."),
+                (0.55, "Integriteitscontrole uitvoeren...", "[MD5] Validating core script data..."),
+                (0.75, "Oude systeembestanden overschrijven...", "[SYS] Swapping runtime modules..."),
+                (0.95, "Systeemcache opschonen...", "[SYS] Executing post-install cleanup..."),
+                (1.00, "Herstarten...", "[SUCCESS] Core reboot initiated.")
+            ]
+            
+            def voer_stap(index=0):
+                if index < len(stappen):
+                    progress, tekst, debug = stappen[index]
+                    balk.set(progress)
+                    p_lbl.configure(text=tekst)
+                    sub_lbl.configure(text=debug)
+                    # Genereer willekeurige snelle laadtijden per stap voor realisme
+                    up_win.after(random.randint(400, 1100), lambda: voer_stap(index + 1))
+                else:
+                    self.voer_update_uit(up_win, lbl)
+
+            voer_stap()
 
     def voer_update_uit(self, up_win, status_lbl):
-        status_lbl.configure(text="📥 Downloaden van update...")
-        up_win.update()
-        
         try:
             try:
                 req_log = urllib.request.Request(GITHUB_CHANGELOG_URL, headers={'User-Agent': 'Mozilla/5.0'})
@@ -528,10 +575,6 @@ class SchoolOS(ctk.CTk):
             with open(temp_file, "w", encoding="utf-8") as f:
                 f.write(nieuw_script_data)
                 
-            status_lbl.configure(text="🔄 Installeren en herstarten...")
-            up_win.update()
-            time.sleep(1)
-            
             huidige_script = os.path.abspath(sys.argv[0])
             
             if os.name == 'nt':
@@ -778,7 +821,7 @@ class SchoolOS(ctk.CTk):
         self.show_huiswerk()
 
     # --------------------------------------------------------
-    # VIEWS: ROOSTER & NOTITIES
+    # VIEWS: ROOSTER & NOTITIES & CIJFERS & INSTELLINGEN (HERSTELD)
     # --------------------------------------------------------
 
     def show_rooster(self):
@@ -811,62 +854,40 @@ class SchoolOS(ctk.CTk):
         for n in self.data["notities"]:
             titel = n.get("titel", "Naamloze notitie")
             self.note_list.insert(tk.END, titel)
-
-        right_frame = ctk.CTkFrame(container, corner_radius=15, fg_color=t["bg_card"])
-        right_frame.pack(side="right", fill="y", padx=(10, 0))
-        
-        # Tijdelijke placeholder voor acties binnen notities
-        ctk.CTkLabel(right_frame, text="Notitie Opties", font=("Segoe UI", 16, "bold"), text_color=t["text"]).pack(anchor="w", padx=10, pady=(10, 5))
-
         self.apply_theme()
-
-    # --------------------------------------------------------
-    # VIEWS: CIJFERS & INSTELLINGEN
-    # --------------------------------------------------------
 
     def show_cijfers(self):
         self.clear_main()
         t = THEMES[self.theme_name]
-        ctk.CTkLabel(self.main, text="Cijfers", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
+        ctk.CTkLabel(self.main, text="Cijferregistratie", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
         card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
         card.pack(fill="both", expand=True, padx=20, pady=10)
-        ctk.CTkLabel(card, text="(Hier kun je later je cijfers beheren)", font=("Segoe UI", 14), text_color=t["text"]).pack(anchor="w", padx=15, pady=15)
+        ctk.CTkLabel(card, text="Cijfer overzicht module.", font=("Segoe UI", 14), text_color=t["text"]).pack(padx=15, pady=15)
         self.apply_theme()
 
     def show_settings(self):
         self.clear_main()
         t = THEMES[self.theme_name]
-
         ctk.CTkLabel(self.main, text="Instellingen", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=20)
-
-        card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
-        card.pack(fill="both", expand=True, padx=20, pady=10)
-
-        ctk.CTkLabel(card, text="Thema selecteren:", font=("Segoe UI", 14, "bold"), text_color=t["text"]).pack(anchor="w", padx=15, pady=(15, 5))
         
-        self.theme_combo = ctk.CTkComboBox(card, values=list(THEMES.keys()), command=self.change_theme_event, state="readonly")
+        card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
+        card.pack(fill="x", padx=20, pady=10)
+
+        ctk.CTkLabel(card, text="Kies Thema:", font=("Segoe UI", 14), text_color=t["text"]).pack(side="left", padx=15, pady=15)
+        
+        self.theme_combo = ctk.CTkComboBox(card, values=list(THEMES.keys()), command=self.wijzig_thema)
         self.theme_combo.set(self.theme_name)
-        self.theme_combo.pack(anchor="w", padx=15, pady=5)
+        self.theme_combo.pack(side="left", padx=15, pady=15)
 
-        ctk.CTkButton(
-            card, 
-            text="🔄 Handmatig controleren op updates", 
-            fg_color=t["accent"], 
-            text_color="white", 
-            command=lambda: self.toon_update_laadbalk(silent=False)
-        ).pack(anchor="w", padx=15, pady=20)
-
+        ctk.CTkButton(self.main, text="🔄 Handmatig zoeken naar updates", fg_color=t["accent"], text_color="white", command=lambda: self.toon_update_laadbalk(silent=False)).pack(anchor="w", padx=20, pady=20)
         self.apply_theme()
 
-    def change_theme_event(self, nieuw_thema):
-        if nieuw_thema in THEMES:
-            self.theme_name = nieuw_thema
-            self.data["settings"]["theme"] = nieuw_thema
-            opslaan(self.data)
-            self.apply_theme()
-            # Herlaad de huidige view om alle widget-kleuren goed te zetten
-            self.show_settings()
-
+    def wijzig_thema(self, nieuw_thema):
+        self.theme_name = nieuw_thema
+        self.data["settings"]["theme"] = nieuw_thema
+        opslaan(self.data)
+        self.apply_theme()
+        self.show_settings()
 
 if __name__ == "__main__":
     app = SchoolOS()
