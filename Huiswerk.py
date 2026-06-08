@@ -13,7 +13,7 @@ import webbrowser
 import random
 
 # ============================================================
-# THEMA'S (Hersteld en geoptimaliseerd)
+# THEMA'S
 # ============================================================
 
 THEMES = {
@@ -135,7 +135,7 @@ THEMES = {
 # INSTELLINGEN & CONFIGURATIE
 # ============================================================
 
-HUIDIGE_VERSIE = "5.2v"
+HUIDIGE_VERSIE = "5.3v"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
@@ -175,8 +175,6 @@ def kies_datum(entry_widget):
 def _standaard_vrijedagen():
     vandaag = dt.date.today()
     jaar = vandaag.year
-    volgend = jaar + 1
-
     dagen = [
         {"naam": "Nieuwjaarsdag", "datum": f"{jaar}-01-01"},
         {"naam": "Goede Vrijdag", "datum": f"{jaar}-03-29"},
@@ -189,11 +187,6 @@ def _standaard_vrijedagen():
         {"naam": "2e Pinksterdag", "datum": f"{jaar}-05-20"},
         {"naam": "Kerstmis (1e)", "datum": f"{jaar}-12-25"},
         {"naam": "Kerstmis (2e)", "datum": f"{jaar}-12-26"},
-        {"naam": "Voorjaarsvakantie", "datum": f"{jaar}-02-17"},
-        {"naam": "Meivakantie", "datum": f"{jaar}-05-01"},
-        {"naam": "Zomervakantie", "datum": f"{jaar}-07-15"},
-        {"naam": "Herfstvakantie", "datum": f"{jaar}-10-21"},
-        {"naam": "Kerstvacantie", "datum": f"{jaar}-12-23"},
     ]
     return dagen
 
@@ -241,7 +234,6 @@ class SchoolOS(ctk.CTk):
         ctk.set_default_color_theme("blue")
 
         self.title("GraafschapCollege‑OS")
-        self.geometry("1150://680")
         self.geometry("1150x680")
         self.minsize(1000, 600)
 
@@ -373,7 +365,6 @@ class SchoolOS(ctk.CTk):
         y = (up_win.winfo_screenheight() // 2) - (280 // 2)
         up_win.geometry(f"+{x}+{y}")
 
-        # Coolere UI elementen
         ctk.CTkLabel(up_win, text="SYSTEM INTELLIGENCE UPDATE", font=("Courier New", 11, "bold"), text_color=t["accent"]).pack(pady=(20, 0))
         
         status_lbl = ctk.CTkLabel(up_win, text="Verbinding maken met server...", font=("Segoe UI", 16, "bold"), text_color=t["text"])
@@ -391,9 +382,8 @@ class SchoolOS(ctk.CTk):
                 stap = random.uniform(0.03, 0.09)
                 nieuw_progress = min(huidig_progress + stap, 1.0)
                 balk.set(nieuw_progress)
-                pct_lbl.configure(text=f"Dowloading packages... {int(nieuw_progress * 100)}%")
+                pct_lbl.configure(text=f"Downloading packages... {int(nieuw_progress * 100)}%")
                 
-                # Dynamische statusteksten voor de 'cool-factor'
                 if nieuw_progress > 0.3 and nieuw_progress < 0.6:
                     status_lbl.configure(text="⚡ Handshaking protocols controleren...")
                 elif nieuw_progress >= 0.6 and nieuw_progress < 0.9:
@@ -501,18 +491,6 @@ class SchoolOS(ctk.CTk):
             widget.destroy()
         self.clock_label = None
 
-    def _get_upcoming_vrijedagen(self):
-        vandaag = dt.date.today()
-        upcoming = []
-        for v in self.data.get("vrijedagen", []):
-            try:
-                d = dt.datetime.strptime(v["datum"], "%Y-%m-%d").date()
-                delta = (d - vandaag).days
-                if delta >= 0: upcoming.append((d, delta, v["naam"]))
-            except Exception: pass
-        upcoming.sort(key=lambda x: x[0])
-        return upcoming
-
     # --------------------------------------------------------
     # DASHBOARD
     # --------------------------------------------------------
@@ -607,17 +585,15 @@ class SchoolOS(ctk.CTk):
             self.show_huiswerk()
 
     # --------------------------------------------------------
-    # UPGRADED: GEOPTIMALISEERD INTERACTIEF MAANDROOSTER
+    # ROOSTER & INTERACTIEVE VEELVOUDIGE BUDGETTERING
     # --------------------------------------------------------
 
     def show_rooster(self):
         self.clear_main()
         t = THEMES[self.theme_name]
 
-        # Hoofdtitel van de module
         ctk.CTkLabel(self.main, text="Interactieve Agenda & Maandrooster", font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=15)
 
-        # Container opsplitsen in kalenderselectie (links) en urenplanner (rechts)
         paned_container = ctk.CTkFrame(self.main, fg_color="transparent")
         paned_container.pack(fill="both", expand=True, padx=20, pady=(0, 15))
 
@@ -627,27 +603,31 @@ class SchoolOS(ctk.CTk):
 
         ctk.CTkLabel(left_side, text="1. Kies een datum", font=("Segoe UI", 14, "bold"), text_color=t["text"]).pack(anchor="w", padx=15, pady=10)
 
-        # Ingebouwde kalender voor maandoverzicht
         self.rooster_cal = Calendar(left_side, selectmode='day', date_pattern='yyyy-mm-dd')
         self.rooster_cal.pack(padx=10, pady=5, fill="x")
         self.rooster_cal.bind("<<CalendarSelected>>", lambda e: self.laad_dag_planner())
 
-        # Snelkoppeling / Informatiebox links onderin
         info_box = ctk.CTkFrame(left_side, fg_color=t["bg_root"], corner_radius=10)
         info_box.pack(fill="both", expand=True, padx=15, pady=15)
         
         self.selected_date_lbl = ctk.CTkLabel(info_box, text="Geselecteerd:\nGeen dag gekozen", font=("Segoe UI", 13, "bold"), text_color=t["text"])
         self.selected_date_lbl.pack(pady=15, padx=10)
 
-        # Rechterzijde: De tijdsblokken (08:00 - 17:00 per 30 min)
         self.right_side = ctk.CTkFrame(paned_container, fg_color=t["bg_card"], corner_radius=15)
         self.right_side.pack(side="right", fill="both", expand=True, padx=(10, 0))
 
-        # Dynamisch scroll-paneel voor alle tijdvakken
-        self.slots_scroll_frame = ctk.CTkScrollableFrame(self.right_side, fg_color="transparent")
-        self.slots_scroll_frame.pack(fill="both", expand=True, padx=15, pady=15)
+        # Header voor de invoerkolommen aan de rechterkant
+        header_bar = ctk.CTkFrame(self.right_side, fg_color="transparent", height=25)
+        header_bar.pack(fill="x", padx=25, pady=(10, 0))
+        ctk.CTkLabel(header_bar, text="Tijdstip", font=("Segoe UI", 11, "bold"), text_color=t["text"], width=100, anchor="w").pack(side="left")
+        ctk.CTkLabel(header_bar, text="Vak", font=("Segoe UI", 11, "bold"), text_color=t["text"], width=150, anchor="w").pack(side="left", padx=5)
+        ctk.CTkLabel(header_bar, text="Docent", font=("Segoe UI", 11, "bold"), text_color=t["text"], width=120, anchor="w").pack(side="left", padx=5)
+        ctk.CTkLabel(header_bar, text="Lokaal", font=("Segoe UI", 11, "bold"), text_color=t["text"], width=80, anchor="w").pack(side="left", padx=5)
 
-        self.slot_entries = {}
+        self.slots_scroll_frame = ctk.CTkScrollableFrame(self.right_side, fg_color="transparent")
+        self.slots_scroll_frame.pack(fill="both", expand=True, padx=15, pady=(5, 15))
+
+        self.slot_inputs = {}
         self.laad_dag_planner()
         self.apply_theme()
 
@@ -656,32 +636,43 @@ class SchoolOS(ctk.CTk):
         gekozen_datum = self.rooster_cal.get_date()
         self.selected_date_lbl.configure(text=f"🗓 Agenda voor:\n{gekozen_datum}")
 
-        # Wis de oude invoervelden in de scrollbox
         for widget in self.slots_scroll_frame.winfo_children():
             widget.destroy()
 
-        self.slot_entries.clear()
+        self.slot_inputs.clear()
         bestaande_data = self.data["agenda_rooster"].get(gekozen_datum, {})
 
-        # Bouw de 30-minuten gridrijen op
         for slot in self.tijd_slots:
-            row = ctk.CTkFrame(self.slots_scroll_frame, fg_color=t["bg_root"], height=40, corner_radius=6)
+            row = ctk.CTkFrame(self.slots_scroll_frame, fg_color=t["bg_root"], height=45, corner_radius=6)
             row.pack(fill="x", pady=3, padx=2)
             
-            # Tijdlabel (bijv. 08:30 - 09:00)
-            ctk.CTkLabel(row, text=slot, font=("Courier New", 12, "bold"), text_color=t["text"], width=110, anchor="w").pack(side="left", padx=10)
+            # Tijdlabel (100px breed)
+            ctk.CTkLabel(row, text=slot, font=("Courier New", 11, "bold"), text_color=t["text"], width=100, anchor="w").pack(side="left", padx=10)
             
-            # Invoerveld voor de activiteit
-            ent = ctk.CTkEntry(row, placeholder_text="Vrij / Geen activiteit gepland...", fg_color=t["bg_card"], text_color=t["text"], border_width=1, border_color=t["button_hover"])
-            ent.pack(side="left", fill="x", expand=True, padx=(10, 5), pady=4)
+            # Invoervelden genereren
+            vak_ent = ctk.CTkEntry(row, placeholder_text="bv. Hardware", fg_color=t["bg_card"], text_color=t["text"], border_width=1, border_color=t["button_hover"], width=150)
+            vak_ent.pack(side="left", padx=5, pady=6)
             
-            # Vul bestaande waarde in als die er is
-            if slot in bestaande_data:
-                ent.insert(0, bestaande_data[slot])
-                
-            self.slot_entries[slot] = ent
+            docent_ent = ctk.CTkEntry(row, placeholder_text="bv. JNS", fg_color=t["bg_card"], text_color=t["text"], border_width=1, border_color=t["button_hover"], width=120)
+            docent_ent.pack(side="left", padx=5, pady=6)
+            
+            lokaal_ent = ctk.CTkEntry(row, placeholder_text="bv. D102", fg_color=t["bg_card"], text_color=t["text"], border_width=1, border_color=t["button_hover"], width=80)
+            lokaal_ent.pack(side="left", padx=5, pady=6)
+            
+            # Data herstellen indien opgeslagen
+            if slot in bestaande_data and isinstance(bestaande_data[slot], dict):
+                vak_ent.insert(0, bestaande_data[slot].get("vak", ""))
+                docent_ent.insert(0, bestaande_data[slot].get("docent", ""))
+                lokaal_ent.insert(0, bestaande_data[slot].get("lokaal", ""))
+            elif slot in bestaande_data: # Fallback voor oude string data
+                vak_ent.insert(0, bestaande_data[slot])
 
-        # Centraal actiemenu onder de planner plakken
+            self.slot_inputs[slot] = {
+                "vak": vak_ent,
+                "docent": docent_ent,
+                "lokaal": lokaal_ent
+            }
+
         action_bar = ctk.CTkFrame(self.slots_scroll_frame, fg_color="transparent")
         action_bar.pack(fill="x", pady=15)
         
@@ -692,10 +683,17 @@ class SchoolOS(ctk.CTk):
         gekozen_datum = self.rooster_cal.get_date()
         dag_data = {}
         
-        for slot, entry in self.slot_entries.items():
-            waarde = entry.get().strip()
-            if waarde:  # Alleen opslaan als er daadwerkelijk iets is ingevuld
-                dag_data[slot] = waarde
+        for slot, inputs in self.slot_inputs.items():
+            v = inputs["vak"].get().strip()
+            d = inputs["docent"].get().strip()
+            l = inputs["lokaal"].get().strip()
+            
+            if v or d or l:  # Alleen wegschrijven als er minimaal 1 veld is ingevuld
+                dag_data[slot] = {
+                    "vak": v,
+                    "docent": d,
+                    "lokaal": l
+                }
 
         if dag_data:
             self.data["agenda_rooster"][gekozen_datum] = dag_data
@@ -703,12 +701,14 @@ class SchoolOS(ctk.CTk):
             del self.data["agenda_rooster"][gekozen_datum]
 
         opslaan(self.data)
-        messagebox.showinfo("Succes", f"Je agenda voor {gekozen_datum} is succesvol bijgewerkt!")
+        messagebox.showinfo("Succes", f"Je lesrooster voor {gekozen_datum} is succesvol opgeslagen!")
 
     def clear_dag_planner(self):
         if messagebox.askyesno("Agenda Leegmaken", "Weet je zeker dat je alle invoer voor deze dag wilt wissen?"):
-            for entry in self.slot_entries.values():
-                entry.delete(0, tk.END)
+            for inputs in self.slot_inputs.values():
+                inputs["vak"].delete(0, tk.END)
+                inputs["docent"].delete(0, tk.END)
+                inputs["lokaal"].delete(0, tk.END)
             self.save_dag_planner()
 
     # --------------------------------------------------------
