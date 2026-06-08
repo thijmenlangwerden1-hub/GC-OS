@@ -135,7 +135,7 @@ THEMES = {
 # INSTELLINGEN & CONFIGURATIE
 # ============================================================
 
-HUIDIGE_VERSIE = "5.4v"
+HUIDIGE_VERSIE = "5.5v"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
@@ -245,7 +245,6 @@ class SchoolOS(ctk.CTk):
         
         self.periodes = ["Periode 1", "Periode 2", "Periode 3", "Periode 4"]
 
-        # Genereren van de 30-minuten tijdsblokken (08:00 tot 17:00)
         self.tijd_slots = []
         start_uur = 8
         while start_uur < 17:
@@ -266,11 +265,11 @@ class SchoolOS(ctk.CTk):
         self.apply_theme()
         self.show_dashboard()
 
-        # Start direct met de super coole boot sequence
-        self.withdraw()  # Verberg hoofdvenster tijdens de intro
+        # Start de getimede intro sequence
+        self.withdraw()
         self.show_cool_intro_screen()
-        self.after(3500, lambda: self.toon_update_laadbalk(silent=True))
-        self.after(4000, self.check_na_update_log)
+        self.after(4500, lambda: self.toon_update_laadbalk(silent=True))
+        self.after(5000, self.check_na_update_log)
 
     # --------------------------------------------------------
     # UPDATE LOG DETECTIE & POP-UP
@@ -308,18 +307,17 @@ class SchoolOS(ctk.CTk):
         ctk.CTkButton(log_win, text="Sluiten", fg_color=t["accent"], text_color="white", command=log_win.destroy).pack(pady=20)
 
     # --------------------------------------------------------
-    # UPGRADED: CYBER INTRO BOOT SCREEN
+    # UPGRADED: TRANSFORMATIE INTRO SEQUENCE
     # --------------------------------------------------------
 
     def show_cool_intro_screen(self):
         t = THEMES[self.theme_name]
         intro = ctk.CTkToplevel()
-        intro.title("GC-OS Booting...")
+        intro.title("Booting...")
         intro.geometry("550x380")
         intro.resizable(False, False)
         intro.configure(fg_color="#05050a" if t["mode"] == "Dark" else "#f0f2f5")
         
-        # Centratie op het scherm
         intro.update_idletasks()
         x = (intro.winfo_screenwidth() // 2) - (550 // 2)
         y = (intro.winfo_screenheight() // 2) - (380 // 2)
@@ -327,19 +325,18 @@ class SchoolOS(ctk.CTk):
         intro.overrideredirect(True)
         intro.attributes("-topmost", True)
 
-        # Content elementen
         accent_color = t["accent"]
-        text_color = "#00ff66" if t["mode"] == "Dark" else "#006622" # Matrix stijl groen of diep groen
+        text_color = "#00ff66" if t["mode"] == "Dark" else "#006622"
 
-        title_lbl = ctk.CTkLabel(intro, text="GRAAFSCHAP COLLEGE OS", font=("Courier New", 20, "bold"), text_color=accent_color)
-        title_lbl.pack(pady=(25, 5))
+        # Start met korte GC-OS weergave
+        title_lbl = ctk.CTkLabel(intro, text="GC-OS", font=("Courier New", 26, "bold"), text_color=accent_color)
+        title_lbl.pack(pady=(40, 5))
         
         sub_lbl = ctk.CTkLabel(intro, text="CORE SYSTEM ARCHITECTURE v" + HUIDIGE_VERSIE, font=("Courier New", 10), text_color=t["text"])
         sub_lbl.pack(pady=(0, 15))
 
-        # Console logs simulatie box
         console_frame = ctk.CTkFrame(intro, fg_color="#000000", corner_radius=8, border_width=1, border_color=accent_color)
-        console_frame.pack(padx=30, fill="both", expand=True)
+        console_frame.pack(padx=30, fill="both", expand=True, pady=(0, 25))
 
         console_txt = ctk.CTkLabel(console_frame, text="", font=("Courier New", 11), justify="left", text_color=text_color, anchor="nw")
         console_txt.pack(fill="both", expand=True, padx=15, pady=10)
@@ -354,25 +351,31 @@ class SchoolOS(ctk.CTk):
             "> GC-OS Core successfully operational. Welcome."
         ]
 
+        # Fase 1: Na 1.2 seconden verandert GC-OS naar GraafschapCollege-OS
+        def transformeer_titel():
+            title_lbl.configure(text="GraafschapCollege-OS", font=("Courier New", 18, "bold"))
+            # Start direct daarna het loggen op het scherm
+            print_logs()
+
         def print_logs(index=0, current_text=""):
             if index < len(boot_logs):
                 new_text = current_text + boot_logs[index] + "\n"
                 console_txt.configure(text=new_text)
-                # Snelheid verschilt per actie voor realisme
-                self.after(random.randint(250, 450), lambda: print_logs(index + 1, new_text))
+                self.after(random.randint(200, 350), lambda: print_logs(index + 1, new_text))
             else:
-                self.after(400, close_intro)
+                self.after(500, close_intro)
 
         def close_intro():
             intro.destroy()
-            self.deiconify() # Laat hoofdvenster weer zien
+            self.deiconify()
             try: self.state("zoomed")
             except Exception: pass
 
-        print_logs()
+        # Activeer de transformatie timer
+        self.after(1200, transformeer_titel)
 
     # --------------------------------------------------------
-    # UPGRADED COOL UPDATE MANAGER
+    # UPDATE MANAGER
     # --------------------------------------------------------
 
     def toon_update_laadbalk(self, silent=False):
@@ -524,7 +527,6 @@ class SchoolOS(ctk.CTk):
         self.clear_main()
         t = THEMES[self.theme_name]
 
-        # Dynamische tijdgebonden begroeting berekenen
         nu_uur = dt.datetime.now().hour
         naam = self.data["settings"].get("gebruikersnaam", "Student")
         
@@ -540,7 +542,6 @@ class SchoolOS(ctk.CTk):
         top_bar = ctk.CTkFrame(self.main, fg_color="transparent")
         top_bar.pack(fill="x", padx=20, pady=20)
         
-        # Welkomsttitel met gepersonaliseerde naam
         ctk.CTkLabel(top_bar, text=begroeting, font=("Segoe UI", 24, "bold"), text_color=t["text"]).pack(side="left")
 
         self.clock_label = ctk.CTkLabel(top_bar, text="", font=("Segoe UI", 14, "bold"), text_color=t["accent"])
@@ -863,7 +864,7 @@ class SchoolOS(ctk.CTk):
             self.show_cijfers()
 
     # --------------------------------------------------------
-    # INSTELLINGEN (Met Naamprofiel)
+    # INSTELLINGEN
     # --------------------------------------------------------
 
     def show_settings(self):
@@ -874,7 +875,6 @@ class SchoolOS(ctk.CTk):
         card = ctk.CTkFrame(self.main, corner_radius=15, fg_color=t["bg_card"])
         card.pack(fill="both", expand=True, padx=20, pady=10)
 
-        # SECTIE 1: GEBRUIKERSNAAM INSTELLEN
         ctk.CTkLabel(card, text="👤 Jouw Naam (voor Dashboard):", font=("Segoe UI", 14, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=(20, 5))
         
         naam_frame = ctk.CTkFrame(card, fg_color="transparent")
@@ -886,13 +886,11 @@ class SchoolOS(ctk.CTk):
         
         ctk.CTkButton(naam_frame, text="Opslaan", width=90, fg_color=t["accent"], text_color="white", command=self.naam_opslaan).pack(side="left")
 
-        # SECTIE 2: THEMA WIJZIGEN
         ctk.CTkLabel(card, text="🎨 Systeemthema wijzigen:", font=("Segoe UI", 14, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=(20, 5))
         self.theme_combo = ctk.CTkComboBox(card, values=list(THEMES.keys()), state="readonly", command=self.theme_wijzigen)
         self.theme_combo.set(self.theme_name)
         self.theme_combo.pack(anchor="w", padx=20, pady=5)
 
-        # SECTIE 3: MANUAL UPDATE
         ctk.CTkLabel(card, text="🔄 Systeem Updates:", font=("Segoe UI", 14, "bold"), text_color=t["text"]).pack(anchor="w", padx=20, pady=(20, 5))
         ctk.CTkButton(card, text="Handmatig zoeken naar updates", fg_color=t["accent"], text_color="white", command=lambda: self.toon_update_laadbalk(silent=False)).pack(anchor="w", padx=20, pady=5)
         self.apply_theme()
