@@ -1,3 +1,1 @@
-Alles weer werkend gemaakt, bepaalde dingen werkten niet meer.
-
-nu ook een upgrade gegeven aan het update UI. Je kunt nu ook je rooster toevoegen.
+Nieuw UI
