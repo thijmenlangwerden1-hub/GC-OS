@@ -135,7 +135,7 @@ THEMES = {
 # INSTELLINGEN & CONFIGURATIE
 # ============================================================
 
-HUIDIGE_VERSIE = "5.5v"
+HUIDIGE_VERSIE = "5.6v"
 GITHUB_VERSION_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 GITHUB_SCRIPT_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/Huiswerk.py"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/refs/heads/GC-OS/changelog.txt"
@@ -268,8 +268,8 @@ class SchoolOS(ctk.CTk):
         # Start de getimede intro sequence
         self.withdraw()
         self.show_cool_intro_screen()
-        self.after(4500, lambda: self.toon_update_laadbalk(silent=True))
-        self.after(5000, self.check_na_update_log)
+        self.after(5000, lambda: self.toon_update_laadbalk(silent=True))
+        self.after(5500, self.check_na_update_log)
 
     # --------------------------------------------------------
     # UPDATE LOG DETECTIE & POP-UP
@@ -307,16 +307,18 @@ class SchoolOS(ctk.CTk):
         ctk.CTkButton(log_win, text="Sluiten", fg_color=t["accent"], text_color="white", command=log_win.destroy).pack(pady=20)
 
     # --------------------------------------------------------
-    # UPGRADED: TRANSFORMATIE INTRO SEQUENCE
+    # VERNIEUWD: SLEEK & MODERN OPSTART GUI (MET LAADBALK)
     # --------------------------------------------------------
 
     def show_cool_intro_screen(self):
         t = THEMES[self.theme_name]
         intro = ctk.CTkToplevel()
-        intro.title("Booting...")
+        intro.title("GC-OS")
         intro.geometry("550x380")
         intro.resizable(False, False)
-        intro.configure(fg_color="#05050a" if t["mode"] == "Dark" else "#f0f2f5")
+        
+        # Match achtergrondkleur met de app modus (Licht of Donker)
+        intro.configure(fg_color="#18181b" if t["mode"] == "Dark" else "#f4f5f7")
         
         intro.update_idletasks()
         x = (intro.winfo_screenwidth() // 2) - (550 // 2)
@@ -326,44 +328,66 @@ class SchoolOS(ctk.CTk):
         intro.attributes("-topmost", True)
 
         accent_color = t["accent"]
-        text_color = "#00ff66" if t["mode"] == "Dark" else "#006622"
+        text_color = t["text"]
 
-        # Start met korte GC-OS weergave
-        title_lbl = ctk.CTkLabel(intro, text="GC-OS", font=("Courier New", 26, "bold"), text_color=accent_color)
-        title_lbl.pack(pady=(40, 5))
+        # Container frame om alles mooi gecentreerd te houden
+        center_frame = ctk.CTkFrame(intro, fg_color="transparent")
+        center_frame.pack(expand=True, fill="both", padx=40)
+
+        # Start met "GC-OS" groot in beeld
+        title_lbl = ctk.CTkLabel(center_frame, text="GC-OS", font=("Segoe UI", 36, "bold"), text_color=accent_color)
+        title_lbl.pack(pady=(80, 5))
         
-        sub_lbl = ctk.CTkLabel(intro, text="CORE SYSTEM ARCHITECTURE v" + HUIDIGE_VERSIE, font=("Courier New", 10), text_color=t["text"])
-        sub_lbl.pack(pady=(0, 15))
+        sub_lbl = ctk.CTkLabel(center_frame, text="CORE SYSTEM ARCHITECTURE", font=("Segoe UI", 11, "tracking_wide"), text_color="#71717a" if t["mode"] == "Dark" else "#a1a1aa")
+        sub_lbl.pack(pady=(0, 30))
 
-        console_frame = ctk.CTkFrame(intro, fg_color="#000000", corner_radius=8, border_width=1, border_color=accent_color)
-        console_frame.pack(padx=30, fill="both", expand=True, pady=(0, 25))
+        # Modern minimalistische laad-elementen (initieel onzichtbaar)
+        balk = ctk.CTkProgressBar(center_frame, width=320, height=6, progress_color=accent_color, fg_color="#27272a" if t["mode"] == "Dark" else "#e4e4e7", corner_radius=3)
+        status_lbl = ctk.CTkLabel(center_frame, text="Systeem opstarten...", font=("Segoe UI", 12), text_color=text_color)
 
-        console_txt = ctk.CTkLabel(console_frame, text="", font=("Courier New", 11), justify="left", text_color=text_color, anchor="nw")
-        console_txt.pack(fill="both", expand=True, padx=15, pady=10)
-
-        boot_logs = [
-            "> Initializing hardware abstraction layers...",
-            "> Loading kernel modules: [SUCCESS]",
-            "> Connecting filesystem tables (JSON DB)...",
-            "> Synchronizing background school schedules...",
-            "> Verifying user profile encryption tokens...",
-            "> Loading graphical interface canvas...",
-            "> GC-OS Core successfully operational. Welcome."
+        status_updates = [
+            "Systeemcomponenten initialiseren...",
+            "Database controleren...",
+            "Gebruikersprofiel inladen...",
+            "Grafische interface canvas opbouwen...",
+            "Klaar voor gebruik!"
         ]
 
-        # Fase 1: Na 1.2 seconden verandert GC-OS naar GraafschapCollege-OS
+        # Fase 1: Transformeer GC-OS naar GraafschapCollege-OS
         def transformeer_titel():
-            title_lbl.configure(text="GraafschapCollege-OS", font=("Courier New", 18, "bold"))
-            # Start direct daarna het loggen op het scherm
-            print_logs()
+            title_lbl.configure(text="GraafschapCollege-OS", font=("Segoe UI", 26, "bold"))
+            
+            # Maak laadbalk en statuslabel nu elegant zichtbaar
+            balk.set(0.0)
+            balk.pack(pady=(10, 5))
+            status_lbl.pack()
+            
+            # Start direct het soepel vollopen van de laadbalk
+            start_loading_progress()
 
-        def print_logs(index=0, current_text=""):
-            if index < len(boot_logs):
-                new_text = current_text + boot_logs[index] + "\n"
-                console_txt.configure(text=new_text)
-                self.after(random.randint(200, 350), lambda: print_logs(index + 1, new_text))
+        # Fase 2: De laadbalk soepel laten vollopen
+        def start_loading_progress(current_progress=0.0):
+            if current_progress < 1.0:
+                stap = random.uniform(0.02, 0.06)
+                nieuw_progress = min(current_progress + stap, 1.0)
+                balk.set(nieuw_progress)
+                
+                # Dynamisch statusberichten wisselen gebaseerd op percentage
+                if nieuw_progress < 0.25:
+                    status_lbl.configure(text=status_updates[0])
+                elif nieuw_progress < 0.50:
+                    status_lbl.configure(text=status_updates[1])
+                elif nieuw_progress < 0.75:
+                    status_lbl.configure(text=status_updates[2])
+                elif nieuw_progress < 0.95:
+                    status_lbl.configure(text=status_updates[3])
+                else:
+                    status_lbl.configure(text=status_updates[4])
+
+                # Snelheid van de stappen bepalen
+                self.after(random.randint(60, 140), lambda: start_loading_progress(nieuw_progress))
             else:
-                self.after(500, close_intro)
+                self.after(400, close_intro)
 
         def close_intro():
             intro.destroy()
@@ -371,8 +395,8 @@ class SchoolOS(ctk.CTk):
             try: self.state("zoomed")
             except Exception: pass
 
-        # Activeer de transformatie timer
-        self.after(1200, transformeer_titel)
+        # Start de animatie-keten na 1,5 seconde
+        self.after(1500, transformeer_titel)
 
     # --------------------------------------------------------
     # UPDATE MANAGER
@@ -393,7 +417,7 @@ class SchoolOS(ctk.CTk):
         y = (up_win.winfo_screenheight() // 2) - (280 // 2)
         up_win.geometry(f"+{x}+{y}")
 
-        ctk.CTkLabel(up_win, text="SYSTEM INTELLIGENCE UPDATE", font=("Courier New", 11, "bold"), text_color=t["accent"]).pack(pady=(20, 0))
+        ctk.CTkLabel(up_win, text="SYSTEM INTELLIGENCE UPDATE", font=("Segoe UI", 11, "bold"), text_color=t["accent"]).pack(pady=(20, 0))
         
         status_lbl = ctk.CTkLabel(up_win, text="Verbinding maken met server...", font=("Segoe UI", 16, "bold"), text_color=t["text"])
         status_lbl.pack(pady=(10, 15))
