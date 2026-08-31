@@ -356,7 +356,7 @@ def _standaard_vrijedagen():
 
     dagen = [
 
-        {"naam": "Nieuwjaarsdag", "datum": f"{jaar}-01-01"},
+        {"naam": "Zomervakantie", "datum": f"2026-07-13"},
 
         {"naam": "Goede Vrijdag", "datum": f"{jaar}-03-29"},
 
@@ -377,6 +377,10 @@ def _standaard_vrijedagen():
         {"naam": "Kerstmis (1e)", "datum": f"{jaar}-12-25"},
 
         {"naam": "Kerstmis (2e)", "datum": f"{jaar}-12-26"},
+        
+        {"naam": "Oud jaarsdag", "datum": f"{jaar}-12-31"},
+        
+        {"naam": "Nieuwjaarsdag", "datum": f"2027-01-01"},
 
     ]
 
@@ -1062,7 +1066,7 @@ class SchoolOS(ctk.CTk):
 
         # Logo / Titel in sidebar
 
-        lbl_logo = ctk.CTkLabel(self.sidebar, text="GC‑OS Terminal", font=("Segoe UI", 20, "bold"), text_color=t["sidebar_text"])
+        lbl_logo = ctk.CTkLabel(self.sidebar, text="GC‑OS", font=("Segoe UI", 20, "bold"), text_color=t["sidebar_text"])
 
         lbl_logo.pack(pady=(25, 5))
 
@@ -2513,4 +2517,3 @@ if __name__ == "__main__":
     app = SchoolOS()
 
     app.mainloop()
-
