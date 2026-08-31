@@ -56,13 +56,9 @@ class StartupIntro(ctk.CTk):
         super().__init__()
         self.title("Huiswerk Planner")
         self.geometry("700x420")
-        self.overrideredirect(True)
+        self.resizable(False, False)
         self.configure(fg_color="#0b0d14")
 
-        self.update_idletasks()
-        x = (self.winfo_screenwidth() - 700) // 2
-        y = (self.winfo_screenheight() - 420) // 2
-        self.geometry(f"700x420+{x}+{y}")
 
         ctk.CTkLabel(
             self, text="📚", font=("Segoe UI Emoji", 58),
@@ -125,7 +121,7 @@ class StartupIntro(ctk.CTk):
 
 class ClosingIntro(ctk.CTk):
  def __init__(self):
-  super().__init__(); self.title("Huiswerk Planner"); self.geometry("700x420"); self.overrideredirect(True); self.configure(fg_color="#0b0d14")
+  super().__init__(); self.title("Huiswerk Planner"); self.geometry("700x420"); self.overrideredirect(True); self.configure(fg_color="#0b0d14"); self.after(50, lambda: self.attributes("-fullscreen", True))
   self.update_idletasks(); x=(self.winfo_screenwidth()-700)//2; y=(self.winfo_screenheight()-420)//2; self.geometry(f"700x420+{x}+{y}")
   ctk.CTkLabel(self,text="📚",font=("Segoe UI Emoji",58),text_color="#ffffff").place(relx=.5,rely=.29,anchor="center")
   ctk.CTkLabel(self,text="TOT ZIENS!",font=("Segoe UI",32,"bold"),text_color="#ffffff").place(relx=.5,rely=.47,anchor="center")
@@ -146,10 +142,10 @@ class HuiswerkApp(ctk.CTk):
   super().__init__(); self.data=laden(); self.theme_name=self.data["settings"].get("theme","Wit")
   if self.theme_name not in THEMES: self.theme_name="Wit"
   ctk.set_appearance_mode(THEMES[self.theme_name]["mode"]); ctk.set_default_color_theme("blue")
-  self.title("Huiswerk Planner"); self.protocol("WM_DELETE_WINDOW",self.start_close); self.geometry("1050x680"); self.minsize(900,580)
+  self.title("Huiswerk Planner"); self.protocol("WM_DELETE_WINDOW",self.start_close); self.geometry("1050x680"); self.minsize(900,580); self.after(100, lambda: self.attributes("-fullscreen", True))
   self.vakken=["Nederlands","Engels","Rekenen","Hardware devices","Netwerken","3D print support","Microsoft 365","service management klant","basis programmeren","install_ic"]
   self.vak_kleuren={"Nederlands":"#ff3b30","Engels":"#007aff","Rekenen":"#34c759","Hardware devices":"#ff9500","Netwerken":"#af52de","3D print support":"#5ac8fa","Microsoft 365":"#7b61ff","service management klant":"#ff6482","basis programmeren":"#00b894","install_ic":"#ffb000"}
-  self.hw_list=self.clock_label=self.settings_name=self.theme_combo=None; self._build_layout(); self.apply_theme(); self.show_huiswerk()
+  self.hw_list=self.clock_label=self.settings_name=self.theme_combo=None; self._build_layout(); self.apply_theme(); self.show_huiswerk(; self.after(500,self.show_update_log)
  def _build_layout(self):
   t=THEMES[self.theme_name]; self.configure(fg_color=t["bg_root"]); self.sidebar=ctk.CTkFrame(self,width=220,corner_radius=0,fg_color=t["bg_sidebar"]); self.sidebar.pack(side="left",fill="y"); self.sidebar.pack_propagate(False)
   ctk.CTkLabel(self.sidebar,text="📚 HUISWERK",font=("Segoe UI",21,"bold"),text_color=t["text"]).pack(pady=(28,4)); ctk.CTkLabel(self.sidebar,text="Deadline Planner",font=("Segoe UI",11),text_color=t["accent"]).pack(pady=(0,28))
@@ -218,40 +214,93 @@ class HuiswerkApp(ctk.CTk):
   if naam: self.data["settings"]["gebruikersnaam"]=naam
   opslaan(self.data); self.theme_name=nieuw; ctk.set_appearance_mode(THEMES[nieuw]["mode"]); self.apply_theme(); self.show_huiswerk()
  def check_update(self,silent=False):
-  try:
-   req=urllib.request.Request(GITHUB_VERSION_URL,headers={"User-Agent":"HuiswerkPlanner/7.0"})
-   with urllib.request.urlopen(req,timeout=10) as r: nieuwste=r.read().decode("utf-8").strip()
-  except Exception as e:
-   if not silent: messagebox.showerror("Update fout",f"Kan geen verbinding maken met de update-server.\n\n{e}")
-   return
-  if nieuwste==HUIDIGE_VERSIE:
-   if not silent: messagebox.showinfo("Geen update",f"Je gebruikt al de nieuwste versie ({HUIDIGE_VERSIE}).")
-   return
-  if messagebox.askyesno("Update beschikbaar",f"Nieuwe versie gevonden: {nieuwste}\n\nWil je de app nu bijwerken?"): self.download_update(nieuwste)
+  win=ctk.CTkToplevel(self); t=THEMES[self.theme_name]
+  win.title("Updates zoeken"); win.geometry("520x300"); win.resizable(False,False)
+  win.configure(fg_color=t["bg_card"]); win.transient(self); win.grab_set()
+  ctk.CTkLabel(win,text="🔄 Updates zoeken",font=("Segoe UI",21,"bold"),text_color=t["text"]).pack(pady=(28,6))
+  status=ctk.CTkLabel(win,text="Verbinden met de update-server...",font=("Segoe UI",12),text_color=t["muted"]); status.pack(pady=(0,14))
+  progress=ctk.CTkProgressBar(win,width=420,progress_color=t["accent"],fg_color=t["button_fg"]); progress.set(0); progress.pack(pady=8)
+  percent=ctk.CTkLabel(win,text="0%",font=("Segoe UI",11,"bold"),text_color=t["text"]); percent.pack(pady=5)
+
+  def worker():
+   try:
+    req=urllib.request.Request(GITHUB_VERSION_URL,headers={"User-Agent":"HuiswerkPlanner/7.0"})
+    with urllib.request.urlopen(req,timeout=10) as r: nieuwste=r.read().decode("utf-8").strip()
+    progress.set(1); percent.configure(text="100%")
+    if nieuwste==HUIDIGE_VERSIE:
+     status.configure(text=f"Geen update gevonden — versie {HUIDIGE_VERSIE} is actueel.")
+     self.after(900,win.destroy); return
+    status.configure(text=f"Nieuwe versie gevonden: {nieuwste}"); win.update_idletasks(); time.sleep(.6)
+    win.destroy(); self.download_update(nieuwste)
+   except Exception as e:
+    try: win.destroy()
+    except Exception: pass
+    if not silent: messagebox.showerror("Update fout",f"Kan geen verbinding maken met de update-server.\n\n{e}")
+  self.after(100,worker)
+
  def download_update(self,nieuwste):
-  t=THEMES[self.theme_name]; win=ctk.CTkToplevel(self); win.title("Update installeren"); win.geometry("480x270"); win.resizable(False,False); win.configure(fg_color=t["bg_card"]); win.grab_set(); ctk.CTkLabel(win,text=f"Nieuwe versie: {nieuwste}",font=("Segoe UI",17,"bold"),text_color=t["text"]).pack(pady=(25,5)); progress=ctk.CTkProgressBar(win,width=390,progress_color=t["accent"],fg_color=t["button_fg"]); progress.set(0); progress.pack(pady=18); status=ctk.CTkLabel(win,text="Voorbereiden...",font=("Segoe UI",11),text_color=t["text"]); status.pack()
+  t=THEMES[self.theme_name]
+  win=ctk.CTkToplevel(self); win.title("Update installeren"); win.geometry("560x330"); win.resizable(False,False)
+  win.configure(fg_color=t["bg_card"]); win.transient(self); win.grab_set()
+  ctk.CTkLabel(win,text="⬇️ Update installeren",font=("Segoe UI",21,"bold"),text_color=t["text"]).pack(pady=(25,5))
+  ctk.CTkLabel(win,text=f"Nieuwe versie: {nieuwste}",font=("Segoe UI",12),text_color=t["muted"]).pack(pady=(0,12))
+  progress=ctk.CTkProgressBar(win,width=440,progress_color=t["accent"],fg_color=t["button_fg"]); progress.set(0); progress.pack(pady=8)
+  percent=ctk.CTkLabel(win,text="0%",font=("Segoe UI",11,"bold"),text_color=t["text"]); percent.pack(pady=3)
+  speed_label=ctk.CTkLabel(win,text="0 KB/s",font=("Segoe UI",11),text_color=t["muted"]); speed_label.pack(pady=3)
+  status=ctk.CTkLabel(win,text="Changelog ophalen...",font=("Segoe UI",11),text_color=t["text"]); status.pack(pady=5)
+
   def worker():
    temporary=None
    try:
-    status.configure(text="Changelog ophalen..."); win.update_idletasks()
     try:
      req=urllib.request.Request(GITHUB_CHANGELOG_URL,headers={"User-Agent":"HuiswerkPlanner/7.0"})
      with urllib.request.urlopen(req,timeout=10) as r: ch=r.read().decode("utf-8")
-     with open(LOG_BESTAND,"w",encoding="utf-8") as f:f.write(ch)
+     with open(LOG_BESTAND,"w",encoding="utf-8") as f: f.write(ch)
     except Exception: pass
-    progress.set(.35); status.configure(text="Nieuwe versie ophalen..."); win.update_idletasks(); req=urllib.request.Request(GITHUB_SCRIPT_URL,headers={"User-Agent":"HuiswerkPlanner/7.0"})
-    with urllib.request.urlopen(req,timeout=20) as r: script=r.read().decode("utf-8")
-    progress.set(.75); status.configure(text="Bestand controleren en vervangen..."); win.update_idletasks(); current=os.path.abspath(sys.argv[0]); temporary=current+".update"
-    with open(temporary,"w",encoding="utf-8") as f:f.write(script)
-    compile(script,temporary,"exec"); os.replace(temporary,current); progress.set(1); status.configure(text="Update geïnstalleerd. App wordt herstart..."); win.update_idletasks(); time.sleep(1); win.destroy(); self.destroy(); subprocess.Popen([sys.executable,current]); sys.exit()
+
+    status.configure(text="Nieuwe versie downloaden..."); win.update_idletasks()
+    req=urllib.request.Request(GITHUB_SCRIPT_URL,headers={"User-Agent":"HuiswerkPlanner/7.0"})
+    start_time=time.time(); total=0; chunks=[]
+    with urllib.request.urlopen(req,timeout=30) as r:
+     expected=int(r.headers.get("Content-Length") or 0)
+     while True:
+      chunk=r.read(8192)
+      if not chunk: break
+      chunks.append(chunk); total+=len(chunk)
+      elapsed=max(time.time()-start_time,.001); speed=total/elapsed
+      speed_label.configure(text=f"{speed/(1024*1024):.2f} MB/s" if speed>=1024*1024 else f"{speed/1024:.0f} KB/s")
+      frac=min(total/expected,1) if expected else min(progress.get()+.02,.95)
+      progress.set(frac); percent.configure(text=f"{int(frac*100)}%"); win.update_idletasks()
+
+    script=b"".join(chunks).decode("utf-8")
+    current=os.path.abspath(sys.argv[0]); temporary=current+".update"
+    with open(temporary,"w",encoding="utf-8") as f: f.write(script)
+    compile(script,temporary,"exec"); os.replace(temporary,current)
+    progress.set(1); percent.configure(text="100%"); status.configure(text="Update geïnstalleerd. App wordt herstart..."); win.update_idletasks(); time.sleep(1)
+    win.destroy(); self.destroy(); subprocess.Popen([sys.executable,current]); sys.exit()
    except Exception as e:
     if temporary and os.path.exists(temporary):
      try: os.remove(temporary)
      except OSError: pass
-    messagebox.showerror("Update mislukt",f"De update kon niet worden geïnstalleerd:\n{e}");
     try: win.destroy()
     except Exception: pass
+    messagebox.showerror("Update mislukt",f"De update kon niet worden geïnstalleerd:\n{e}")
   self.after(100,worker)
+
+ def show_update_log(self):
+  if not os.path.exists(LOG_BESTAND): return
+  try:
+   with open(LOG_BESTAND,"r",encoding="utf-8") as f: ch=f.read().strip()
+   if not ch: return
+   os.remove(LOG_BESTAND)
+  except Exception: return
+  t=THEMES[self.theme_name]
+  win=ctk.CTkToplevel(self); win.title("Wat is er veranderd?"); win.geometry("680x520"); win.configure(fg_color=t["bg_card"])
+  ctk.CTkLabel(win,text="🎉 Update voltooid!",font=("Segoe UI",24,"bold"),text_color=t["text"]).pack(pady=(25,4))
+  ctk.CTkLabel(win,text="Dit is er veranderd in de nieuwe versie:",font=("Segoe UI",12),text_color=t["muted"]).pack(pady=(0,15))
+  box=ctk.CTkTextbox(win,font=("Segoe UI",12),fg_color=t["bg_main"],text_color=t["text"],corner_radius=10); box.pack(fill="both",expand=True,padx=25,pady=(0,15)); box.insert("1.0",ch); box.configure(state="disabled")
+  ctk.CTkButton(win,text="✓ Begrepen",height=40,fg_color=t["accent"],text_color="white",command=win.destroy).pack(fill="x",padx=25,pady=(0,20))
+
 
 if __name__ == "__main__":
  StartupIntro().mainloop()
