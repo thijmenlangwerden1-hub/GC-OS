@@ -15,7 +15,7 @@ from tkcalendar import Calendar
 
 
 # ============================================================
-# HUISWERK PLANNER 0.3
+# HUISWERK PLANNER 7.0
 # Robuuste versie:
 # - normale opstartintro
 # - GEEN automatische fullscreen/auto-zoom
@@ -29,7 +29,7 @@ from tkcalendar import Calendar
 # - nette afsluitanimatie
 # ============================================================
 
-HUIDIGE_VERSIE = "0.3v"
+HUIDIGE_VERSIE = "0.4v"
 
 GITHUB_VERSION_URL = (
     "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
@@ -1199,6 +1199,52 @@ class HuiswerkApp(ctk.CTk):
     # --------------------------------------------------------
     # HUISWERK
     # --------------------------------------------------------
+
+    def start_dashboard_rotation(self):
+        if getattr(self, "_rotation_running", False):
+            return
+        self._rotation_running = True
+        self._rotation_state = False
+        self._rotation_token = getattr(self, "_rotation_token", 0) + 1
+        self._rotate_dashboard_message(self._rotation_token)
+
+    def _rotate_dashboard_message(self, token):
+        if token != getattr(self, "_rotation_token", None) or not self.winfo_exists():
+            return
+        if not hasattr(self, "dashboard_message"):
+            return
+        naam = self.data.get("settings", {}).get("gebruikersnaam", "Student").strip() or "Student"
+        text = f"👋 Hoi {naam}!" if self._rotation_state else "💡 Tip: begin eens aan de vakken die het dichtst bij de deadline zijn"
+        self._rotation_state = not self._rotation_state
+        self._fade_dashboard_message(text, token)
+
+    def _fade_dashboard_message(self, new_text, token):
+        if token != getattr(self, "_rotation_token", None) or not self.winfo_exists():
+            return
+        t = THEMES[self.theme_name]
+        fade_out = ["#eeeeee", "#cccccc", "#aaaaaa", "#888888", "#666666"]
+        fade_in = ["#666666", "#888888", "#aaaaaa", "#cccccc", t["text"]]
+
+        def fade_in_step(i=0):
+            if token != getattr(self, "_rotation_token", None) or not self.winfo_exists():
+                return
+            self.dashboard_message.configure(text_color=fade_in[min(i, len(fade_in)-1)])
+            if i < len(fade_in)-1:
+                self.after(70, lambda: fade_in_step(i+1))
+            else:
+                self.after(3500, lambda: self._rotate_dashboard_message(token))
+
+        def fade_out_step(i=0):
+            if token != getattr(self, "_rotation_token", None) or not self.winfo_exists():
+                return
+            self.dashboard_message.configure(text_color=fade_out[min(i, len(fade_out)-1)])
+            if i < len(fade_out)-1:
+                self.after(70, lambda: fade_out_step(i+1))
+            else:
+                self.dashboard_message.configure(text=new_text)
+                self.after(40, fade_in_step)
+
+        fade_out_step()
 
     def show_huiswerk(self):
         self.clear_main()
