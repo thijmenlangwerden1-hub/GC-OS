@@ -29,7 +29,7 @@ from tkcalendar import Calendar
 # - nette afsluitanimatie
 # ============================================================
 
-HUIDIGE_VERSIE = "0.4v"
+HUIDIGE_VERSIE = "0.7v"
 
 GITHUB_VERSION_URL = (
     "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
@@ -218,6 +218,42 @@ def kies_datum(entry):
         top,
         text="✓ Deadline selecteren",
         command=selecteer,
+    ).pack(padx=15, pady=(0, 15), fill="x")
+
+
+# ============================================================
+# DEADLINE VAN BESTAANDE TAAK WIJZIGEN
+# ============================================================
+
+def wijzig_bestaande_datum(parent, target):
+    top = ctk.CTkToplevel(parent)
+    top.title("Deadline wijzigen")
+    top.geometry("320x360")
+    top.resizable(False, False)
+    top.transient(parent)
+    top.grab_set()
+
+    huidige = parse_datum(target.get("datum", "")) or dt.date.today()
+    cal = Calendar(
+        top,
+        selectmode="day",
+        date_pattern="yyyy-mm-dd",
+        year=huidige.year,
+        month=huidige.month,
+        day=huidige.day,
+    )
+    cal.pack(padx=10, pady=10, fill="both", expand=True)
+
+    def opslaan_datum():
+        target["datum"] = cal.get_date()
+        opslaan(parent.data)
+        top.destroy()
+        parent._render_huiswerk_lijst()
+
+    ctk.CTkButton(
+        top,
+        text="✓ Deadline opslaan",
+        command=opslaan_datum,
     ).pack(padx=15, pady=(0, 15), fill="x")
 
 
@@ -1135,6 +1171,8 @@ class HuiswerkApp(ctk.CTk):
         self.main_container.pack(side="right", fill="both", expand=True)
 
     def clear_main(self):
+        self._rotation_token = getattr(self, "_rotation_token", 0) + 1
+        self._rotation_running = False
         for child in self.main_container.winfo_children():
             try:
                 child.destroy()
@@ -1214,7 +1252,7 @@ class HuiswerkApp(ctk.CTk):
         if not hasattr(self, "dashboard_message"):
             return
         naam = self.data.get("settings", {}).get("gebruikersnaam", "Student").strip() or "Student"
-        text = f"👋 Hoi {naam}!" if self._rotation_state else "💡 Tip: begin eens aan de vakken die het dichtst bij de deadline zijn"
+        text = f"👋 Hoi {naam}!" if self._rotation_state else "💡 Begin eens aan de vakken die het dichtst bij de deadline zijn"
         self._rotation_state = not self._rotation_state
         self._fade_dashboard_message(text, token)
 
@@ -1256,12 +1294,27 @@ class HuiswerkApp(ctk.CTk):
         )
         top.pack(fill="x", padx=32, pady=(25, 8))
 
+        header = ctk.CTkFrame(top, fg_color="transparent")
+        header.pack(side="left", fill="x", expand=True)
+
+        naam = self.data.get("settings", {}).get("gebruikersnaam", "Student").strip() or "Student"
+
         ctk.CTkLabel(
-            top,
-            text="📚 Mijn Huiswerk",
+            header,
+            text=f"📚 Mijn Huiswerk  •  {naam}",
             font=("Segoe UI", 26, "bold"),
             text_color=t["text"],
-        ).pack(side="left")
+        ).pack(anchor="w")
+
+        self.dashboard_message = ctk.CTkLabel(
+            header,
+            text="",
+            font=("Segoe UI", 12),
+            text_color=t["text"],
+            anchor="w",
+        )
+        self.dashboard_message.pack(anchor="w", pady=(2, 0))
+        self.start_dashboard_rotation()
 
         count = sum(
             not bool(item.get("done", False))
@@ -1511,9 +1564,20 @@ class HuiswerkApp(ctk.CTk):
             done = bool(item.get("done", False))
 
             if done:
-                status_color = GROEN
-                status_text = "✓ AFGEROND"
-                bg = t["bg_main"]
+                # Een afgeronde taak blijft volledig groen, maar laat
+                # ook altijd zien hoeveel tijd er nog tot de deadline is.
+                status_color = "white"
+                if days is None:
+                    status_text = "✓ AFGEROND • DATUM ONBEKEND"
+                elif days < 0:
+                    status_text = f"✓ AFGEROND • DEADLINE {abs(days)} DAGEN GELEDEN"
+                elif days == 0:
+                    status_text = "✓ AFGEROND • DEADLINE VANDAAG"
+                elif days == 1:
+                    status_text = "✓ AFGEROND • NOG 1 DAG"
+                else:
+                    status_text = f"✓ AFGEROND • NOG {days} DAGEN"
+                bg = GROEN
             elif days is not None and days < 0:
                 status_color = ROOD
                 status_text = f"⚠ TE LAAT ({abs(days)} d.)"
@@ -1581,7 +1645,7 @@ class HuiswerkApp(ctk.CTk):
                 row,
                 text=item.get("titel", "Zonder titel"),
                 font=("Segoe UI", 13, "bold"),
-                text_color=t["muted"] if done else t["text"],
+                text_color="white" if done else t["text"],
                 anchor="w",
             ).pack(fill="x", padx=12, pady=(4, 1))
 
@@ -1589,7 +1653,7 @@ class HuiswerkApp(ctk.CTk):
                 row,
                 text=f"Deadline: {item.get('datum', '—')}",
                 font=("Segoe UI", 10),
-                text_color=t["muted"],
+                text_color="white" if done else t["muted"],
                 anchor="w",
             ).pack(fill="x", padx=12, pady=(0, 7))
 
@@ -1599,10 +1663,37 @@ class HuiswerkApp(ctk.CTk):
             )
             buttons.pack(fill="x", padx=10, pady=(0, 10))
 
-            def toggle(target=item):
-                target["done"] = not bool(target.get("done", False))
+            def _animatie_afgerond(target_row):
+                kleuren = ["#34c759", "#45d46f", "#5ee57f", "#34c759"]
+
+                def stap(i=0):
+                    try:
+                        if not target_row.winfo_exists():
+                            return
+                        target_row.configure(fg_color=kleuren[i])
+                        if i < len(kleuren) - 1:
+                            target_row.after(120, lambda: stap(i + 1))
+                        else:
+                            target_row.after(350, self._render_huiswerk_lijst)
+                    except tk.TclError:
+                        pass
+
+                stap()
+
+            def toggle(target=item, target_row=row):
+                was_done = bool(target.get("done", False))
+                target["done"] = not was_done
                 opslaan(self.data)
-                self.show_huiswerk()
+
+                if target["done"]:
+                    # Eerst direct groen maken en daarna de succesanimatie.
+                    target_row.configure(fg_color=GROEN)
+                    _animatie_afgerond(target_row)
+                else:
+                    self._render_huiswerk_lijst()
+
+            def wijzig_datum(target=item):
+                wijzig_bestaande_datum(self, target)
 
             def delete(target=item):
                 if messagebox.askyesno(
@@ -1627,6 +1718,17 @@ class HuiswerkApp(ctk.CTk):
                 text_color="white" if not done else t["button_text"],
                 hover_color=t["button_hover"],
                 command=toggle,
+            ).pack(side="left", padx=2)
+
+            ctk.CTkButton(
+                buttons,
+                text="📅 Datum",
+                width=95,
+                height=30,
+                fg_color="white" if done else t["button_fg"],
+                text_color=GROEN if done else t["button_text"],
+                hover_color="#e8fff0" if done else t["button_hover"],
+                command=wijzig_datum,
             ).pack(side="left", padx=2)
 
             ctk.CTkButton(
