@@ -2,7 +2,15 @@ import os
 
 
 
+
+
+
+
 import sys
+
+
+
+
 
 
 
@@ -10,7 +18,15 @@ import json
 
 
 
+
+
+
+
 import datetime as dt
+
+
+
+
 
 
 
@@ -18,7 +34,15 @@ import subprocess
 
 
 
+
+
+
+
 import time
+
+
+
+
 
 
 
@@ -26,7 +50,15 @@ import math
 
 
 
+
+
+
+
 import threading
+
+
+
+
 
 
 
@@ -34,7 +66,15 @@ import urllib.request
 
 
 
+
+
+
+
 import tkinter as tk
+
+
+
+
 
 
 
@@ -46,7 +86,19 @@ from tkinter import messagebox
 
 
 
+
+
+
+
+
+
+
+
 import customtkinter as ctk
+
+
+
+
 
 
 
@@ -62,7 +114,23 @@ from tkcalendar import Calendar
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ============================================================
+
+
+
+
 
 
 
@@ -70,7 +138,15 @@ from tkcalendar import Calendar
 
 
 
+
+
+
+
 # Robuuste versie:
+
+
+
+
 
 
 
@@ -78,7 +154,15 @@ from tkcalendar import Calendar
 
 
 
+
+
+
+
 # - GEEN automatische fullscreen/auto-zoom
+
+
+
+
 
 
 
@@ -86,7 +170,15 @@ from tkcalendar import Calendar
 
 
 
+
+
+
+
 # - veilige opslag
+
+
+
+
 
 
 
@@ -94,7 +186,15 @@ from tkcalendar import Calendar
 
 
 
+
+
+
+
 # - update zoeken met voortgang
+
+
+
+
 
 
 
@@ -102,7 +202,15 @@ from tkcalendar import Calendar
 
 
 
+
+
+
+
 # - veilige update via tijdelijk bestand
+
+
+
+
 
 
 
@@ -110,7 +218,15 @@ from tkcalendar import Calendar
 
 
 
+
+
+
+
 # - nette afsluitanimatie
+
+
+
+
 
 
 
@@ -122,7 +238,23 @@ from tkcalendar import Calendar
 
 
 
-HUIDIGE_VERSIE = "1.2v"
+
+
+
+
+
+
+
+
+HUIDIGE_VERSIE = "1.4v"
+
+
+
+
+
+
+
+
 
 
 
@@ -134,11 +266,23 @@ GITHUB_VERSION_URL = (
 
 
 
+
+
+
+
     "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/main/version.txt"
 
 
 
+
+
+
+
 )
+
+
+
+
 
 
 
@@ -146,7 +290,15 @@ GITHUB_SCRIPT_URL = (
 
 
 
+
+
+
+
     "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/"
+
+
+
+
 
 
 
@@ -154,7 +306,15 @@ GITHUB_SCRIPT_URL = (
 
 
 
+
+
+
+
 )
+
+
+
+
 
 
 
@@ -162,7 +322,15 @@ GITHUB_CHANGELOG_URL = (
 
 
 
+
+
+
+
     "https://raw.githubusercontent.com/thijmenlangwerden1-hub/GC-OS/"
+
+
+
+
 
 
 
@@ -170,7 +338,19 @@ GITHUB_CHANGELOG_URL = (
 
 
 
+
+
+
+
 )
+
+
+
+
+
+
+
+
 
 
 
@@ -182,7 +362,15 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 
+
+
+
+
 BESTAND = os.path.join(SCRIPT_DIR, "gc_os_data.json")
+
+
+
+
 
 
 
@@ -194,11 +382,27 @@ LOG_BESTAND = os.path.join(SCRIPT_DIR, "recent_changelog.txt")
 
 
 
+
+
+
+
+
+
+
+
 ROOD = "#ff3b30"
 
 
 
+
+
+
+
 ORANJE = "#ff9500"
+
+
+
+
 
 
 
@@ -210,7 +414,19 @@ GROEN = "#34c759"
 
 
 
+
+
+
+
+
+
+
+
 THEMES = {
+
+
+
+
 
 
 
@@ -218,7 +434,15 @@ THEMES = {
 
 
 
+
+
+
+
         "mode": "Light",
+
+
+
+
 
 
 
@@ -226,7 +450,15 @@ THEMES = {
 
 
 
+
+
+
+
         "bg_sidebar": "#ffffff",
+
+
+
+
 
 
 
@@ -234,7 +466,15 @@ THEMES = {
 
 
 
+
+
+
+
         "bg_card": "#ffffff",
+
+
+
+
 
 
 
@@ -242,7 +482,15 @@ THEMES = {
 
 
 
+
+
+
+
         "muted": "#666b75",
+
+
+
+
 
 
 
@@ -250,7 +498,15 @@ THEMES = {
 
 
 
+
+
+
+
         "button_fg": "#e3e6ee",
+
+
+
+
 
 
 
@@ -258,11 +514,23 @@ THEMES = {
 
 
 
+
+
+
+
         "accent": "#007aff",
 
 
 
+
+
+
+
     },
+
+
+
+
 
 
 
@@ -270,7 +538,15 @@ THEMES = {
 
 
 
+
+
+
+
         "mode": "Dark",
+
+
+
+
 
 
 
@@ -278,7 +554,15 @@ THEMES = {
 
 
 
+
+
+
+
         "bg_sidebar": "#18181b",
+
+
+
+
 
 
 
@@ -286,7 +570,15 @@ THEMES = {
 
 
 
+
+
+
+
         "bg_card": "#1f1f23",
+
+
+
+
 
 
 
@@ -294,7 +586,15 @@ THEMES = {
 
 
 
+
+
+
+
         "muted": "#a1a1aa",
+
+
+
+
 
 
 
@@ -302,7 +602,15 @@ THEMES = {
 
 
 
+
+
+
+
         "button_fg": "#2b2b30",
+
+
+
+
 
 
 
@@ -310,11 +618,23 @@ THEMES = {
 
 
 
+
+
+
+
         "accent": "#0a84ff",
 
 
 
+
+
+
+
     },
+
+
+
+
 
 
 
@@ -322,7 +642,15 @@ THEMES = {
 
 
 
+
+
+
+
         "mode": "Dark",
+
+
+
+
 
 
 
@@ -330,7 +658,15 @@ THEMES = {
 
 
 
+
+
+
+
         "bg_sidebar": "#0b2430",
+
+
+
+
 
 
 
@@ -338,7 +674,15 @@ THEMES = {
 
 
 
+
+
+
+
         "bg_card": "#0f2f3b",
+
+
+
+
 
 
 
@@ -346,7 +690,15 @@ THEMES = {
 
 
 
+
+
+
+
         "muted": "#9cc4cc",
+
+
+
+
 
 
 
@@ -354,7 +706,15 @@ THEMES = {
 
 
 
+
+
+
+
         "button_fg": "#145c63",
+
+
+
+
 
 
 
@@ -362,11 +722,23 @@ THEMES = {
 
 
 
+
+
+
+
         "accent": "#00e5ff",
 
 
 
+
+
+
+
     },
+
+
+
+
 
 
 
@@ -382,7 +754,23 @@ THEMES = {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ============================================================
+
+
+
+
 
 
 
@@ -390,7 +778,19 @@ THEMES = {
 
 
 
+
+
+
+
 # ============================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -402,7 +802,15 @@ def standaard_data():
 
 
 
+
+
+
+
     return {
+
+
+
+
 
 
 
@@ -410,7 +818,15 @@ def standaard_data():
 
 
 
+
+
+
+
         "settings": {
+
+
+
+
 
 
 
@@ -418,11 +834,23 @@ def standaard_data():
 
 
 
+
+
+
+
             "gebruikersnaam": "Student",
 
 
 
+
+
+
+
         },
+
+
+
+
 
 
 
@@ -438,7 +866,23 @@ def standaard_data():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 def opslaan(data):
+
+
+
+
 
 
 
@@ -446,11 +890,23 @@ def opslaan(data):
 
 
 
+
+
+
+
     try:
 
 
 
+
+
+
+
         os.makedirs(SCRIPT_DIR, exist_ok=True)
+
+
+
+
 
 
 
@@ -462,7 +918,19 @@ def opslaan(data):
 
 
 
+
+
+
+
+
+
+
+
         with open(tijdelijke, "w", encoding="utf-8") as f:
+
+
+
+
 
 
 
@@ -474,7 +942,19 @@ def opslaan(data):
 
 
 
+
+
+
+
+
+
+
+
         # Atomair vervangen voorkomt een halfgeschreven JSON-bestand.
+
+
+
+
 
 
 
@@ -482,7 +962,15 @@ def opslaan(data):
 
 
 
+
+
+
+
         return True
+
+
+
+
 
 
 
@@ -490,7 +978,15 @@ def opslaan(data):
 
 
 
+
+
+
+
         try:
+
+
+
+
 
 
 
@@ -498,7 +994,15 @@ def opslaan(data):
 
 
 
+
+
+
+
                 os.remove(BESTAND + ".tmp")
+
+
+
+
 
 
 
@@ -506,7 +1010,19 @@ def opslaan(data):
 
 
 
+
+
+
+
             pass
+
+
+
+
+
+
+
+
 
 
 
@@ -518,7 +1034,15 @@ def opslaan(data):
 
 
 
+
+
+
+
             messagebox.showerror("Opslaan mislukt", f"Kan data niet opslaan:\n\n{e}")
+
+
+
+
 
 
 
@@ -526,7 +1050,15 @@ def opslaan(data):
 
 
 
+
+
+
+
             pass
+
+
+
+
 
 
 
@@ -542,11 +1074,31 @@ def opslaan(data):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 def laden():
 
 
 
+
+
+
+
     """Laad gegevens en herstel ontbrekende/ongeldige velden."""
+
+
+
+
 
 
 
@@ -558,11 +1110,31 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
     if not os.path.exists(BESTAND):
 
 
 
+
+
+
+
         return standaard
+
+
+
+
+
+
+
+
 
 
 
@@ -574,7 +1146,15 @@ def laden():
 
 
 
+
+
+
+
         with open(BESTAND, "r", encoding="utf-8") as f:
+
+
+
+
 
 
 
@@ -582,7 +1162,15 @@ def laden():
 
 
 
+
+
+
+
     except Exception:
+
+
+
+
 
 
 
@@ -594,7 +1182,19 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
     if not isinstance(data, dict):
+
+
+
+
 
 
 
@@ -606,7 +1206,19 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
     if not isinstance(data.get("huiswerk"), list):
+
+
+
+
 
 
 
@@ -618,17 +1230,39 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
    
+
+
 
     for item in data["huiswerk"]:
 
+
+
         if isinstance(item, dict):
+
+
 
             item.setdefault("priority", "Normaal")
 
+
+
             item.setdefault("in_progress", False)
 
+
+
     if not isinstance(data.get("settings"), dict):
+
+
+
+
 
 
 
@@ -640,11 +1274,27 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
     settings = data["settings"]
 
 
 
+
+
+
+
     settings.setdefault("theme", "Wit")
+
+
+
+
 
 
 
@@ -656,7 +1306,19 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
     if settings["theme"] not in THEMES:
+
+
+
+
 
 
 
@@ -668,7 +1330,19 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
     if not isinstance(settings["gebruikersnaam"], str):
+
+
+
+
 
 
 
@@ -680,7 +1354,19 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
     # Beschadigde individuele taken worden genegeerd.
+
+
+
+
 
 
 
@@ -688,7 +1374,15 @@ def laden():
 
 
 
+
+
+
+
     for item in data["huiswerk"]:
+
+
+
+
 
 
 
@@ -696,7 +1390,15 @@ def laden():
 
 
 
+
+
+
+
             item.setdefault("vak", "Onbekend")
+
+
+
+
 
 
 
@@ -704,7 +1406,15 @@ def laden():
 
 
 
+
+
+
+
             item.setdefault("datum", "")
+
+
+
+
 
 
 
@@ -712,7 +1422,15 @@ def laden():
 
 
 
+
+
+
+
             item["done"] = bool(item["done"])
+
+
+
+
 
 
 
@@ -724,7 +1442,19 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
     data["huiswerk"] = schone_taken
+
+
+
+
 
 
 
@@ -740,7 +1470,23 @@ def laden():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 def parse_datum(value):
+
+
+
+
 
 
 
@@ -748,11 +1494,23 @@ def parse_datum(value):
 
 
 
+
+
+
+
         return dt.datetime.strptime(value, "%Y-%m-%d").date()
 
 
 
+
+
+
+
     except (TypeError, ValueError):
+
+
+
+
 
 
 
@@ -768,7 +1526,23 @@ def parse_datum(value):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ============================================================
+
+
+
+
 
 
 
@@ -776,7 +1550,19 @@ def parse_datum(value):
 
 
 
+
+
+
+
 # ============================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -788,7 +1574,15 @@ def kies_datum(entry):
 
 
 
+
+
+
+
     top = ctk.CTkToplevel()
+
+
+
+
 
 
 
@@ -796,7 +1590,15 @@ def kies_datum(entry):
 
 
 
+
+
+
+
     top.geometry("320x360")
+
+
+
+
 
 
 
@@ -804,7 +1606,15 @@ def kies_datum(entry):
 
 
 
+
+
+
+
     top.transient(entry.winfo_toplevel())
+
+
+
+
 
 
 
@@ -816,7 +1626,19 @@ def kies_datum(entry):
 
 
 
+
+
+
+
+
+
+
+
     cal = Calendar(
+
+
+
+
 
 
 
@@ -824,7 +1646,15 @@ def kies_datum(entry):
 
 
 
+
+
+
+
         selectmode="day",
+
+
+
+
 
 
 
@@ -832,11 +1662,27 @@ def kies_datum(entry):
 
 
 
+
+
+
+
     )
 
 
 
+
+
+
+
     cal.pack(padx=10, pady=10, fill="both", expand=True)
+
+
+
+
+
+
+
+
 
 
 
@@ -848,7 +1694,15 @@ def kies_datum(entry):
 
 
 
+
+
+
+
         try:
+
+
+
+
 
 
 
@@ -856,11 +1710,23 @@ def kies_datum(entry):
 
 
 
+
+
+
+
             entry.insert(0, cal.get_date())
 
 
 
+
+
+
+
         finally:
+
+
+
+
 
 
 
@@ -872,7 +1738,19 @@ def kies_datum(entry):
 
 
 
+
+
+
+
+
+
+
+
     ctk.CTkButton(
+
+
+
+
 
 
 
@@ -880,11 +1758,23 @@ def kies_datum(entry):
 
 
 
+
+
+
+
         text="✓ Deadline selecteren",
 
 
 
+
+
+
+
         command=selecteer,
+
+
+
+
 
 
 
@@ -900,7 +1790,23 @@ def kies_datum(entry):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ============================================================
+
+
+
+
 
 
 
@@ -908,7 +1814,19 @@ def kies_datum(entry):
 
 
 
+
+
+
+
 # ============================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -920,7 +1838,15 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
     top = ctk.CTkToplevel(parent)
+
+
+
+
 
 
 
@@ -928,7 +1854,15 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
     top.geometry("320x360")
+
+
+
+
 
 
 
@@ -936,7 +1870,15 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
     top.transient(parent)
+
+
+
+
 
 
 
@@ -948,7 +1890,19 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
+
+
+
+
     huidige = parse_datum(target.get("datum", "")) or dt.date.today()
+
+
+
+
 
 
 
@@ -956,7 +1910,15 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
         top,
+
+
+
+
 
 
 
@@ -964,7 +1926,15 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
         date_pattern="yyyy-mm-dd",
+
+
+
+
 
 
 
@@ -972,7 +1942,15 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
         month=huidige.month,
+
+
+
+
 
 
 
@@ -980,7 +1958,15 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
     )
+
+
+
+
 
 
 
@@ -992,7 +1978,19 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
+
+
+
+
     def opslaan_datum():
+
+
+
+
 
 
 
@@ -1000,8 +1998,21 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
         parent._direct_ops_save_refresh("✓ Deadline opgeslagen • Dashboard vernieuwd")
+
         top.destroy()
+
+
+
+
+
+
+
+
 
 
 
@@ -1013,7 +2024,15 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
         top,
+
+
+
+
 
 
 
@@ -1021,7 +2040,15 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
         command=opslaan_datum,
+
+
+
+
 
 
 
@@ -1037,7 +2064,23 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ============================================================
+
+
+
+
 
 
 
@@ -1045,7 +2088,19 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
+
+
+
+
 # ============================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -1054,51 +2109,104 @@ def wijzig_bestaande_datum(parent, target):
 
 
 class StartupIntro(ctk.CTk):
+
     def __init__(self):
+
         super().__init__(); self.title("Huiswerk Planner"); self.geometry("980x620"); self.resizable(False,False); self.configure(fg_color="#05070C"); self.protocol("WM_DELETE_WINDOW",lambda:None); self.update_idletasks(); x=(self.winfo_screenwidth()-980)//2; y=(self.winfo_screenheight()-620)//2; self.geometry(f"980x620+{x}+{y}")
+
         self.canvas=tk.Canvas(self,bg="#05070C",highlightthickness=0,bd=0); self.canvas.pack(fill="both",expand=True)
+
         for box,col,w in [((-180,-220,420,380),"#102348",2),((650,300,1150,800),"#101F3C",2),((720,-180,1120,220),"#0B2A4B",1)]: self.canvas.create_oval(*box,outline=col,width=w)
+
         card=ctk.CTkFrame(self,fg_color="#0B1019",corner_radius=34,border_width=1,border_color="#243149"); card.place(relx=.5,rely=.5,anchor="center",relwidth=.82,relheight=.78)
+
         ctk.CTkLabel(card,text="H",width=96,height=96,corner_radius=30,fg_color="#121D30",text_color="#6D8CFF",font=ctk.CTkFont(size=48,weight="bold")).pack(pady=(36,14))
+
         ctk.CTkLabel(card,text="HUISWERK PLANNER",font=ctk.CTkFont(size=31,weight="bold"),text_color="#F7F9FC").pack(); ctk.CTkLabel(card,text="Jouw schooldag. Georganiseerd.",font=ctk.CTkFont(size=14),text_color="#8290A6").pack(pady=(5,20))
+
         self.phase=ctk.CTkLabel(card,text="INITIALISEREN",font=ctk.CTkFont(size=11,weight="bold"),text_color="#6D8CFF"); self.phase.pack(pady=(4,3)); self.status=ctk.CTkLabel(card,text="Applicatie voorbereiden…",font=ctk.CTkFont(size=14),text_color="#B7C0CF"); self.status.pack(pady=(0,14))
+
         self.progress=ctk.CTkProgressBar(card,width=570,height=10,corner_radius=8,fg_color="#172131",progress_color="#6D8CFF"); self.progress.set(0); self.progress.pack(); self.percent=ctk.CTkLabel(card,text="0%",font=ctk.CTkFont(size=12,weight="bold"),text_color="#F7F9FC"); self.percent.pack(pady=(9,0))
+
         ctk.CTkLabel(self,text="SECURE  •  SIMPLE  •  FOCUSED",font=ctk.CTkFont(size=10,weight="bold"),text_color="#39465B").place(relx=.5,rely=.94,anchor="center")
+
         self.step=0; self.messages=[("INITIALISEREN","Applicatie voorbereiden…"),("LADEN","Huiswerk en deadlines laden…"),("CONTROLEREN","Planning controleren…"),("OPTIMALISEREN","Werkruimte optimaliseren…"),("KLAAR","Alles staat klaar ✓")]; self.after(160,self.animate)
+
     def animate(self):
+
         if not self.winfo_exists(): return
+
         self.step+=1; total=34; v=min(self.step/total,1); self.progress.set(v); self.percent.configure(text=f"{int(v*100)}%"); ph,msg=self.messages[min(self.step//7,4)]; self.phase.configure(text=ph); self.status.configure(text=msg)
+
         if self.step<total:self.after(58,self.animate)
+
         else:self.after(550,self.open_app)
+
     def open_app(self):
+
         try:self.destroy()
+
         except Exception:pass
+
         HuiswerkApp().mainloop()
 
 
+
+
+
 class ClosingIntro(ctk.CTk):
+
     def __init__(self):
+
         super().__init__(); self.title("Huiswerk Planner"); self.geometry("980x620"); self.resizable(False,False); self.configure(fg_color="#05070C"); self.protocol("WM_DELETE_WINDOW",lambda:None); self.update_idletasks(); x=(self.winfo_screenwidth()-980)//2; y=(self.winfo_screenheight()-620)//2; self.geometry(f"980x620+{x}+{y}")
+
         self.canvas=tk.Canvas(self,bg="#05070C",highlightthickness=0,bd=0); self.canvas.pack(fill="both",expand=True); self.canvas.create_oval(-180,300,400,880,outline="#10271F",width=2); self.canvas.create_oval(650,-220,1160,300,outline="#0E241D",width=2)
+
         card=ctk.CTkFrame(self,fg_color="#0B1019",corner_radius=34,border_width=1,border_color="#25362F"); card.place(relx=.5,rely=.5,anchor="center",relwidth=.82,relheight=.78)
+
         ctk.CTkLabel(card,text="✓",width=96,height=96,corner_radius=30,fg_color="#10271F",text_color="#36D58A",font=ctk.CTkFont(size=46,weight="bold")).pack(pady=(36,14)); ctk.CTkLabel(card,text="TOT DE VOLGENDE KEER",font=ctk.CTkFont(size=30,weight="bold"),text_color="#F7F9FC").pack(); ctk.CTkLabel(card,text="Denk aan je huiswerk hè! 😉",font=ctk.CTkFont(size=15),text_color="#8FA09A").pack(pady=(6,20))
+
         self.phase=ctk.CTkLabel(card,text="OPSLAAN",font=ctk.CTkFont(size=11,weight="bold"),text_color="#36D58A"); self.phase.pack(pady=(4,3)); self.status=ctk.CTkLabel(card,text="Wijzigingen veilig opslaan…",font=ctk.CTkFont(size=14),text_color="#B7C0CF"); self.status.pack(pady=(0,14)); self.progress=ctk.CTkProgressBar(card,width=570,height=10,corner_radius=8,fg_color="#17211F",progress_color="#36D58A"); self.progress.set(0); self.progress.pack(); self.percent=ctk.CTkLabel(card,text="0%",font=ctk.CTkFont(size=12,weight="bold"),text_color="#F7F9FC"); self.percent.pack(pady=(9,0)); ctk.CTkLabel(self,text="ALLES OPGESLAGEN  •  VEILIG AFSLUITEN",font=ctk.CTkFont(size=10,weight="bold"),text_color="#3D5048").place(relx=.5,rely=.94,anchor="center")
+
         self.step=0; self.messages=[("OPSLAAN","Wijzigingen veilig opslaan…"),("CONTROLEREN","Laatste gegevens controleren…"),("AFRONDEN","Alles netjes afronden…"),("AFSLUITEN","Applicatie afsluiten…"),("TOT ZIENS","Denk aan je huiswerk hè! 😉")]; self.after(150,self.animate)
+
     def animate(self):
+
         if not self.winfo_exists(): return
+
         self.step+=1; total=30; v=min(self.step/total,1); self.progress.set(v); self.percent.configure(text=f"{int(v*100)}%"); ph,msg=self.messages[min(self.step//6,4)]; self.phase.configure(text=ph); self.status.configure(text=msg)
+
         if self.step<total:self.after(65,self.animate)
+
         else:self.after(900,self.finish)
+
     def finish(self):
+
         try:self.destroy()
+
         finally:os._exit(0)
+
+
+
 
 
 # UPDATEVENSTER
 
 
 
+
+
+
+
 # ============================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -1110,7 +2218,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
     """Herbruikbaar updatevenster met veilige thread->UI communicatie."""
+
+
+
+
+
+
+
+
 
 
 
@@ -1122,7 +2242,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         super().__init__(parent)
+
+
+
+
+
+
+
+
 
 
 
@@ -1134,7 +2266,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.busy = False
+
+
+
+
 
 
 
@@ -1146,7 +2286,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         self.title("Updates zoeken")
+
+
+
+
 
 
 
@@ -1154,7 +2306,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.resizable(False, False)
+
+
+
+
 
 
 
@@ -1162,7 +2322,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.transient(parent)
+
+
+
+
 
 
 
@@ -1170,7 +2338,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.protocol("WM_DELETE_WINDOW", self.cancel)
+
+
+
+
+
+
+
+
 
 
 
@@ -1186,15 +2366,39 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         card = ctk.CTkFrame(self, fg_color="#0B1019", corner_radius=34, border_width=1, border_color="#243149")
+
+
 
         card.pack(fill="both", expand=True, padx=26, pady=26)
 
+
+
         ctk.CTkLabel(card, text="↻", font=ctk.CTkFont(size=40, weight="bold"), text_color=t["accent"], fg_color="#121B2B", corner_radius=18, width=68, height=68).pack(pady=(30, 12))
+
+
 
         ctk.CTkLabel(card, text="UPDATE CENTER  •  HUISWERK PLANNER", font=ctk.CTkFont(size=27, weight="bold"), text_color=t["text"]).pack()
 
+
+
         ctk.CTkLabel(card, text="Je planner wordt veilig bijgewerkt", font=ctk.CTkFont(size=14), text_color=t["muted"]).pack(pady=(5, 22))
+
+
+
+
+
+
+
+
 
 
 
@@ -1206,7 +2410,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             card,
+
+
+
+
 
 
 
@@ -1214,7 +2426,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             font=("Segoe UI", 12),
+
+
+
+
 
 
 
@@ -1222,7 +2442,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -1234,7 +2462,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         self.progress = ctk.CTkProgressBar(
+
+
+
+
 
 
 
@@ -1242,7 +2482,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             width=450,
+
+
+
+
 
 
 
@@ -1250,7 +2498,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             fg_color=t["button_fg"],
+
+
+
+
 
 
 
@@ -1258,7 +2514,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.progress.set(0)
+
+
+
+
 
 
 
@@ -1270,7 +2534,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         self.percent = ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -1278,7 +2554,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text="0%",
+
+
+
+
 
 
 
@@ -1286,11 +2570,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text_color=t["text"],
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -1302,7 +2598,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         self.speed = ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -1310,7 +2618,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text="",
+
+
+
+
 
 
 
@@ -1318,11 +2634,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text_color=t["muted"],
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -1334,7 +2662,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         self.close_button = ctk.CTkButton(
+
+
+
+
 
 
 
@@ -1342,7 +2682,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text="Annuleren",
+
+
+
+
 
 
 
@@ -1350,7 +2698,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             fg_color=t["button_fg"],
+
+
+
+
 
 
 
@@ -1358,11 +2714,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             hover_color=t["button_hover"],
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -1374,7 +2742,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         self.protocol_running = True
+
+
+
+
 
 
 
@@ -1386,7 +2766,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
     def safe_ui(self, callback):
+
+
+
+
 
 
 
@@ -1394,7 +2786,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -1402,11 +2802,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             except tk.TclError:
 
 
 
+
+
+
+
                 pass
+
+
+
+
+
+
+
+
 
 
 
@@ -1418,11 +2834,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         if self.busy:
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -1434,7 +2866,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.close_button.configure(state="disabled")
+
+
+
+
 
 
 
@@ -1446,7 +2886,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
     def _check_worker(self):
+
+
+
+
 
 
 
@@ -1454,7 +2906,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             # Kleine zichtbare laadfase.
+
+
+
+
 
 
 
@@ -1462,7 +2922,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 time.sleep(0.08)
+
+
+
+
 
 
 
@@ -1470,7 +2938,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     lambda i=i: (
+
+
+
+
 
 
 
@@ -1478,7 +2954,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         self.percent.configure(text=f"{i * 5}%"),
+
+
+
+
 
 
 
@@ -1486,7 +2970,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     )
+
+
+
+
 
 
 
@@ -1498,7 +2990,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             req = urllib.request.Request(
+
+
+
+
 
 
 
@@ -1506,11 +3010,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 headers={"User-Agent": "HuiswerkPlanner/7.0"},
 
 
 
+
+
+
+
             )
+
+
+
+
+
+
+
+
 
 
 
@@ -1522,7 +3042,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 nieuwste = response.read().decode("utf-8").strip()
+
+
+
+
+
+
+
+
 
 
 
@@ -1534,7 +3066,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             self.safe_ui(lambda: self.percent.configure(text="100%"))
+
+
+
+
+
+
+
+
 
 
 
@@ -1546,7 +3090,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 raise RuntimeError("De update-server stuurde geen versienummer.")
+
+
+
+
+
+
+
+
 
 
 
@@ -1558,7 +3114,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 self.safe_ui(
+
+
+
+
 
 
 
@@ -1566,7 +3130,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         f"Je gebruikt al de nieuwste versie ({HUIDIGE_VERSIE})."
+
+
+
+
 
 
 
@@ -1574,11 +3146,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 )
 
 
 
+
+
+
+
             else:
+
+
+
+
 
 
 
@@ -1590,7 +3174,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         except Exception as e:
+
+
+
+
 
 
 
@@ -1602,11 +3198,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
     def ask_update(self, nieuwste):
 
 
 
+
+
+
+
         if not self.winfo_exists():
+
+
+
+
 
 
 
@@ -1618,7 +3230,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         antwoord = messagebox.askyesno(
+
+
+
+
 
 
 
@@ -1626,7 +3250,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             f"Nieuwe versie gevonden: {nieuwste}\n\n"
+
+
+
+
 
 
 
@@ -1634,7 +3266,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             parent=self,
+
+
+
+
 
 
 
@@ -1646,7 +3286,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         if antwoord:
+
+
+
+
 
 
 
@@ -1654,7 +3306,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         else:
+
+
+
+
 
 
 
@@ -1666,7 +3326,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
     def download_update(self, nieuwste):
+
+
+
+
 
 
 
@@ -1674,7 +3346,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.status.configure(text="Update voorbereiden...")
+
+
+
+
 
 
 
@@ -1682,11 +3362,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.percent.configure(text="0%")
 
 
 
+
+
+
+
         self.progress.set(0)
+
+
+
+
 
 
 
@@ -1698,7 +3390,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         threading.Thread(
+
+
+
+
 
 
 
@@ -1706,11 +3410,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             args=(nieuwste,),
 
 
 
+
+
+
+
             daemon=True,
+
+
+
+
 
 
 
@@ -1722,7 +3438,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
     @staticmethod
+
+
+
+
 
 
 
@@ -1730,11 +3458,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         if bytes_per_second >= 1024 * 1024:
 
 
 
+
+
+
+
             return f"{bytes_per_second / (1024 * 1024):.2f} MB/s"
+
+
+
+
 
 
 
@@ -1746,7 +3486,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
     def _download_worker(self, nieuwste):
+
+
+
+
 
 
 
@@ -1758,7 +3510,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         try:
+
+
+
+
 
 
 
@@ -1766,7 +3530,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -1774,7 +3546,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     GITHUB_CHANGELOG_URL,
+
+
+
+
 
 
 
@@ -1782,11 +3562,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 )
 
 
 
+
+
+
+
                 with urllib.request.urlopen(req_log, timeout=10) as response:
+
+
+
+
 
 
 
@@ -1798,7 +3590,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
                 with open(LOG_BESTAND, "w", encoding="utf-8") as f:
+
+
+
+
 
 
 
@@ -1806,11 +3610,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             except Exception:
 
 
 
+
+
+
+
                 # Geen crash als changelog tijdelijk niet beschikbaar is.
+
+
+
+
 
 
 
@@ -1822,7 +3638,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             self.safe_ui(
+
+
+
+
 
 
 
@@ -1830,7 +3658,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             )
+
+
+
+
+
+
+
+
 
 
 
@@ -1842,11 +3682,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 GITHUB_SCRIPT_URL,
 
 
 
+
+
+
+
                 headers={"User-Agent": "HuiswerkPlanner/7.0"},
+
+
+
+
 
 
 
@@ -1858,7 +3710,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             current = os.path.abspath(sys.argv[0])
+
+
+
+
 
 
 
@@ -1870,11 +3734,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             total = 0
 
 
 
+
+
+
+
             start_time = time.monotonic()
+
+
+
+
 
 
 
@@ -1886,7 +3766,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             with urllib.request.urlopen(req, timeout=30) as response:
+
+
+
+
 
 
 
@@ -1898,7 +3790,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
                 try:
+
+
+
+
 
 
 
@@ -1906,7 +3810,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 except (TypeError, ValueError):
+
+
+
+
 
 
 
@@ -1918,7 +3830,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
                 while True:
+
+
+
+
 
 
 
@@ -1926,7 +3850,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     if not chunk:
+
+
+
+
 
 
 
@@ -1938,7 +3870,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
                     chunks.append(chunk)
+
+
+
+
 
 
 
@@ -1950,7 +3894,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
                     elapsed = max(time.monotonic() - start_time, 0.001)
+
+
+
+
 
 
 
@@ -1962,7 +3918,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
                     if expected:
+
+
+
+
 
 
 
@@ -1970,7 +3938,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         percentage = int(fraction * 100)
+
+
+
+
 
 
 
@@ -1978,7 +3954,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         # Onbekende bestandsgrootte: animatie tot 95%.
+
+
+
+
 
 
 
@@ -1986,7 +3970,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         percentage = int(fraction * 100)
+
+
+
+
+
+
+
+
 
 
 
@@ -2002,7 +3998,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
                     self.safe_ui(
+
+
+
+
 
 
 
@@ -2010,7 +4018,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         speed_text=speed_text, total=total: (
+
+
+
+
 
 
 
@@ -2018,7 +4034,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                             self.percent.configure(text=f"{percentage}%"),
+
+
+
+
 
 
 
@@ -2026,7 +4050,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                             self.status.configure(
+
+
+
+
 
 
 
@@ -2034,7 +4066,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                             ),
+
+
+
+
 
 
 
@@ -2042,7 +4082,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     )
+
+
+
+
 
 
 
@@ -2050,11 +4098,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     # updater trekt niet onnodig hard aan de server.
 
 
 
+
+
+
+
                     time.sleep(0.025)
+
+
+
+
+
+
+
+
 
 
 
@@ -2070,7 +4134,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             if not script.strip():
+
+
+
+
 
 
 
@@ -2082,7 +4158,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             # Eerst controleren of het gedownloade Python-bestand syntactisch klopt.
+
+
+
+
 
 
 
@@ -2094,7 +4182,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             self.safe_ui(
+
+
+
+
 
 
 
@@ -2102,7 +4202,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     text="Update controleren en voorbereiden..."
+
+
+
+
 
 
 
@@ -2110,7 +4218,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             )
+
+
+
+
+
+
+
+
 
 
 
@@ -2122,7 +4242,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 f.write(script)
+
+
+
+
+
+
+
+
 
 
 
@@ -2134,11 +4266,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             with open(temporary, "r", encoding="utf-8") as f:
 
 
 
+
+
+
+
                 controle = f.read()
+
+
+
+
 
 
 
@@ -2150,7 +4294,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             # Eerst oude tijdelijke backup maken.
+
+
+
+
 
 
 
@@ -2158,7 +4314,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -2166,7 +4330,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     os.remove(backup)
+
+
+
+
 
 
 
@@ -2174,7 +4346,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     os.replace(current, backup)
+
+
+
+
 
 
 
@@ -2182,7 +4362,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             except Exception:
+
+
+
+
 
 
 
@@ -2190,11 +4378,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 if os.path.exists(temporary):
 
 
 
+
+
+
+
                     try:
+
+
+
+
 
 
 
@@ -2202,11 +4402,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     except OSError:
 
 
 
+
+
+
+
                         pass
+
+
+
+
 
 
 
@@ -2214,7 +4426,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     try:
+
+
+
+
 
 
 
@@ -2222,11 +4442,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     except OSError:
 
 
 
+
+
+
+
                         pass
+
+
+
+
 
 
 
@@ -2238,7 +4470,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             self.safe_ui(
+
+
+
+
 
 
 
@@ -2246,7 +4490,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     self.progress.set(1),
+
+
+
+
 
 
 
@@ -2254,7 +4506,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     self.status.configure(
+
+
+
+
 
 
 
@@ -2262,7 +4522,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     ),
+
+
+
+
 
 
 
@@ -2270,7 +4538,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             )
+
+
+
+
+
+
+
+
 
 
 
@@ -2286,7 +4566,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             # Herstart via hetzelfde Python-executable en dezelfde scriptlocatie.
+
+
+
+
 
 
 
@@ -2298,7 +4590,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         except Exception as e:
+
+
+
+
 
 
 
@@ -2306,7 +4610,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 try:
+
+
+
+
 
 
 
@@ -2314,11 +4626,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 except OSError:
 
 
 
+
+
+
+
                     pass
+
+
+
+
+
+
+
+
 
 
 
@@ -2334,7 +4662,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
     def restart_app(self):
+
+
+
+
 
 
 
@@ -2342,7 +4682,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         if not self.winfo_exists():
+
+
+
+
 
 
 
@@ -2354,7 +4702,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         self.protocol_running = False
+
+
+
+
 
 
 
@@ -2366,7 +4726,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         try:
+
+
+
+
 
 
 
@@ -2374,11 +4746,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         except Exception:
 
 
 
+
+
+
+
             pass
+
+
+
+
+
+
+
+
 
 
 
@@ -2390,7 +4778,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         # This avoids flicker and prevents two update windows from appearing.
+
+
+
+
 
 
 
@@ -2398,11 +4794,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.geometry("620x620")
 
 
 
+
+
+
+
         self.resizable(False, False)
+
+
+
+
 
 
 
@@ -2414,7 +4822,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         for child in self.winfo_children():
+
+
+
+
 
 
 
@@ -2422,11 +4842,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 child.destroy()
 
 
 
+
+
+
+
             except tk.TclError:
+
+
+
+
 
 
 
@@ -2438,7 +4870,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         # Keep the update window on top while the restart sequence is running.
+
+
+
+
 
 
 
@@ -2446,11 +4890,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             self.attributes("-topmost", True)
 
 
 
+
+
+
+
         except tk.TclError:
+
+
+
+
 
 
 
@@ -2462,7 +4918,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -2470,7 +4938,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text="Huiswerk Planner",
+
+
+
+
 
 
 
@@ -2478,7 +4954,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text_color="#ffffff",
+
+
+
+
 
 
 
@@ -2490,7 +4974,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -2498,7 +4994,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text="Updates uitvoeren",
+
+
+
+
 
 
 
@@ -2506,7 +5010,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text_color="#8f9bb3",
+
+
+
+
 
 
 
@@ -2518,7 +5030,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         canvas = tk.Canvas(
+
+
+
+
 
 
 
@@ -2526,7 +5050,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             width=300,
+
+
+
+
 
 
 
@@ -2534,7 +5066,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             highlightthickness=0,
+
+
+
+
 
 
 
@@ -2542,11 +5082,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             bg="#0b0d14",
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -2558,7 +5110,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         cx, cy = 150, 150
+
+
+
+
 
 
 
@@ -2570,7 +5134,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         canvas.create_oval(
+
+
+
+
 
 
 
@@ -2578,7 +5154,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             cy - radius,
+
+
+
+
 
 
 
@@ -2586,7 +5170,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             cy + radius,
+
+
+
+
 
 
 
@@ -2594,11 +5186,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             width=15,
 
 
 
+
+
+
+
         )
+
+
+
+
+
+
+
+
 
 
 
@@ -2610,7 +5218,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             cx - radius,
+
+
+
+
 
 
 
@@ -2618,7 +5234,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             cx + radius,
+
+
+
+
 
 
 
@@ -2626,7 +5250,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             start=90,
+
+
+
+
 
 
 
@@ -2634,7 +5266,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             style="arc",
+
+
+
+
 
 
 
@@ -2642,11 +5282,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             width=15,
 
 
 
+
+
+
+
         )
+
+
+
+
+
+
+
+
 
 
 
@@ -2658,7 +5314,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             self,
+
+
+
+
 
 
 
@@ -2666,7 +5330,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             font=("Segoe UI", 32, "bold"),
+
+
+
+
 
 
 
@@ -2674,7 +5346,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -2686,7 +5366,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         main_text = ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -2694,7 +5386,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text="er worden updates uitgevoerd houd de computer met de app geopent",
+
+
+
+
 
 
 
@@ -2702,7 +5402,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text_color="#ffffff",
+
+
+
+
 
 
 
@@ -2710,11 +5418,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             justify="center",
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -2726,7 +5446,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         sub_text = ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -2734,7 +5466,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text="Even geduld...",
+
+
+
+
 
 
 
@@ -2742,11 +5482,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text_color="#6f7b92",
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -2758,7 +5510,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         def set_progress(value):
+
+
+
+
 
 
 
@@ -2766,7 +5530,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 return
+
+
+
+
 
 
 
@@ -2774,7 +5546,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             canvas.itemconfigure(arc, extent=-360*value)
+
+
+
+
 
 
 
@@ -2786,7 +5566,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         def smooth_progress(target, duration=0.8, done=None):
+
+
+
+
 
 
 
@@ -2794,7 +5586,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             state={"value":0.0}
+
+
+
+
 
 
 
@@ -2806,7 +5606,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             def tick(i=0):
+
+
+
+
 
 
 
@@ -2814,7 +5626,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     return
+
+
+
+
 
 
 
@@ -2822,7 +5642,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 p=i/steps
+
+
+
+
 
 
 
@@ -2830,7 +5658,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 value=target*eased
+
+
+
+
 
 
 
@@ -2838,7 +5674,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 if i<steps:
+
+
+
+
 
 
 
@@ -2846,11 +5690,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 elif done:
 
 
 
+
+
+
+
                     done()
+
+
+
+
+
+
+
+
 
 
 
@@ -2866,11 +5726,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         def fade_in_restart_message():
 
 
 
+
+
+
+
             if not self.winfo_exists():
+
+
+
+
 
 
 
@@ -2882,7 +5758,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             message="de app word automatische opnieuw opgestart"
+
+
+
+
 
 
 
@@ -2890,7 +5778,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 "#30333b","#4a4d55","#62656d","#7a7d85",
+
+
+
+
 
 
 
@@ -2898,7 +5794,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             ]
+
+
+
+
+
+
+
+
 
 
 
@@ -2914,7 +5822,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             def step(i=0):
+
+
+
+
 
 
 
@@ -2922,7 +5842,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     return
+
+
+
+
 
 
 
@@ -2930,7 +5858,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 if i < len(shades)-1:
+
+
+
+
 
 
 
@@ -2938,11 +5874,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 else:
 
 
 
+
+
+
+
                     self.after(900,launch)
+
+
+
+
+
+
+
+
 
 
 
@@ -2958,11 +5910,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         def launch():
 
 
 
+
+
+
+
             if not self.winfo_exists():
+
+
+
+
 
 
 
@@ -2974,7 +5942,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -2982,7 +5962,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             except tk.TclError:
+
+
+
+
 
 
 
@@ -2994,7 +5982,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -3002,7 +6002,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 self.destroy()
+
+
+
+
 
 
 
@@ -3010,7 +6018,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 # new app from briefly running side-by-side.
+
+
+
+
 
 
 
@@ -3018,7 +6034,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             except Exception as e:
+
+
+
+
 
 
 
@@ -3026,7 +6050,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     if not self.winfo_exists():
+
+
+
+
 
 
 
@@ -3034,7 +6066,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         messagebox.showerror(
+
+
+
+
 
 
 
@@ -3042,7 +6082,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                             "De update is geïnstalleerd, maar de app kon niet "
+
+
+
+
 
 
 
@@ -3050,7 +6098,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         )
+
+
+
+
 
 
 
@@ -3058,7 +6114,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         messagebox.showerror(
+
+
+
+
 
 
 
@@ -3066,7 +6130,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                             "De update is geïnstalleerd, maar de app kon niet "
+
+
+
+
 
 
 
@@ -3074,7 +6146,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                             parent=self,
+
+
+
+
 
 
 
@@ -3082,7 +6162,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 except Exception:
+
+
+
+
 
 
 
@@ -3094,7 +6182,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         # First show the full update message, then smoothly fill the circle.
+
+
+
+
 
 
 
@@ -3102,7 +6202,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.after(
+
+
+
+
 
 
 
@@ -3110,7 +6218,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             lambda: smooth_progress(
+
+
+
+
 
 
 
@@ -3118,7 +6234,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                 1.0,
+
+
+
+
 
 
 
@@ -3126,7 +6250,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     150,
+
+
+
+
 
 
 
@@ -3134,7 +6266,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         0.70,
+
+
+
+
 
 
 
@@ -3142,7 +6282,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                         lambda: self.after(
+
+
+
+
 
 
 
@@ -3150,7 +6298,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                             lambda: smooth_progress(
+
+
+
+
 
 
 
@@ -3158,7 +6314,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                                 1.2,
+
+
+
+
 
 
 
@@ -3166,7 +6330,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                             ),
+
+
+
+
 
 
 
@@ -3174,7 +6346,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
                     ),
+
+
+
+
 
 
 
@@ -3182,11 +6362,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             ),
 
 
 
+
+
+
+
         )
+
+
+
+
+
+
+
+
 
 
 
@@ -3198,11 +6394,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         if not self.winfo_exists():
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -3214,7 +6426,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.percent.configure(text="✓")
+
+
+
+
 
 
 
@@ -3222,7 +6442,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.close_button.configure(
+
+
+
+
 
 
 
@@ -3230,7 +6458,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             text="Sluiten",
+
+
+
+
 
 
 
@@ -3238,7 +6474,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         )
+
+
+
+
+
+
+
+
 
 
 
@@ -3250,11 +6498,27 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         if not self.winfo_exists():
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -3266,7 +6530,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         self.download_active = False
+
+
+
+
 
 
 
@@ -3274,7 +6546,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             state="normal",
+
+
+
+
 
 
 
@@ -3282,11 +6562,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             command=self.cancel,
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -3294,7 +6586,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         messagebox.showerror(
+
+
+
+
 
 
 
@@ -3302,7 +6602,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             f"De update kon niet worden uitgevoerd:\n\n{error}",
+
+
+
+
 
 
 
@@ -3310,7 +6618,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         )
+
+
+
+
+
+
+
+
 
 
 
@@ -3322,7 +6642,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
         if self.download_active:
+
+
+
+
 
 
 
@@ -3330,11 +6658,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             # Daarom sluiten we het venster en laten we de daemon-thread eindigen
 
 
 
+
+
+
+
             # zodra de netwerkactie klaar is.
+
+
+
+
 
 
 
@@ -3346,7 +6686,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
         self.protocol_running = False
+
+
+
+
 
 
 
@@ -3354,7 +6706,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             self.grab_release()
+
+
+
+
 
 
 
@@ -3362,7 +6722,15 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
             pass
+
+
+
+
 
 
 
@@ -3378,7 +6746,23 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ============================================================
+
+
+
+
 
 
 
@@ -3386,7 +6770,19 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 
+
+
+
+
 # ============================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -3398,7 +6794,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
     def __init__(self):
+
+
+
+
 
 
 
@@ -3410,7 +6814,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.data = laden()
+
+
+
+
 
 
 
@@ -3422,7 +6838,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         if self.theme_name not in THEMES:
+
+
+
+
 
 
 
@@ -3434,7 +6862,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.set_appearance_mode(THEMES[self.theme_name]["mode"])
+
+
+
+
 
 
 
@@ -3446,7 +6886,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         # BELANGRIJK:
+
+
+
+
 
 
 
@@ -3454,7 +6906,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         # Geen automatische zoom.
+
+
+
+
 
 
 
@@ -3462,7 +6922,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self.geometry("1050x680")
+
+
+
+
 
 
 
@@ -3470,7 +6938,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self.resizable(True, True)
+
+
+
+
+
+
+
+
 
 
 
@@ -3486,7 +6966,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.vakken = [
+
+
+
+
 
 
 
@@ -3494,7 +6986,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             "Engels",
+
+
+
+
 
 
 
@@ -3502,7 +7002,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             "Hardware devices",
+
+
+
+
 
 
 
@@ -3510,7 +7018,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             "3D print support",
+
+
+
+
 
 
 
@@ -3518,7 +7034,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             "service management klant",
+
+
+
+
 
 
 
@@ -3526,7 +7050,16 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+            "TopDesk",
             "install_ic",
+
+
+
+
 
 
 
@@ -3538,7 +7071,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.vak_kleuren = {
+
+
+
+
 
 
 
@@ -3546,7 +7091,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             "Engels": "#007aff",
+
+
+
+
 
 
 
@@ -3554,7 +7107,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             "Hardware devices": "#ff9500",
+
+
+
+
 
 
 
@@ -3562,7 +7123,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             "3D print support": "#5ac8fa",
+
+
+
+
 
 
 
@@ -3570,7 +7139,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             "service management klant": "#ff6482",
+
+
+
+
 
 
 
@@ -3578,7 +7155,16 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+            "TopDesk": "#ff6b35",
             "install_ic": "#ffb000",
+
+
+
+
 
 
 
@@ -3590,7 +7176,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.hw_list = None
+
+
+
+
 
 
 
@@ -3598,7 +7196,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self.settings_name = None
+
+
+
+
 
 
 
@@ -3606,13 +7212,31 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self._closing = False
+
+
 
         self.task_filter = "Alles"
 
+
+
         self.task_search = ""
 
+
+
         self.task_sort = "Deadline"
+
+
+
+
+
+
+
+
 
 
 
@@ -3624,7 +7248,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self.apply_theme()
+
+
+
+
 
 
 
@@ -3636,7 +7268,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         # Alleen controleren of er na een update een changelog klaarstaat.
+
+
+
+
 
 
 
@@ -3648,7 +7292,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
 
 
 
@@ -3656,7 +7312,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
+
+
+
+
 
 
 
@@ -3668,7 +7336,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         t = THEMES[self.theme_name]
+
+
+
+
+
+
+
+
 
 
 
@@ -3684,7 +7364,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.sidebar = ctk.CTkFrame(
+
+
+
+
 
 
 
@@ -3692,7 +7384,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             width=220,
+
+
+
+
 
 
 
@@ -3700,7 +7400,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color=t["bg_sidebar"],
+
+
+
+
 
 
 
@@ -3708,7 +7416,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self.sidebar.pack(side="left", fill="y")
+
+
+
+
 
 
 
@@ -3720,7 +7436,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -3728,7 +7456,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="📚 HUISWERK",
+
+
+
+
 
 
 
@@ -3736,7 +7472,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -3748,7 +7492,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -3756,7 +7512,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="Deadline Planner",
+
+
+
+
 
 
 
@@ -3764,7 +7528,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["accent"],
+
+
+
+
 
 
 
@@ -3776,7 +7548,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.btn_huiswerk = ctk.CTkButton(
+
+
+
+
 
 
 
@@ -3784,7 +7568,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="📚  Huiswerk",
+
+
+
+
 
 
 
@@ -3792,7 +7584,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             height=42,
+
+
+
+
 
 
 
@@ -3800,7 +7600,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color=t["button_fg"],
+
+
+
+
 
 
 
@@ -3808,7 +7616,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             hover_color=t["button_hover"],
+
+
+
+
 
 
 
@@ -3816,7 +7632,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -3828,7 +7652,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.btn_settings = ctk.CTkButton(
+
+
+
+
 
 
 
@@ -3836,7 +7672,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="⚙️  Instellingen",
+
+
+
+
 
 
 
@@ -3844,7 +7688,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             height=42,
+
+
+
+
 
 
 
@@ -3852,7 +7704,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color="transparent",
+
+
+
+
 
 
 
@@ -3860,7 +7720,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             hover_color=t["button_hover"],
+
+
+
+
 
 
 
@@ -3868,7 +7736,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -3880,7 +7756,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.btn_afsluiten = ctk.CTkButton(
+
+
+
+
 
 
 
@@ -3888,7 +7776,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="✕  Afsluiten",
+
+
+
+
 
 
 
@@ -3896,7 +7792,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             height=42,
+
+
+
+
 
 
 
@@ -3904,7 +7808,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color=ROOD,
+
+
+
+
 
 
 
@@ -3912,7 +7824,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             hover_color="#d92f26",
+
+
+
+
 
 
 
@@ -3920,7 +7840,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -3932,7 +7860,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.clock_label = ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -3940,7 +7880,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="",
+
+
+
+
 
 
 
@@ -3948,7 +7896,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -3956,7 +7912,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self.clock_label.pack(side="bottom", pady=20)
+
+
+
+
+
+
+
+
 
 
 
@@ -3972,7 +7940,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.main_container = ctk.CTkFrame(
+
+
+
+
 
 
 
@@ -3980,7 +7960,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color=t["bg_main"],
+
+
+
+
 
 
 
@@ -3988,12 +7976,29 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
 
 
 
+
+
+
+
         self.main_container.pack(side="right", fill="both", expand=True)
+
         self.bind("<FocusIn>", self._focus_refresh)
+
+
+
+
+
+
+
+
 
 
 
@@ -4005,7 +8010,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self._rotation_token = getattr(self, "_rotation_token", 0) + 1
+
+
+
+
 
 
 
@@ -4013,7 +8026,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         for child in self.main_container.winfo_children():
+
+
+
+
 
 
 
@@ -4021,11 +8042,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 child.destroy()
 
 
 
+
+
+
+
             except Exception:
+
+
+
+
 
 
 
@@ -4037,16 +8070,37 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     def _focus_refresh(self, event=None):
+
         if getattr(self, "_closing", False):
+
             return
+
         try:
+
             if getattr(self, "current_page", "huiswerk") == "huiswerk":
+
                 self.show_huiswerk()
+
         except Exception:
+
             pass
 
+
+
     def _update_clock(self):
+
+
+
+
 
 
 
@@ -4054,7 +8108,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -4066,7 +8132,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             if self.clock_label and self.clock_label.winfo_exists():
+
+
+
+
 
 
 
@@ -4074,7 +8148,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     text=dt.datetime.now().strftime("%H:%M:%S\n%d-%m-%Y")
+
+
+
+
 
 
 
@@ -4082,7 +8164,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 self.after(1000, self._update_clock)
+
+
+
+
 
 
 
@@ -4090,7 +8180,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             pass
+
+
+
+
+
+
+
+
 
 
 
@@ -4102,7 +8204,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         t = THEMES[self.theme_name]
+
+
+
+
+
+
+
+
 
 
 
@@ -4114,7 +8228,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             self.configure(fg_color=t["bg_root"])
+
+
+
+
 
 
 
@@ -4122,7 +8244,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             self.main_container.configure(fg_color=t["bg_main"])
+
+
+
+
 
 
 
@@ -4130,7 +8260,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 fg_color=t["button_fg"],
+
+
+
+
 
 
 
@@ -4138,11 +8276,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 hover_color=t["button_hover"],
 
 
 
+
+
+
+
             )
+
+
+
+
 
 
 
@@ -4150,7 +8300,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text_color=t["button_text"],
+
+
+
+
 
 
 
@@ -4158,7 +8316,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             )
+
+
+
+
 
 
 
@@ -4166,7 +8332,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         except tk.TclError:
+
+
+
+
 
 
 
@@ -4178,7 +8352,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
 
 
 
@@ -4186,7 +8372,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
+
+
+
+
 
 
 
@@ -4198,11 +8396,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         if self._closing:
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -4214,7 +8428,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         opslaan(self.data)
+
+
+
+
+
+
+
+
 
 
 
@@ -4226,11 +8452,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             self.withdraw()
 
 
 
+
+
+
+
         except tk.TclError:
+
+
+
+
 
 
 
@@ -4242,7 +8480,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         try:
+
+
+
+
 
 
 
@@ -4250,11 +8500,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             closing.mainloop()
 
 
 
+
+
+
+
         except Exception:
+
+
+
+
 
 
 
@@ -4266,7 +8528,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
 
 
 
@@ -4274,7 +8548,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
+
+
+
+
 
 
 
@@ -4286,7 +8572,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         if getattr(self, "_rotation_running", False):
+
+
+
+
 
 
 
@@ -4294,7 +8588,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self._rotation_running = True
+
+
+
+
 
 
 
@@ -4302,7 +8604,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self._rotation_token = getattr(self, "_rotation_token", 0) + 1
+
+
+
+
 
 
 
@@ -4314,7 +8624,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     def _rotate_dashboard_message(self, token):
+
+
+
+
 
 
 
@@ -4322,7 +8644,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             return
+
+
+
+
 
 
 
@@ -4330,7 +8660,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             return
+
+
+
+
 
 
 
@@ -4338,7 +8676,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         if self._rotation_state:
+
+
+
+
 
 
 
@@ -4346,17 +8692,35 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         else:
+
+
+
+
 
 
 
             # Zoek automatisch de eerstvolgende OPEN taak met een deadline
 
+
+
             # binnen minder dan 3 dagen. De dichtstbijzijnde deadline wint.
+
+
 
             vandaag = dt.date.today()
 
+
+
             kandidaten = []
+
+
+
+
 
 
 
@@ -4364,25 +8728,51 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 if item.get("done", False):
 
+
+
                     continue
+
+
+
+
 
 
 
                 datum = parse_datum(item.get("datum", ""))
 
+
+
                 if datum is None:
+
+
 
                     continue
 
 
 
+
+
+
+
                 dagen = (datum - vandaag).days
+
+
 
                 if 0 <= dagen < 3:
 
+
+
                     kandidaten.append((dagen, datum, item))
+
+
+
+
 
 
 
@@ -4390,15 +8780,31 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             if kandidaten:
+
+
+
+
 
 
 
                 item = kandidaten[0][2]
 
+
+
                 vak = str(item.get("vak", "Onbekend")).strip() or "Onbekend"
 
+
+
                 text = f"🚨 Ey! Begin of ga eens verder met: {vak}"
+
+
+
+
 
 
 
@@ -4406,11 +8812,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text = "💡 Begin eens aan de vakken die het dichtst bij de deadline zijn"
 
 
 
+
+
+
+
         self._rotation_state = not self._rotation_state
+
+
+
+
 
 
 
@@ -4422,7 +8840,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     def _fade_dashboard_message(self, new_text, token):
+
+
+
+
 
 
 
@@ -4430,7 +8860,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             return
+
+
+
+
 
 
 
@@ -4438,7 +8876,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         fade_out = ["#eeeeee", "#cccccc", "#aaaaaa", "#888888", "#666666"]
+
+
+
+
 
 
 
@@ -4450,7 +8896,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         def fade_in_step(i=0):
+
+
+
+
 
 
 
@@ -4458,7 +8916,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 return
+
+
+
+
 
 
 
@@ -4466,7 +8932,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             if i < len(fade_in)-1:
+
+
+
+
 
 
 
@@ -4474,7 +8948,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             else:
+
+
+
+
 
 
 
@@ -4486,7 +8968,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         def fade_out_step(i=0):
+
+
+
+
 
 
 
@@ -4494,7 +8988,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 return
+
+
+
+
 
 
 
@@ -4502,7 +9004,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             if i < len(fade_out)-1:
+
+
+
+
 
 
 
@@ -4510,7 +9020,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             else:
+
+
+
+
 
 
 
@@ -4518,7 +9036,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 self.after(40, fade_in_step)
+
+
+
+
+
+
+
+
 
 
 
@@ -4536,55 +9066,117 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
+
+
     def _direct_ops_save_refresh(self, message="✓ Opgeslagen • Dashboard vernieuwd"):
+
         """Save immediately, rebuild the current page and show confirmation."""
+
         if not opslaan(self.data):
+
             self._show_save_confirmation("⚠ Opslaan mislukt", error=True)
+
             return False
 
+
+
         try:
+
             if getattr(self, "current_page", "huiswerk") == "huiswerk":
+
                 self.show_huiswerk()
+
             elif getattr(self, "current_page", "") == "settings":
+
                 self.show_settings()
+
             else:
+
                 self._render_huiswerk_lijst()
+
         except Exception:
+
             pass
+
+
 
         self._show_save_confirmation(message)
+
         return True
 
+
+
     def _show_save_confirmation(self, message, error=False):
+
         """Non-blocking status message that survives dashboard refreshes."""
+
         try:
+
             label = getattr(self, "save_confirmation", None)
+
             if label is None or not label.winfo_exists():
+
                 return
+
             label.configure(
+
                 text=message,
+
                 text_color=ROOD if error else GROEN,
+
             )
+
             old = getattr(self, "_save_confirmation_after", None)
+
             if old:
+
                 try:
+
                     self.after_cancel(old)
+
                 except Exception:
+
                     pass
+
             self._save_confirmation_after = self.after(
+
                 2200,
+
                 lambda: label.winfo_exists() and label.configure(text="")
+
             )
+
         except Exception:
+
             pass
 
+
+
     def show_huiswerk(self):
+
+
 
         self.current_page = "huiswerk"
 
 
 
+
+
+
+
         self.clear_main()
+
+
+
+
 
 
 
@@ -4596,7 +9188,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         top = ctk.CTkFrame(
+
+
+
+
 
 
 
@@ -4604,11 +9208,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color="transparent",
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -4620,11 +9236,31 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         header = ctk.CTkFrame(top, fg_color="transparent")
 
 
 
+
+
+
+
         header.pack(side="left", fill="x", expand=True)
+
+
+
+
+
+
+
+
 
 
 
@@ -4640,7 +9276,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -4648,7 +9296,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text=f"📚 Mijn Huiswerk  •  {naam}",
+
+
+
+
 
 
 
@@ -4656,7 +9312,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -4668,7 +9332,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.dashboard_message = ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -4676,7 +9352,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="",
+
+
+
+
 
 
 
@@ -4684,7 +9368,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -4692,11 +9384,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
 
 
 
+
+
+
+
         self.dashboard_message.pack(anchor="w", pady=(2, 0))
+
+
+
+
 
 
 
@@ -4708,7 +9412,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         count = sum(
+
+
+
+
 
 
 
@@ -4716,7 +9432,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             for item in self.data["huiswerk"]
+
+
+
+
 
 
 
@@ -4728,25 +9452,59 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         bezig = next((x for x in self.data["huiswerk"] if x.get("in_progress") and not x.get("done")), None)
+
+
 
         upcoming = sorted([x for x in self.data["huiswerk"] if not x.get("done") and parse_datum(x.get("datum", ""))], key=lambda x: parse_datum(x.get("datum", "")))
 
+
+
         if bezig:
+
+
 
             top_status = f"▶ Bezig: {bezig.get('titel', 'taak')}"
 
+
+
         elif upcoming:
+
+
 
             d = (parse_datum(upcoming[0].get("datum", "")) - dt.date.today()).days
 
+
+
             top_status = "📌 Deadline vandaag" if d == 0 else f"📌 Volgende deadline over {d} d."
+
+
 
         else:
 
+
+
             top_status = "🎉 Alles onder controle"
 
+
+
         ctk.CTkLabel(top, text=top_status, font=("Segoe UI", 11, "bold"), text_color=t["accent"], anchor="e").pack(side="right", pady=8)
+
+
+
+
+
+
+
+
 
 
 
@@ -4758,7 +9516,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             self.main_container,
+
+
+
+
 
 
 
@@ -4766,11 +9532,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             corner_radius=10,
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -4782,7 +9560,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -4790,7 +9580,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="Legenda:",
+
+
+
+
 
 
 
@@ -4798,7 +9596,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -4810,7 +9616,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         for col, label in [
+
+
+
+
 
 
 
@@ -4818,7 +9636,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             (ORANJE, "Nog 0–3 dagen"),
+
+
+
+
 
 
 
@@ -4826,7 +9652,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         ]:
+
+
+
+
 
 
 
@@ -4834,7 +9668,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 legend,
+
+
+
+
 
 
 
@@ -4842,11 +9684,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 font=("Segoe UI", 11),
 
 
 
+
+
+
+
                 text_color=col,
+
+
+
+
 
 
 
@@ -4858,31 +9712,67 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         # Overzicht: snel zien hoeveel werk er nog ligt.
+
+
 
         stats = ctk.CTkFrame(self.main_container, fg_color="transparent")
 
+
+
         stats.pack(fill="x", padx=32, pady=(0, 8))
+
+
 
         vandaag = dt.date.today()
 
+
+
         totaal = len(self.data["huiswerk"])
+
+
 
         afgerond = sum(bool(x.get("done", False)) for x in self.data["huiswerk"])
 
+
+
         openstaand = totaal - afgerond
+
+
 
         urgent = sum((not bool(x.get("done", False))) and (parse_datum(x.get("datum", "")) is not None) and 0 <= (parse_datum(x.get("datum", "")) - vandaag).days <= 3 for x in self.data["huiswerk"])
 
+
+
         for icon, label, value, color in [("📚", "Totaal", totaal, t["text"]), ("⏳", "Openstaand", openstaand, ORANJE), ("✅", "Afgerond", afgerond, GROEN), ("🔥", "Komende 3 dagen", urgent, ROOD if urgent else t["muted"])]:
+
+
 
             card = ctk.CTkFrame(stats, fg_color=t["bg_card"], corner_radius=10)
 
+
+
             card.pack(side="left", fill="x", expand=True, padx=3)
+
+
 
             ctk.CTkLabel(card, text=f"{icon}  {label}", font=("Segoe UI", 10), text_color=t["muted"]).pack(anchor="w", padx=12, pady=(7, 0))
 
+
+
             ctk.CTkLabel(card, text=str(value), font=("Segoe UI", 19, "bold"), text_color=color).pack(anchor="w", padx=12, pady=(0, 7))
+
+
+
+
 
 
 
@@ -4890,7 +9780,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             self.main_container,
+
+
+
+
 
 
 
@@ -4898,7 +9796,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -4906,11 +9812,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         split.columnconfigure(0, weight=5)
 
 
 
+
+
+
+
         split.columnconfigure(1, weight=3)
+
+
+
+
 
 
 
@@ -4922,7 +9840,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         left = ctk.CTkFrame(
+
+
+
+
 
 
 
@@ -4930,7 +9860,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color=t["bg_card"],
+
+
+
+
 
 
 
@@ -4938,7 +9876,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -4950,7 +9896,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -4958,7 +9916,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="Taken",
+
+
+
+
 
 
 
@@ -4966,7 +9932,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -4978,27 +9952,59 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         filter_row = ctk.CTkFrame(left, fg_color="transparent")
+
+
 
         filter_row.pack(fill="x", padx=14, pady=(12, 3))
 
+
+
         ctk.CTkLabel(filter_row, text="Weergave", font=("Segoe UI", 11, "bold"), text_color=t["text"]).pack(side="left", padx=3)
+
+
 
         filter_combo = ctk.CTkComboBox(filter_row, values=["Alles", "Openstaand", "Afgerond", "Vandaag", "Komende 3 dagen", "Te laat"], width=150, state="readonly", command=lambda value: self._set_task_filter(value))
 
+
+
         filter_combo.set(getattr(self, "task_filter", "Alles")); filter_combo.pack(side="left", padx=5)
+
+
 
         search = ctk.CTkEntry(filter_row, width=145, placeholder_text="🔎 Zoek...")
 
+
+
         if getattr(self, "task_search", ""): search.insert(0, self.task_search)
+
+
 
         search.pack(side="right", padx=3); search.bind("<KeyRelease>", lambda event: self._set_task_search(search.get()))
 
+
+
         sort_combo = ctk.CTkComboBox(filter_row, values=["Deadline", "Prioriteit", "Vak", "Nieuwste"], width=115, state="readonly", command=lambda value: self._set_task_sort(value))
+
+
 
         sort_combo.set(getattr(self, "task_sort", "Deadline"))
 
+
+
         sort_combo.pack(side="right", padx=5)
+
+
+
+
 
 
 
@@ -5006,7 +10012,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             left,
+
+
+
+
 
 
 
@@ -5014,7 +10028,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -5022,7 +10044,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fill="both",
+
+
+
+
 
 
 
@@ -5030,7 +10060,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             padx=10,
+
+
+
+
 
 
 
@@ -5038,7 +10076,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
+
+
+
+
+
+
+
+
 
 
 
@@ -5050,7 +10100,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             split,
+
+
+
+
 
 
 
@@ -5058,11 +10116,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             corner_radius=12,
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -5074,7 +10144,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -5082,7 +10164,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="➕ Huiswerk toevoegen",
+
+
+
+
 
 
 
@@ -5090,7 +10180,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -5102,7 +10200,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -5110,7 +10220,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="Vak",
+
+
+
+
 
 
 
@@ -5118,7 +10236,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -5130,7 +10256,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         combo = ctk.CTkComboBox(
+
+
+
+
 
 
 
@@ -5138,7 +10276,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             values=self.vakken,
+
+
+
+
 
 
 
@@ -5146,7 +10292,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             width=250,
+
+
+
+
 
 
 
@@ -5154,7 +10308,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         combo.set(self.vakken[0])
+
+
+
+
 
 
 
@@ -5166,7 +10328,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -5174,7 +10348,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="Huiswerk / opdracht",
+
+
+
+
 
 
 
@@ -5182,11 +10364,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
 
 
 
+
+
+
+
         ).pack(anchor="w", padx=20, pady=(12, 2))
+
+
+
+
+
+
+
+
 
 
 
@@ -5198,7 +10396,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             right,
+
+
+
+
 
 
 
@@ -5206,11 +10412,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             width=250,
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -5222,7 +10440,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -5230,7 +10460,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="Deadline",
+
+
+
+
 
 
 
@@ -5238,7 +10476,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -5250,7 +10496,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         date_frame = ctk.CTkFrame(
+
+
+
+
 
 
 
@@ -5258,11 +10516,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color="transparent",
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -5274,11 +10544,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         datum = ctk.CTkEntry(date_frame, width=195)
 
 
 
+
+
+
+
         datum.insert(0, dt.date.today().strftime("%Y-%m-%d"))
+
+
+
+
 
 
 
@@ -5290,7 +10576,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkButton(
+
+
+
+
 
 
 
@@ -5298,7 +10596,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="📅",
+
+
+
+
 
 
 
@@ -5306,7 +10612,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             command=lambda: kies_datum(datum),
+
+
+
+
 
 
 
@@ -5318,13 +10632,31 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(right, text="Prioriteit", font=("Segoe UI", 12), text_color=t["text"]).pack(anchor="w", padx=20, pady=(12, 2))
+
+
 
         prioriteit = ctk.CTkComboBox(right, values=["Laag", "Normaal", "Hoog"], state="readonly", width=250)
 
+
+
         prioriteit.set("Normaal")
 
+
+
         prioriteit.pack(anchor="w", padx=20, pady=5)
+
+
+
+
 
 
 
@@ -5332,7 +10664,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             right,
+
+
+
+
 
 
 
@@ -5340,7 +10680,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 "Rood = deadline voorbij. Oranje = deadline binnen 3 dagen. "
+
+
+
+
 
 
 
@@ -5348,7 +10696,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             ),
+
+
+
+
 
 
 
@@ -5356,7 +10712,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["muted"],
+
+
+
+
 
 
 
@@ -5364,7 +10728,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             justify="left",
+
+
+
+
 
 
 
@@ -5376,7 +10748,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         def toevoegen():
+
+
+
+
 
 
 
@@ -5384,7 +10768,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             titel_text = titel.get().strip()
+
+
+
+
 
 
 
@@ -5396,7 +10788,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             if not titel_text or not datum_text:
+
+
+
+
 
 
 
@@ -5404,7 +10808,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     "Invoer ontbreekt",
+
+
+
+
 
 
 
@@ -5412,7 +10824,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     parent=self,
+
+
+
+
 
 
 
@@ -5420,7 +10840,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 return
+
+
+
+
+
+
+
+
 
 
 
@@ -5432,7 +10864,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 messagebox.showerror(
+
+
+
+
 
 
 
@@ -5440,7 +10880,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     "Gebruik het formaat YYYY-MM-DD.",
+
+
+
+
 
 
 
@@ -5448,11 +10896,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 )
 
 
 
+
+
+
+
                 return
+
+
+
+
+
+
+
+
 
 
 
@@ -5464,7 +10928,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 {
+
+
+
+
 
 
 
@@ -5472,7 +10944,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     "titel": titel_text,
+
+
+
+
 
 
 
@@ -5480,11 +10960,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     "done": False,
+
+
 
                     "priority": prioriteit.get() or "Normaal",
 
+
+
                     "in_progress": False,
+
+
+
+
 
 
 
@@ -5492,10 +10984,25 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             )
 
+
+
             if self._direct_ops_save_refresh("✓ Huiswerk opgeslagen • Dashboard vernieuwd"):
+
                 titel.delete(0, tk.END)
+
+
+
+
+
+
+
+
 
 
 
@@ -5507,7 +11014,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             right,
+
+
+
+
 
 
 
@@ -5515,7 +11030,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             height=42,
+
+
+
+
 
 
 
@@ -5523,7 +11046,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color="white",
+
+
+
+
 
 
 
@@ -5531,7 +11062,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         ).pack(
+
+
+
+
 
 
 
@@ -5539,7 +11078,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             padx=20,
+
+
+
+
 
 
 
@@ -5547,7 +11094,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fill="x",
+
+
+
+
 
 
 
@@ -5559,7 +11114,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self._render_huiswerk_lijst()
+
+
+
+
+
+
+
+
 
 
 
@@ -5569,53 +11140,105 @@ class HuiswerkApp(ctk.CTk):
 
     def _set_task_filter(self, value):
 
+
+
         self.task_filter = value or "Alles"
 
+
+
         self._render_huiswerk_lijst()
+
+
+
+
 
 
 
     def _set_task_search(self, value):
 
+
+
         self.task_search = (value or "").strip().lower()
 
+
+
         self._render_huiswerk_lijst()
+
+
+
+
 
 
 
     def _set_task_sort(self, value):
 
+
+
         self.task_sort = value or "Deadline"
+
+
 
         self._render_huiswerk_lijst()
 
 
 
+
+
+
+
     def _task_matches_filter(self, item):
+
+
 
         datum = parse_datum(item.get("datum", ""))
 
+
+
         done = bool(item.get("done", False))
+
+
 
         vandaag = dt.date.today()
 
+
+
         filt = getattr(self, "task_filter", "Alles")
+
+
 
         if filt == "Openstaand" and done: return False
 
+
+
         if filt == "Afgerond" and not done: return False
+
+
 
         if filt == "Vandaag" and (done or datum != vandaag): return False
 
+
+
         if filt == "Komende 3 dagen" and (done or datum is None or not 0 <= (datum-vandaag).days <= 3): return False
+
+
 
         if filt == "Te laat" and (done or datum is None or (datum-vandaag).days >= 0): return False
 
+
+
         zoek = getattr(self, "task_search", "")
+
+
 
         if zoek and zoek not in f"{item.get('vak','')} {item.get('titel','')} {item.get('datum','')}".lower(): return False
 
+
+
         return True
+
+
+
+
 
 
 
@@ -5623,11 +11246,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         if not self.hw_list:
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -5639,7 +11278,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             if not self.hw_list.winfo_exists():
+
+
+
+
 
 
 
@@ -5647,11 +11294,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         except tk.TclError:
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -5663,7 +11326,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -5671,7 +11342,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             except Exception:
+
+
+
+
 
 
 
@@ -5683,7 +11362,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         t = THEMES[self.theme_name]
+
+
+
+
 
 
 
@@ -5695,7 +11386,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         def sort_key(item):
+
+
+
+
 
 
 
@@ -5703,7 +11406,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             return (
+
+
+
+
 
 
 
@@ -5711,7 +11422,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 datum if datum else dt.date.max,
+
+
+
+
 
 
 
@@ -5723,21 +11442,51 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         if getattr(self, "task_sort", "Deadline") == "Prioriteit":
+
+
 
             priority_order = {"Hoog": 0, "Normaal": 1, "Laag": 2}
 
+
+
             sort_key = lambda item: (bool(item.get("done", False)), priority_order.get(item.get("priority", "Normaal"), 1), parse_datum(item.get("datum", "")) or dt.date.max)
+
+
 
         elif getattr(self, "task_sort", "Deadline") == "Vak":
 
+
+
             sort_key = lambda item: (bool(item.get("done", False)), str(item.get("vak", "")).lower(), parse_datum(item.get("datum", "")) or dt.date.max)
+
+
 
         elif getattr(self, "task_sort", "Deadline") == "Nieuwste":
 
+
+
             sort_key = lambda item: (bool(item.get("done", False)), -self.data["huiswerk"].index(item))
 
+
+
         taken = sorted([item for item in self.data["huiswerk"] if self._task_matches_filter(item)], key=sort_key)
+
+
+
+
+
+
+
+
 
 
 
@@ -5749,7 +11498,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -5757,7 +11514,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text="🔎 Geen taken gevonden met deze selectie.",
+
+
+
+
 
 
 
@@ -5765,11 +11530,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text_color=t["muted"],
 
 
 
+
+
+
+
             ).pack(pady=35)
+
+
+
+
 
 
 
@@ -5781,7 +11558,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         for item in taken:
+
+
+
+
 
 
 
@@ -5789,7 +11578,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             days = (datum - vandaag).days if datum else None
+
+
+
+
 
 
 
@@ -5801,7 +11598,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             if done:
+
+
+
+
 
 
 
@@ -5809,7 +11618,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 # ook altijd zien hoeveel tijd er nog tot de deadline is.
+
+
+
+
 
 
 
@@ -5817,7 +11634,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 if days is None:
+
+
+
+
 
 
 
@@ -5825,7 +11650,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 elif days < 0:
+
+
+
+
 
 
 
@@ -5833,7 +11666,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 elif days == 0:
+
+
+
+
 
 
 
@@ -5841,7 +11682,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 elif days == 1:
+
+
+
+
 
 
 
@@ -5849,7 +11698,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 else:
+
+
+
+
 
 
 
@@ -5857,7 +11714,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 bg = GROEN
+
+
+
+
 
 
 
@@ -5865,7 +11730,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 status_color = ROOD
+
+
+
+
 
 
 
@@ -5873,7 +11746,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 bg = (
+
+
+
+
 
 
 
@@ -5881,7 +11762,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     if t["mode"] == "Light"
+
+
+
+
 
 
 
@@ -5889,7 +11778,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 )
+
+
+
+
 
 
 
@@ -5897,7 +11794,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 status_color = ORANJE
+
+
+
+
 
 
 
@@ -5905,7 +11810,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     status_text = "⏰ VANDAAG"
+
+
+
+
 
 
 
@@ -5913,11 +11826,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     status_text = "⏰ MORGEN"
 
 
 
+
+
+
+
                 else:
+
+
+
+
 
 
 
@@ -5929,7 +11854,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
                 bg = (
+
+
+
+
 
 
 
@@ -5937,7 +11874,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     if t["mode"] == "Light"
+
+
+
+
 
 
 
@@ -5945,7 +11890,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 )
+
+
+
+
 
 
 
@@ -5953,7 +11906,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 status_color = t["accent"]
+
+
+
+
 
 
 
@@ -5961,7 +11922,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     f"NOG {days} DAGEN"
+
+
+
+
 
 
 
@@ -5969,11 +11938,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     else "DATUM ONBEKEND"
 
 
 
+
+
+
+
                 )
+
+
+
+
 
 
 
@@ -5985,9 +11966,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             in_progress = bool(item.get("in_progress", False)) and not done
 
+
+
             row = ctk.CTkFrame(self.hw_list, fg_color=bg, corner_radius=10, border_width=2 if in_progress else 0, border_color=t["accent"])
+
+
+
+
 
 
 
@@ -5999,7 +11994,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             top_row = ctk.CTkFrame(
+
+
+
+
 
 
 
@@ -6007,11 +12014,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 fg_color="transparent",
 
 
 
+
+
+
+
             )
+
+
+
+
 
 
 
@@ -6023,7 +12042,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             vak = item.get("vak", "Onbekend")
+
+
+
+
 
 
 
@@ -6035,11 +12066,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             ctk.CTkLabel(
 
 
 
+
+
+
+
                 top_row,
+
+
+
+
 
 
 
@@ -6047,7 +12094,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 font=("Segoe UI", 10, "bold"),
+
+
+
+
 
 
 
@@ -6055,7 +12110,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 fg_color=vak_color,
+
+
+
+
 
 
 
@@ -6063,17 +12126,35 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             ).pack(side="left")
+
+
 
             priority = item.get("priority", "Normaal")
 
+
+
             priority_color = ROOD if priority == "Hoog" else (ORANJE if priority == "Normaal" else t["muted"])
+
+
 
             ctk.CTkLabel(top_row, text=f" {priority} ", font=("Segoe UI", 9, "bold"), text_color=priority_color).pack(side="left", padx=(6, 0))
 
+
+
             if in_progress:
 
+
+
                 ctk.CTkLabel(top_row, text=" ▶ BEZIG ", font=("Segoe UI", 9, "bold"), text_color="white", fg_color=t["accent"], corner_radius=5).pack(side="left", padx=5)
+
+
+
+
 
 
 
@@ -6081,7 +12162,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 top_row,
+
+
+
+
 
 
 
@@ -6089,11 +12178,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 font=("Segoe UI", 10, "bold"),
 
 
 
+
+
+
+
                 text_color=status_color,
+
+
+
+
 
 
 
@@ -6105,7 +12206,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -6113,7 +12226,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text=item.get("titel", "Zonder titel"),
+
+
+
+
 
 
 
@@ -6121,11 +12242,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text_color="white" if done else t["text"],
 
 
 
+
+
+
+
                 anchor="w",
+
+
+
+
 
 
 
@@ -6137,7 +12270,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -6145,7 +12290,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text=f"Deadline: {item.get('datum', '—')}",
+
+
+
+
 
 
 
@@ -6153,11 +12306,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text_color="white" if done else t["muted"],
 
 
 
+
+
+
+
                 anchor="w",
+
+
+
+
 
 
 
@@ -6169,7 +12334,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             buttons = ctk.CTkFrame(
+
+
+
+
 
 
 
@@ -6177,11 +12354,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 fg_color="transparent",
 
 
 
+
+
+
+
             )
+
+
+
+
 
 
 
@@ -6193,7 +12382,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             def _animatie_afgerond(target_row):
+
+
+
+
 
 
 
@@ -6205,7 +12406,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
                 def stap(i=0):
+
+
+
+
 
 
 
@@ -6213,7 +12426,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                         if not target_row.winfo_exists():
+
+
+
+
 
 
 
@@ -6221,7 +12442,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                         target_row.configure(fg_color=kleuren[i])
+
+
+
+
 
 
 
@@ -6229,7 +12458,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                             target_row.after(120, lambda: stap(i + 1))
+
+
+
+
 
 
 
@@ -6237,7 +12474,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                             target_row.after(350, self._render_huiswerk_lijst)
+
+
+
+
 
 
 
@@ -6245,7 +12490,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                         pass
+
+
+
+
+
+
+
+
 
 
 
@@ -6261,7 +12518,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             def toggle(target=item, target_row=row):
+
+
+
+
 
 
 
@@ -6269,12 +12538,29 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 target["done"] = not was_done
 
 
 
+
+
+
+
                 if not self._direct_ops_save_refresh("✓ Status opgeslagen • Dashboard vernieuwd"):
+
                     return
+
+
+
+
+
+
+
+
 
 
 
@@ -6286,7 +12572,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     # Eerst direct groen maken en daarna de succesanimatie.
+
+
+
+
 
 
 
@@ -6294,11 +12588,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     _animatie_afgerond(target_row)
 
 
 
+
+
+
+
                 else:
+
+
+
+
 
 
 
@@ -6310,7 +12616,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             def wijzig_datum(target=item):
+
+
+
+
 
 
 
@@ -6322,25 +12640,55 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             def toggle_bezig(target=item):
+
+
 
                 if target.get("done", False):
 
+
+
                     return
+
+
 
                 was_active = bool(target.get("in_progress", False))
 
+
+
                 for other in self.data["huiswerk"]:
+
+
 
                     if isinstance(other, dict):
 
+
+
                         other["in_progress"] = False
+
+
 
                 target["in_progress"] = not was_active
 
+
+
                 self._direct_ops_save_refresh(
+
                     "✓ Bezig-status opgeslagen • Dashboard vernieuwd"
+
                 )
+
+
+
+
 
 
 
@@ -6348,7 +12696,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 if messagebox.askyesno(
+
+
+
+
 
 
 
@@ -6356,7 +12712,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     f"Wil je '{target.get('titel', 'deze taak')}' verwijderen?",
+
+
+
+
 
 
 
@@ -6364,7 +12728,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 ):
+
+
+
+
 
 
 
@@ -6372,7 +12744,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                         self.data["huiswerk"].remove(target)
+
+
+
+
 
 
 
@@ -6380,7 +12760,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                         return
+
+
+
+
+
+
+
+
 
 
 
@@ -6396,9 +12788,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             if not done:
 
+
+
                 ctk.CTkButton(buttons, text="⏹ Stop" if in_progress else "▶ Bezig", width=88, height=30, fg_color=t["accent"] if not in_progress else t["button_fg"], text_color="white" if not in_progress else t["button_text"], hover_color=t["button_hover"], command=toggle_bezig).pack(side="left", padx=2)
+
+
+
+
 
 
 
@@ -6406,7 +12812,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 buttons,
+
+
+
+
 
 
 
@@ -6414,11 +12828,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 width=120,
 
 
 
+
+
+
+
                 height=30,
+
+
+
+
 
 
 
@@ -6426,7 +12852,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text_color="white" if not done else t["button_text"],
+
+
+
+
 
 
 
@@ -6434,7 +12868,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 command=toggle,
+
+
+
+
 
 
 
@@ -6446,11 +12888,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             ctk.CTkButton(
 
 
 
+
+
+
+
                 buttons,
+
+
+
+
 
 
 
@@ -6458,7 +12916,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 width=95,
+
+
+
+
 
 
 
@@ -6466,7 +12932,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 fg_color="white" if done else t["button_fg"],
+
+
+
+
 
 
 
@@ -6474,11 +12948,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 hover_color="#e8fff0" if done else t["button_hover"],
 
 
 
+
+
+
+
                 command=wijzig_datum,
+
+
+
+
 
 
 
@@ -6490,7 +12976,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
             ctk.CTkButton(
+
+
+
+
 
 
 
@@ -6498,7 +12996,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text="🗑 Verwijderen",
+
+
+
+
 
 
 
@@ -6506,7 +13012,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 height=30,
+
+
+
+
 
 
 
@@ -6514,7 +13028,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 text_color="white",
+
+
+
+
 
 
 
@@ -6522,7 +13044,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 command=delete,
+
+
+
+
 
 
 
@@ -6534,7 +13064,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
 
 
 
@@ -6542,7 +13084,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
+
+
+
+
 
 
 
@@ -6554,7 +13108,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self.clear_main()
+
+
+
+
 
 
 
@@ -6566,7 +13128,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -6574,7 +13148,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="⚙️ Instellingen",
+
+
+
+
 
 
 
@@ -6582,7 +13164,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -6594,7 +13184,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         card = ctk.CTkFrame(
+
+
+
+
 
 
 
@@ -6602,7 +13204,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color=t["bg_card"],
+
+
+
+
 
 
 
@@ -6610,7 +13220,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -6622,7 +13240,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -6630,7 +13260,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="Gebruikersnaam",
+
+
+
+
 
 
 
@@ -6638,7 +13276,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -6650,7 +13296,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.settings_name = ctk.CTkEntry(card, width=300)
+
+
+
+
 
 
 
@@ -6658,7 +13316,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             0,
+
+
+
+
 
 
 
@@ -6666,12 +13332,29 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
 
 
 
+
+
+
+
         self.settings_name.pack(anchor="w", padx=22, pady=5)
+
         self.settings_name.bind("<KeyRelease>", self._settings_live_change)
+
+
+
+
+
+
+
+
 
 
 
@@ -6683,7 +13366,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             card,
+
+
+
+
 
 
 
@@ -6691,11 +13382,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             font=("Segoe UI", 14, "bold"),
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -6707,7 +13410,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.theme_combo = ctk.CTkComboBox(
+
+
+
+
 
 
 
@@ -6715,7 +13430,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             values=list(THEMES.keys()),
+
+
+
+
 
 
 
@@ -6723,7 +13446,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             width=220,
+
+
+
+
 
 
 
@@ -6731,12 +13462,29 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         self.theme_combo.set(self.theme_name)
 
 
 
+
+
+
+
         self.theme_combo.pack(anchor="w", padx=22, pady=5)
+
         self.theme_combo.configure(command=self._theme_live_change)
+
+
+
+
+
+
+
+
 
 
 
@@ -6748,7 +13496,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             card,
+
+
+
+
 
 
 
@@ -6756,11 +13512,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             corner_radius=10,
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -6772,7 +13540,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -6780,7 +13560,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="🔄 Updates",
+
+
+
+
 
 
 
@@ -6788,7 +13576,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -6800,7 +13596,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -6808,7 +13616,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text=(
+
+
+
+
 
 
 
@@ -6816,7 +13632,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 "Updates worden gecontroleerd via de bestaande GitHub-link."
+
+
+
+
 
 
 
@@ -6824,7 +13648,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             font=("Segoe UI", 11),
+
+
+
+
 
 
 
@@ -6832,7 +13664,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             justify="left",
+
+
+
+
 
 
 
@@ -6844,7 +13684,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkButton(
+
+
+
+
 
 
 
@@ -6852,7 +13704,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="🔍 Zoeken naar updates",
+
+
+
+
 
 
 
@@ -6860,7 +13720,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["button_text"],
+
+
+
+
 
 
 
@@ -6868,7 +13736,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             command=self.check_update,
+
+
+
+
 
 
 
@@ -6880,7 +13756,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkButton(
+
+
+
+
 
 
 
@@ -6888,7 +13776,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="💾 Instellingen opslaan",
+
+
+
+
 
 
 
@@ -6896,7 +13792,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color=t["accent"],
+
+
+
+
 
 
 
@@ -6904,7 +13808,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             command=self.settings_opslaan,
+
+
+
+
 
 
 
@@ -6916,30 +13828,65 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     def _settings_live_change(self, event=None):
+
         """Save the username immediately after each edit."""
+
         if not self.settings_name:
+
             return
+
         naam = self.settings_name.get().strip()
+
         if naam:
+
             self.data["settings"]["gebruikersnaam"] = naam
+
             if opslaan(self.data):
+
                 self._show_save_confirmation("✓ Gebruikersnaam opgeslagen")
 
+
+
     def _theme_live_change(self, value=None):
+
         """Apply, save and refresh immediately after a theme selection."""
+
         nieuw = value or (self.theme_combo.get() if self.theme_combo else "")
+
         if nieuw not in THEMES:
+
             return
+
         self.data["settings"]["theme"] = nieuw
+
         self.theme_name = nieuw
+
         ctk.set_appearance_mode(THEMES[nieuw]["mode"])
+
         if opslaan(self.data):
+
             self.apply_theme()
+
             self._show_save_confirmation("✓ Thema opgeslagen")
+
             self.after(120, self.show_huiswerk)
 
+
+
     def settings_opslaan(self):
+
+
+
+
 
 
 
@@ -6947,7 +13894,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -6959,7 +13918,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         naam = self.settings_name.get().strip()
+
+
+
+
+
+
+
+
 
 
 
@@ -6971,7 +13942,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             nieuw = "Wit"
+
+
+
+
+
+
+
+
 
 
 
@@ -6987,7 +13970,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         if naam:
+
+
+
+
 
 
 
@@ -6999,9 +13994,20 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         self.theme_name = nieuw
+
         ctk.set_appearance_mode(THEMES[nieuw]["mode"])
+
         self.apply_theme()
+
         self._direct_ops_save_refresh("✓ Instellingen opgeslagen • Dashboard vernieuwd")
 
 
@@ -7010,7 +14016,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
 
 
 
@@ -7018,10 +14036,21 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
     # --------------------------------------------------------
 
 
+
+
+
     def check_update(self):
+
+
+
+
 
 
 
@@ -7029,7 +14058,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         if hasattr(self, "_update_window"):
+
+
+
+
 
 
 
@@ -7037,7 +14074,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 if self._update_window.winfo_exists():
+
+
+
+
 
 
 
@@ -7045,11 +14090,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                     return
 
 
 
+
+
+
+
             except tk.TclError:
+
+
+
+
 
 
 
@@ -7061,7 +14118,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         try:
+
+
+
+
 
 
 
@@ -7069,7 +14138,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         except Exception as e:
+
+
+
+
 
 
 
@@ -7077,7 +14154,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 "Update fout",
+
+
+
+
 
 
 
@@ -7085,7 +14170,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
                 parent=self,
+
+
+
+
 
 
 
@@ -7097,7 +14190,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
 
 
 
@@ -7105,7 +14210,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
     # --------------------------------------------------------
+
+
+
+
+
+
+
+
 
 
 
@@ -7117,11 +14234,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         if not os.path.exists(LOG_BESTAND):
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -7133,7 +14266,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             with open(LOG_BESTAND, "r", encoding="utf-8") as f:
+
+
+
+
 
 
 
@@ -7141,11 +14282,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         except Exception:
 
 
 
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -7157,7 +14314,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -7165,11 +14330,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             except OSError:
 
 
 
+
+
+
+
                 pass
+
+
+
+
 
 
 
@@ -7181,7 +14358,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         try:
+
+
+
+
 
 
 
@@ -7189,11 +14378,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         except OSError:
 
 
 
+
+
+
+
             pass
+
+
+
+
+
+
+
+
 
 
 
@@ -7209,7 +14414,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         win = ctk.CTkToplevel(self)
+
+
+
+
 
 
 
@@ -7217,7 +14434,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         win.geometry("680x520")
+
+
+
+
 
 
 
@@ -7225,7 +14450,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         win.configure(fg_color=t["bg_card"])
+
+
+
+
 
 
 
@@ -7237,7 +14470,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -7245,7 +14490,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="🎉 Update voltooid!",
+
+
+
+
 
 
 
@@ -7253,7 +14506,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -7265,7 +14526,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkLabel(
+
+
+
+
 
 
 
@@ -7273,7 +14546,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="Dit is er veranderd in de nieuwe versie:",
+
+
+
+
 
 
 
@@ -7281,7 +14562,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["muted"],
+
+
+
+
 
 
 
@@ -7293,7 +14582,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         box = ctk.CTkTextbox(
+
+
+
+
 
 
 
@@ -7301,7 +14602,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             font=("Segoe UI", 12),
+
+
+
+
 
 
 
@@ -7309,7 +14618,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text_color=t["text"],
+
+
+
+
 
 
 
@@ -7317,7 +14634,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
         )
+
+
+
+
 
 
 
@@ -7329,7 +14654,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         box.insert("1.0", changelog)
+
+
+
+
 
 
 
@@ -7341,7 +14678,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
         ctk.CTkButton(
+
+
+
+
 
 
 
@@ -7349,7 +14698,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             text="✓ Begrepen",
+
+
+
+
 
 
 
@@ -7357,7 +14714,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             fg_color=t["accent"],
+
+
+
+
 
 
 
@@ -7365,7 +14730,15 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
             command=win.destroy,
+
+
+
+
 
 
 
@@ -7381,7 +14754,23 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ============================================================
+
+
+
+
 
 
 
@@ -7389,7 +14778,19 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+
+
+
+
 # ============================================================
+
+
+
+
+
+
+
+
 
 
 
@@ -7401,7 +14802,15 @@ def main():
 
 
 
+
+
+
+
     # Tk/CustomTkinter krijgt één duidelijke hoofdloop.
+
+
+
+
 
 
 
@@ -7409,7 +14818,15 @@ def main():
 
 
 
+
+
+
+
     try:
+
+
+
+
 
 
 
@@ -7417,7 +14834,15 @@ def main():
 
 
 
+
+
+
+
         startup.mainloop()
+
+
+
+
 
 
 
@@ -7425,7 +14850,15 @@ def main():
 
 
 
+
+
+
+
         try:
+
+
+
+
 
 
 
@@ -7433,7 +14866,15 @@ def main():
 
 
 
+
+
+
+
                 "Huiswerk Planner",
+
+
+
+
 
 
 
@@ -7441,7 +14882,15 @@ def main():
 
 
 
+
+
+
+
             )
+
+
+
+
 
 
 
@@ -7449,7 +14898,15 @@ def main():
 
 
 
+
+
+
+
             pass
+
+
+
+
 
 
 
@@ -7465,11 +14922,31 @@ def main():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
 
 
 
+
+
+
+
     main()
+
+
+
+
 
 
 
