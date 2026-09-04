@@ -60,7 +60,7 @@ from tkcalendar import Calendar
 
 
 
-HUIDIGE_VERSIE = "0.9v"
+HUIDIGE_VERSIE = "1.0v"
 
 
 
@@ -530,366 +530,231 @@ def wijzig_bestaande_datum(parent, target):
 
 
 class StartupIntro(ctk.CTk):
-
-    """Normale, gecentreerde startup. Geen fullscreen en geen auto-zoom."""
-
-
-
+    """Luxe, moderne opstartintro."""
     def __init__(self):
-        self.current_page = None
-
         super().__init__()
-
-
-
         self.title("Huiswerk Planner")
-
-        self.geometry("700x420")
-
+        self.geometry("900x560")
         self.resizable(False, False)
+        self.configure(fg_color="#05070B")
+        self.protocol("WM_DELETE_WINDOW", lambda: None)
+        self.update_idletasks()
+        x = (self.winfo_screenwidth()-900)//2
+        y = (self.winfo_screenheight()-560)//2
+        self.geometry(f"900x560+{x}+{y}")
 
-        self.configure(fg_color="#0b0d14")
-
-
-
-        # Gewoon venster, dus GEEN:
-
-        # self.attributes("-fullscreen", True)
-
-        # self.overrideredirect(True)
-
-
-
-        self.progress = ctk.CTkProgressBar(
-
-            self,
-
-            width=460,
-
-            height=7,
-
-            corner_radius=5,
-
-            fg_color="#202534",
-
-            progress_color="#1677ff",
-
+        ctk.CTkFrame(self, fg_color="#070A10", corner_radius=0).place(
+            relwidth=1, relheight=1
         )
-
-        self.progress.set(0)
-
-        self.progress.place(relx=0.5, rely=0.70, anchor="center")
-
-
-
-        ctk.CTkLabel(
-
-            self,
-
-            text="📚",
-
-            font=("Segoe UI Emoji", 58),
-
-            text_color="#ffffff",
-
-        ).place(relx=0.5, rely=0.29, anchor="center")
-
-
+        card = ctk.CTkFrame(
+            self, fg_color="#0C111A", corner_radius=36,
+            border_width=1, border_color="#202A3A"
+        )
+        card.place(relx=.5, rely=.5, anchor="center", relwidth=.82, relheight=.82)
 
         ctk.CTkLabel(
-
-            self,
-
-            text="HUISWERK PLANNER",
-
-            font=("Segoe UI", 32, "bold"),
-
-            text_color="#ffffff",
-
-        ).place(relx=0.5, rely=0.47, anchor="center")
-
-
+            card, text="HUISWERK  •  PLANNER",
+            font=ctk.CTkFont(size=12, weight="bold"),
+            text_color="#6D8CFF"
+        ).pack(pady=(38, 14))
 
         ctk.CTkLabel(
+            card, text="H", width=88, height=88, corner_radius=27,
+            fg_color="#151F30", text_color="#F7F9FC",
+            font=ctk.CTkFont(size=44, weight="bold")
+        ).pack()
 
-            self,
+        ctk.CTkLabel(
+            card, text="Welkom terug",
+            font=ctk.CTkFont(size=36, weight="bold"),
+            text_color="#F7F9FC"
+        ).pack(pady=(20, 2))
 
-            text="Plan. Werk. Rond af.",
+        ctk.CTkLabel(
+            card, text="Je persoonlijke werkruimte wordt voorbereid.",
+            font=ctk.CTkFont(size=15), text_color="#8995A8"
+        ).pack()
 
-            font=("Segoe UI", 14),
-
-            text_color="#8f9bb3",
-
-        ).place(relx=0.5, rely=0.56, anchor="center")
-
-
+        self.phase = ctk.CTkLabel(
+            card, text="STARTING",
+            font=ctk.CTkFont(size=12, weight="bold"),
+            text_color="#6D8CFF"
+        )
+        self.phase.pack(pady=(25, 3))
 
         self.status = ctk.CTkLabel(
-
-            self,
-
-            text="Applicatie starten...",
-
-            font=("Segoe UI", 11),
-
-            text_color="#6f7b92",
-
+            card, text="Applicatie starten…",
+            font=ctk.CTkFont(size=14), text_color="#AAB4C4"
         )
+        self.status.pack(pady=(0, 16))
 
-        self.status.place(relx=0.5, rely=0.79, anchor="center")
+        self.progress = ctk.CTkProgressBar(
+            card, width=560, height=9, corner_radius=9,
+            fg_color="#182130", progress_color="#6D8CFF"
+        )
+        self.progress.set(0)
+        self.progress.pack()
 
+        self.percent = ctk.CTkLabel(
+            card, text="0%", font=ctk.CTkFont(size=12, weight="bold"),
+            text_color="#F7F9FC"
+        )
+        self.percent.pack(pady=(10, 0))
 
+        ctk.CTkLabel(
+            self, text="Plan. Werk. Rond af.",
+            font=ctk.CTkFont(size=12), text_color="#4F5B6D"
+        ).place(relx=.5, rely=.92, anchor="center")
 
         self.step = 0
-
-        self.after(120, self.animate)
-
-
+        self.messages = [
+            ("STARTING", "Applicatie starten…"),
+            ("LOADING", "Huiswerk en deadlines laden…"),
+            ("SYNCING", "Je planner synchroniseren…"),
+            ("PREPARING", "Dashboard voorbereiden…"),
+            ("READY", "Alles staat klaar voor vandaag ✓"),
+        ]
+        self.after(180, self.animate)
 
     def animate(self):
-
         if not self.winfo_exists():
-
             return
-
-
-
         self.step += 1
-
-        self.progress.set(min(self.step / 24, 1))
-
-
-
-        messages = [
-
-            "Applicatie starten...",
-
-            "Huiswerk laden...",
-
-            "Deadlines controleren...",
-
-            "Planner voorbereiden...",
-
-            "Bijna klaar...",
-
-        ]
-
-        index = min(self.step // 5, len(messages) - 1)
-
-        self.status.configure(text=messages[index])
-
-
-
-        if self.step < 24:
-
-            self.after(70, self.animate)
-
+        total = 30
+        value = min(self.step / total, 1)
+        self.progress.set(value)
+        self.percent.configure(text=f"{int(value*100)}%")
+        idx = min(self.step // 6, len(self.messages)-1)
+        phase, message = self.messages[idx]
+        self.phase.configure(text=phase)
+        self.status.configure(text=message)
+        if self.step < total:
+            self.after(65, self.animate)
         else:
-
-            self.status.configure(text="Klaar!")
-
-            self.after(350, self.open_app)
-
-
+            self.after(500, self.open_app)
 
     def open_app(self):
-
         try:
-
             self.destroy()
-
         except Exception:
-
             pass
-
-
-
         app = HuiswerkApp()
-
         app.mainloop()
 
 
-
-
-
-# ============================================================
-
-# AFSLUITANIMATIE
-
-# ============================================================
-
-
-
 class ClosingIntro(ctk.CTk):
-
-    """Normale afsluitanimatie. Geen fullscreen."""
-
-
-
+    """Luxe afsluitanimatie met save- en synchronisatiestatus."""
     def __init__(self):
-
         super().__init__()
-
-
-
         self.title("Huiswerk Planner")
-
-        self.geometry("700x420")
-
+        self.geometry("900x560")
         self.resizable(False, False)
+        self.configure(fg_color="#05070B")
+        self.protocol("WM_DELETE_WINDOW", lambda: None)
+        self.update_idletasks()
+        x = (self.winfo_screenwidth()-900)//2
+        y = (self.winfo_screenheight()-560)//2
+        self.geometry(f"900x560+{x}+{y}")
 
-        self.configure(fg_color="#0b0d14")
-
-
-
-        ctk.CTkLabel(
-
-            self,
-
-            text="📚",
-
-            font=("Segoe UI Emoji", 58),
-
-            text_color="#ffffff",
-
-        ).place(relx=0.5, rely=0.29, anchor="center")
-
-
-
-        ctk.CTkLabel(
-
-            self,
-
-            text="TOT ZIENS!",
-
-            font=("Segoe UI", 32, "bold"),
-
-            text_color="#ffffff",
-
-        ).place(relx=0.5, rely=0.47, anchor="center")
-
-
-
-        ctk.CTkLabel(
-
-            self,
-
-            text="Denk aan je huiswerk hè!",
-
-            font=("Segoe UI", 15),
-
-            text_color="#8f9bb3",
-
-        ).place(relx=0.5, rely=0.56, anchor="center")
-
-
-
-        self.progress = ctk.CTkProgressBar(
-
-            self,
-
-            width=460,
-
-            height=7,
-
-            corner_radius=5,
-
-            fg_color="#202534",
-
-            progress_color=ROOD,
-
+        ctk.CTkFrame(self, fg_color="#070A10", corner_radius=0).place(
+            relwidth=1, relheight=1
         )
+        card = ctk.CTkFrame(
+            self, fg_color="#0C111A", corner_radius=36,
+            border_width=1, border_color="#202A3A"
+        )
+        card.place(relx=.5, rely=.5, anchor="center", relwidth=.82, relheight=.82)
 
-        self.progress.set(0)
+        ctk.CTkLabel(
+            card, text="HUISWERK  •  PLANNER",
+            font=ctk.CTkFont(size=12, weight="bold"),
+            text_color="#36D58A"
+        ).pack(pady=(38, 14))
 
-        self.progress.place(relx=0.5, rely=0.70, anchor="center")
+        ctk.CTkLabel(
+            card, text="✓", width=88, height=88, corner_radius=27,
+            fg_color="#10251D", text_color="#36D58A",
+            font=ctk.CTkFont(size=42, weight="bold")
+        ).pack()
 
+        ctk.CTkLabel(
+            card, text="Tot de volgende keer",
+            font=ctk.CTkFont(size=35, weight="bold"),
+            text_color="#F7F9FC"
+        ).pack(pady=(20, 2))
 
+        ctk.CTkLabel(
+            card, text="Je laatste wijzigingen worden veilig afgerond.",
+            font=ctk.CTkFont(size=15), text_color="#8995A8"
+        ).pack()
+
+        self.phase = ctk.CTkLabel(
+            card, text="SAVING",
+            font=ctk.CTkFont(size=12, weight="bold"),
+            text_color="#36D58A"
+        )
+        self.phase.pack(pady=(25, 3))
 
         self.status = ctk.CTkLabel(
-
-            self,
-
-            text="App afsluiten...",
-
-            font=("Segoe UI", 11),
-
-            text_color="#6f7b92",
-
+            card, text="Wijzigingen opslaan…",
+            font=ctk.CTkFont(size=14), text_color="#AAB4C4"
         )
+        self.status.pack(pady=(0, 16))
 
-        self.status.place(relx=0.5, rely=0.79, anchor="center")
+        self.progress = ctk.CTkProgressBar(
+            card, width=560, height=9, corner_radius=9,
+            fg_color="#182130", progress_color="#36D58A"
+        )
+        self.progress.set(0)
+        self.progress.pack()
 
+        self.percent = ctk.CTkLabel(
+            card, text="0%", font=ctk.CTkFont(size=12, weight="bold"),
+            text_color="#F7F9FC"
+        )
+        self.percent.pack(pady=(10, 0))
 
+        ctk.CTkLabel(
+            self, text="Alles opgeslagen • Je kunt veilig afsluiten.",
+            font=ctk.CTkFont(size=12), text_color="#4F5B6D"
+        ).place(relx=.5, rely=.92, anchor="center")
 
         self.step = 0
-
-        self.after(100, self.animate)
-
-
+        self.messages = [
+            ("SAVING", "Wijzigingen opslaan…"),
+            ("CHECKING", "Laatste gegevens controleren…"),
+            ("SYNCING", "Alles netjes synchroniseren…"),
+            ("CLOSING", "Applicatie afsluiten…"),
+            ("GOODBYE", "Tot de volgende keer 👋"),
+        ]
+        self.after(150, self.animate)
 
     def animate(self):
-
         if not self.winfo_exists():
-
             return
-
-
-
         self.step += 1
-
-        self.progress.set(min(self.step / 18, 1))
-
-
-
-        messages = [
-
-            "App afsluiten...",
-
-            "Huiswerk opslaan...",
-
-            "Alles netjes afsluiten...",
-
-            "Tot de volgende keer!",
-
-        ]
-
-
-
-        self.status.configure(
-
-            text=messages[min(self.step // 5, len(messages) - 1)]
-
-        )
-
-
-
-        if self.step < 18:
-
+        total = 28
+        value = min(self.step / total, 1)
+        self.progress.set(value)
+        self.percent.configure(text=f"{int(value*100)}%")
+        idx = min(self.step // 6, len(self.messages)-1)
+        phase, message = self.messages[idx]
+        self.phase.configure(text=phase)
+        self.status.configure(text=message)
+        if self.step < total:
             self.after(70, self.animate)
-
         else:
-
-            self.status.configure(text="Denk aan je huiswerk hè!")
-
-            self.after(5000, self.finish)
-
-
+            self.after(900, self.finish)
 
     def finish(self):
-
         try:
-
             self.destroy()
-
         finally:
-
             os._exit(0)
 
 
-
-
-
+# ============================================================
+# START
 # ============================================================
 
 # UPDATEVENSTER
