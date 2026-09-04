@@ -122,7 +122,7 @@ from tkcalendar import Calendar
 
 
 
-HUIDIGE_VERSIE = "1.1v"
+HUIDIGE_VERSIE = "1.2v"
 
 
 
