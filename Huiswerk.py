@@ -494,7 +494,7 @@ from tkcalendar import Calendar
 
 
 
-HUIDIGE_VERSIE = "2.0v"
+HUIDIGE_VERSIE = "2.4v"
 
 
 
@@ -4035,7 +4035,7 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
-        parent._direct_ops_save_refresh("✓ Deadline opgeslagen • Dashboard vernieuwd")
+        # Deadline wordt alleen in het geheugen aangepast. Handmatig opslaan maakt de wijziging permanent.
 
 
 
@@ -4103,7 +4103,7 @@ def wijzig_bestaande_datum(parent, target):
 
 
 
-        text="✓ Deadline opslaan",
+        text="✓ Deadline klaar • Handmatig opslaan",
 
 
 
@@ -5241,7 +5241,8 @@ class UpdateWindow(ctk.CTkToplevel):
 
 
 class HuiswerkApp(ctk.CTk):
-    # AutoSave is intentionally disabled. Explicit save actions still work.
+    # AutoSave is volledig uitgeschakeld. Er wordt nergens automatisch opgeslagen of automatisch ververst.
+    # Alleen expliciete opslagacties (zoals Instellingen opslaan) schrijven naar disk.
 
 
 
@@ -7159,6 +7160,19 @@ class HuiswerkApp(ctk.CTk):
 
         self.btn_settings.pack(fill="x", padx=12, pady=5)
 
+        self.btn_handmatig_opslaan = ctk.CTkButton(
+            self.sidebar,
+            text="💾  Handmatig opslaan",
+            anchor="w",
+            height=42,
+            font=("Segoe UI", 13, "bold"),
+            fg_color="transparent",
+            text_color=t["button_text"],
+            hover_color=t["button_hover"],
+            command=self.handmatig_opslaan,
+        )
+        self.btn_handmatig_opslaan.pack(fill="x", padx=12, pady=5)
+
 
 
 
@@ -7641,7 +7655,7 @@ class HuiswerkApp(ctk.CTk):
 
 
 
-        self.bind("<FocusIn>", self._focus_refresh)
+        # Geen automatische refresh bij focus: verversen gebeurt uitsluitend na handmatig opslaan.
 
 
 
@@ -7818,40 +7832,8 @@ class HuiswerkApp(ctk.CTk):
 
 
     def _focus_refresh(self, event=None):
-
-
-
-        if getattr(self, "_closing", False):
-
-
-
-            return
-
-
-
-        try:
-
-
-
-            if getattr(self, "current_page", "huiswerk") == "huiswerk":
-
-
-
-                self.show_huiswerk()
-
-
-
-        except Exception:
-
-
-
-            pass
-
-
-
-
-
-
+        # Bewust uitgeschakeld: geen automatische refresh bij focus.
+        return
 
     def _update_clock(self):
 
@@ -8525,7 +8507,7 @@ class HuiswerkApp(ctk.CTk):
 
 
 
-        opslaan(self.data)
+        # Geen automatische opslag bij afsluiten. Alleen handmatig opslaan schrijft naar schijf.
 
 
 
@@ -9813,6 +9795,27 @@ class HuiswerkApp(ctk.CTk):
 
 
 
+    def handmatig_opslaan(self):
+        """Enige centrale opslagactie: schrijf naar schijf en refresh daarna pas het scherm."""
+        return self._direct_ops_save_refresh("✓ Handmatig opgeslagen • Dashboard vernieuwd")
+
+
+    def handmatig_verversen(self):
+        """Ververs alleen de huidige pagina. Er wordt bewust niets opgeslagen."""
+        try:
+            if getattr(self, "current_page", "huiswerk") == "huiswerk":
+                self.show_huiswerk()
+            elif getattr(self, "current_page", "huiswerk") == "instellingen":
+                self.show_settings()
+            else:
+                self.show_huiswerk()
+            self._show_save_confirmation("↻ Pagina handmatig ververst • niets opgeslagen")
+            return True
+        except Exception as exc:
+            self._show_save_confirmation(f"⚠ Verversen mislukt: {exc}", error=True)
+            return False
+
+
     def _direct_ops_save_refresh(self, message="✓ Opgeslagen • Dashboard vernieuwd"):
 
 
@@ -10310,6 +10313,14 @@ class HuiswerkApp(ctk.CTk):
 
 
         ).pack(anchor="w")
+
+        # AutoSave-status: zichtbaar op het dashboard en bewust UIT.
+        ctk.CTkLabel(
+            header,
+            text="● AutoSave  UIT  •  Alleen handmatig opslaan + refresh",
+            font=("Segoe UI", 11, "bold"),
+            text_color=t.get("muted", "#8b95a7"),
+        ).pack(anchor="w", pady=(2, 0))
 
 
 
@@ -13669,18 +13680,7 @@ class HuiswerkApp(ctk.CTk):
 
 
             )
-
-
-
-
-
-
-
-            if self._direct_ops_save_refresh("✓ Huiswerk opgeslagen • Dashboard vernieuwd"):
-
-
-
-                titel.delete(0, tk.END)
+            # Niet automatisch opslaan of verversen.
 
 
 
@@ -13905,6 +13905,25 @@ class HuiswerkApp(ctk.CTk):
 
 
         )
+
+        ctk.CTkButton(
+            right,
+            text="↻  Handmatig verversen",
+            height=44,
+            fg_color=t.get("bg_card", "#1a1f2b"),
+            hover_color=t.get("accent", "#3b82f6"),
+            border_width=1,
+            border_color=t.get("accent", "#3b82f6"),
+            text_color=t.get("text", "white"),
+            font=("Segoe UI", 12, "bold"),
+            command=self.handmatig_verversen,
+        ).pack(
+            anchor="w",
+            padx=20,
+            pady=(0, 14),
+            fill="x",
+        )
+
 
 
 
@@ -16777,26 +16796,7 @@ class HuiswerkApp(ctk.CTk):
 
 
                 target["done"] = not was_done
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                if not self._direct_ops_save_refresh("✓ Status opgeslagen • Dashboard vernieuwd"):
-
-
-
-                    return
+                # Niet automatisch opslaan of verversen.
 
 
 
@@ -17045,22 +17045,7 @@ class HuiswerkApp(ctk.CTk):
 
 
                 target["in_progress"] = not was_active
-
-
-
-
-
-
-
-                self._direct_ops_save_refresh(
-
-
-
-                    "✓ Bezig-status opgeslagen • Dashboard vernieuwd"
-
-
-
-                )
+                # Niet automatisch opslaan of verversen.
 
 
 
@@ -17252,7 +17237,7 @@ class HuiswerkApp(ctk.CTk):
 
 
 
-                    self._direct_ops_save_refresh("✓ Huiswerk verwijderd • Dashboard vernieuwd")
+                    # Alleen uit de huidige sessie verwijderen; handmatig opslaan maakt het permanent.
 
 
 
@@ -18046,6 +18031,14 @@ class HuiswerkApp(ctk.CTk):
 
         ).pack(anchor="w", padx=32, pady=(25, 15))
 
+        # AutoSave-status: ook in Instellingen expliciet als UIT weergegeven.
+        ctk.CTkLabel(
+            self.main_container,
+            text="● AutoSave  UIT  •  Alleen handmatig opslaan + refresh",
+            font=("Segoe UI", 11, "bold"),
+            text_color=t.get("muted", "#8b95a7"),
+        ).pack(anchor="w", padx=34, pady=(0, 12))
+
 
 
 
@@ -18384,7 +18377,7 @@ class HuiswerkApp(ctk.CTk):
 
 
 
-        # AutoSave uitgeschakeld: gebruikersnaam wordt alleen opgeslagen via "Instellingen opslaan".
+        # AutoSave UIT: gebruikersnaam wordt niet automatisch opgeslagen; gebruik "Instellingen opslaan".
 
 
 
@@ -18644,7 +18637,7 @@ class HuiswerkApp(ctk.CTk):
 
 
 
-        # AutoSave uitgeschakeld: thema wordt alleen opgeslagen via "Instellingen opslaan".
+        # AutoSave UIT: thema wordt niet automatisch opgeslagen; gebruik "Instellingen opslaan".
 
 
 
@@ -19630,7 +19623,7 @@ class HuiswerkApp(ctk.CTk):
 
 
 
-        self._direct_ops_save_refresh("✓ Instellingen opgeslagen • Dashboard vernieuwd")
+        self._direct_ops_save_refresh("✓ Instellingen handmatig opgeslagen • Dashboard vernieuwd")
 
 
 
